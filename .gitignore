@@ -1,0 +1,12 @@
+# Saida de compilacao do Eclipse
+/build/
+
+# Credenciais do banco de dados (use db.properties.example como modelo)
+src/main/java/db.properties
+
+# Distribuicao completa do driver MySQL (apenas o .jar fica em WEB-INF/lib)
+src/main/webapp/WEB-INF/lib/mysql-connector-j-*/
+
+# Arquivos gerados pelo sistema operacional
+Thumbs.db
+.DS_Store
