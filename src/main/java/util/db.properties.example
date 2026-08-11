@@ -1,0 +1,8 @@
+# Modelo de configuracao do banco de dados.
+# Copie este arquivo para db.properties (mesma pasta) e preencha com os dados reais.
+# O db.properties NAO deve ser versionado - ver .gitignore.
+
+db.url=jdbc:mysql://SEU_IP_OU_HOST:3306/NOME_DO_BANCO?sslMode=PREFERRED&allowPublicKeyRetrieval=true&connectionTimeZone=America/Sao_Paulo&characterEncoding=UTF-8
+db.usuario=SEU_USUARIO
+db.senha=SUA_SENHA
+db.driver=com.mysql.cj.jdbc.Driver
