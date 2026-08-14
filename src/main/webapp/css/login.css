@@ -13,6 +13,7 @@ html, body {
 /* ===== Layout de duas colunas (equivalente ao "flex h-[700px] w-full") ===== */
 .tela-login {
 	display: flex;
+	position: relative; /* ancora a logo posicionada em .logo-topo */
 	height: 100vh;   /* altura travada na tela, em vez de crescer com o conteúdo */
 	width: 100%;
 	overflow: hidden; /* impede que a imagem "vaze" para fora da tela */
@@ -37,6 +38,7 @@ html, body {
 		display: block;
 	}
 }
+
 
 .coluna-formulario {
 	width: 100%;

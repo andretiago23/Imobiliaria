@@ -10,54 +10,52 @@
 <body>
 
 	<header class="barra-topo">
-		<a href="${pageContext.request.contextPath}/inicio" class="marca">Imobiliária</a>
+		<a class="marca" href="${pageContext.request.contextPath}/inicio">Imobiliária</a>
 		<nav class="menu">
-			<span class="saudacao">Olá, ${usuarioLogado.nome}</span>
-			<a href="${pageContext.request.contextPath}/logout" class="botao botao-discreto">Sair</a>
+			<span class="saudacao">Olá, ${sessionScope.usuarioLogado.nome}</span>
+			<a class="botao botao-discreto" href="${pageContext.request.contextPath}/logout">Sair</a>
 		</nav>
 	</header>
 
 	<main class="conteudo">
+
+		<h1>Bem-vindo(a) de volta</h1>
 		<p class="alerta alerta-erro" role="alert">${erro}</p>
 
-		<h1>Sua conta</h1>
-
 		<section class="painel-indicadores">
-			<article class="indicador">
-				<span class="indicador-rotulo">Tipo de conta</span>
-				<strong class="indicador-valor">${usuarioLogado.tipoUsuario.rotulo}</strong>
-			</article>
-
-			<article class="indicador">
+			<div class="indicador">
 				<span class="indicador-rotulo">Reputação</span>
-				<strong class="indicador-valor">${reputacao}</strong>
-				<span class="indicador-apoio">${totalAvaliacoes} avaliações</span>
-			</article>
+				<span class="indicador-valor">${reputacao}</span>
+				<span class="indicador-apoio">média das suas avaliações</span>
+			</div>
 
-			<article class="indicador">
-				<span class="indicador-rotulo">Mensagens pendentes</span>
-				<strong class="indicador-valor">${interessesPendentes}</strong>
-			</article>
+			<div class="indicador">
+				<span class="indicador-rotulo">Avaliações recebidas</span>
+				<span class="indicador-valor">${totalAvaliacoes}</span>
+				<span class="indicador-apoio">total acumulado</span>
+			</div>
+
+			<div class="indicador">
+				<span class="indicador-rotulo">Interesses pendentes</span>
+				<span class="indicador-valor">${interessesPendentes}</span>
+				<span class="indicador-apoio">aguardando sua resposta</span>
+			</div>
 		</section>
 
 		<section class="bloco">
-			<h2>Dados cadastrais</h2>
+			<h2>Seus dados</h2>
 			<dl class="lista-dados">
 				<dt>Nome</dt>
-				<dd>${usuarioLogado.nome}</dd>
+				<dd>${sessionScope.usuarioLogado.nome}</dd>
 
 				<dt>E-mail</dt>
-				<dd>
-					${usuarioLogado.email}
-					<span class="etiqueta ${usuarioLogado.emailConfirmado ? 'etiqueta-ok' : 'etiqueta-pendente'}">
-						${usuarioLogado.emailConfirmado ? 'confirmado' : 'não confirmado'}
-					</span>
-				</dd>
+				<dd>${sessionScope.usuarioLogado.email}</dd>
 
-				<dt>Telefone</dt>
-				<dd>${empty usuarioLogado.telefone ? 'não informado' : usuarioLogado.telefone}</dd>
+				<dt>Tipo de conta</dt>
+				<dd>${sessionScope.usuarioLogado.tipoUsuario}</dd>
 			</dl>
 		</section>
+
 	</main>
 
 </body>
