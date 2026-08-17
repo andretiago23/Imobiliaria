@@ -1,8 +1,14 @@
 # Saida de compilacao do Eclipse
 /build/
 
+# Metadados do workspace do Eclipse (locais da maquina, nao do projeto)
+/.metadata/
+
 # Credenciais do banco de dados (use db.properties.example como modelo)
 src/main/java/db.properties
+
+# Credenciais do login social (use google.properties.example como modelo)
+src/main/java/google.properties
 
 # Distribuicao completa do driver MySQL (apenas o .jar fica em WEB-INF/lib)
 src/main/webapp/WEB-INF/lib/mysql-connector-j-*/
