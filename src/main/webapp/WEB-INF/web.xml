@@ -17,4 +17,29 @@
 		<welcome-file>default.jsp</welcome-file>
 		<welcome-file>default.xhtml</welcome-file>
 	</welcome-file-list>
+
+	<!-- Páginas de erro próprias: nunca expor ao visitante o relatório padrão
+	     do Tomcat, que revela a versão do servidor e o rastro completo da
+	     exceção (pacotes internos, caminhos do servidor). -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/jsp/erro404.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/jsp/erro500.jsp</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/WEB-INF/jsp/erro500.jsp</location>
+	</error-page>
+
+	<!-- Cookie de sessão inacessível a JavaScript, para reduzir o impacto de um
+	     eventual XSS, e restrito ao próprio caminho da aplicação. -->
+	<session-config>
+		<session-timeout>30</session-timeout>
+		<cookie-config>
+			<http-only>true</http-only>
+		</cookie-config>
+	</session-config>
 </web-app>
