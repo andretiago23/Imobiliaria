@@ -1,486 +1,369 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%--
-	Porta de entrada publica da aplicacao.
-
-	Quem ja esta autenticado vai direto para a area logada; o restante
-	ve a landing page da Habittar, sem precisar de login.
---%>
-<%
-  if (util.SessaoUsuario.estaAutenticado(request)) {
-    response.sendRedirect(request.getContextPath() + "/inicio");
-    return;
-  }
-  // Base de contexto para funcionar em qualquer deploy do MVC Java
-  String ctx = request.getContextPath();
-%>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Habittar — Encontre onde morar com precisão</title>
-  <meta name="description" content="Busque imóveis para alugar, comprar ou vender por localização real. Todos os anunciantes em um só lugar, sem burocracia.">
-  <meta property="og:title" content="Habittar — Encontre onde morar com precisão">
-  <meta property="og:description" content="Busque imóveis por localização real. Todos os anunciantes em um só lugar.">
+  <title>Habittar | Imoveis a venda e para alugar por localizacao</title>
+  <meta name="description" content="Busque imoveis por rua, bairro ou cidade no catalogo da Habittar: fotos, preco, area e ficha tecnica completa. Anuncie seu imovel e receba leads qualificados.">
+  <meta property="og:title" content="Habittar | Imoveis por localizacao">
+  <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="<%= ctx %>/css/habittar.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css">
 </head>
 <body>
-
-<!-- ============ HEADER ============ -->
-<header class="header" id="header">
-  <div class="wrap">
-    <a class="logo" href="<%= ctx %>/">
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="#FF6A1A" stroke-width="1.8"/>
-        <path d="M9 12.2 12 9.6l3 2.6V15a.6.6 0 0 1-.6.6H9.6A.6.6 0 0 1 9 15v-2.8Z" stroke="#FF6A1A" stroke-width="1.6" stroke-linejoin="round"/>
+<!-- ===================== HEADER ===================== -->
+<header class="nav">
+  <div class="nav__inner">
+    <a class="logo" href="#top" aria-label="Habittar — início">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/>
+        <path d="M9 11.2 12 8.8l3 2.4V14h-6z"/>
       </svg>
       Habittar
     </a>
-    <nav class="nav">
-      <a href="#destaques">Comprar</a>
-      <a href="#categorias">Alugar</a>
+    <nav class="nav__links">
+      <a href="#imoveis">Comprar</a>
+      <a href="#imoveis">Alugar</a>
       <a href="#diferenciais">Como funciona</a>
       <a class="btn btn--primary btn--sm" href="#anunciar">
-        <svg class="pin" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="currentColor" stroke-width="2"/>
-          <circle cx="12" cy="11" r="2.4" stroke="currentColor" stroke-width="2"/>
-        </svg>
+        <span class="btn__pin" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        </span>
         Anunciar imóvel
       </a>
     </nav>
   </div>
 </header>
 
-<main>
-
-<!-- ============ HERO ============ -->
-<section class="section section--page hero">
-  <div class="cartogrid" data-parallax></div>
-  <div class="wrap">
-    <div class="hero__grid">
+<main id="top">
+  <!-- ===================== HERO ===================== -->
+  <section class="section hero">
+    <div class="map-grid" aria-hidden="true"></div>
+    <div class="wrap hero__grid">
       <div>
-        <span class="mono">-23.5613, -46.6820 &middot; São Paulo</span>
-        <h1>Seu bairro, seu tipo de negócio, <span class="accent-word">um clique</span>.</h1>
-        <p class="lead">Buscar onde morar é uma questão de precisão, não de sorte. A Habittar reúne os anunciantes da cidade em um único mapa.</p>
+        <p class="eyebrow">Portal imobiliário por localização</p>
+        <h1 class="display">Seu bairro, seu tipo de negócio,<br><span class="hl">um clique</span>.</h1>
+        <p class="lead">Busque por rua, bairro ou cidade e veja o catálogo completo da Habittar na hora. Sem cadastro para explorar, sem promessa vaga: o resultado aparece antes do discurso.</p>
 
-        <form class="search-form" action="<%= ctx %>/buscar" method="get" autocomplete="off">
-
-          <div class="segment" role="tablist" data-segment>
-            <button type="button" class="is-active" data-value="alugar">Alugar</button>
-            <button type="button" data-value="comprar">Comprar</button>
-            <button type="button" data-value="vender">Vender</button>
+        <form class="search" action="#imoveis" method="get" role="search">
+          <div class="segment" role="group" aria-label="Tipo de negócio">
+            <button type="button" class="is-active" data-value="comprar" aria-pressed="true">Comprar</button>
+            <button type="button" data-value="alugar" aria-pressed="false">Alugar</button>
+            <button type="button" data-value="vender" aria-pressed="false">Vender</button>
           </div>
-          <input type="hidden" name="negocio" id="negocio" value="alugar">
-
-          <div class="search">
-            <span class="search__icon" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="currentColor" stroke-width="2"/>
-                <circle cx="12" cy="11" r="2.4" stroke="currentColor" stroke-width="2"/>
-              </svg>
-            </span>
-            <label class="sr-only" for="q" hidden="hidden">Bairro, cidade ou região</label>
-            <input id="q" name="q" type="text" placeholder="Bairro, cidade ou região — ex.: Pinheiros">
-
-            <div class="combo" data-combobox>
-              <button type="button" class="combo__field" data-combobox-toggle aria-haspopup="listbox" aria-expanded="false">
-                <span class="combo__value" data-combobox-label>Tipo de imóvel</span>
-                <svg class="combo__chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M14.0607 5.49999L13.5303 6.03032L8.7071 10.8535C8.31658 11.2441 7.68341 11.2441 7.29289 10.8535L2.46966 6.03032L1.93933 5.49999L2.99999 4.43933L3.53032 4.96966L7.99999 9.43933L12.4697 4.96966L13 4.43933L14.0607 5.49999Z" fill="currentColor"/>
-                </svg>
-              </button>
-              <input type="hidden" name="tipo" id="tipo" value="">
-              <ul class="combo__list" role="listbox" data-combobox-list hidden="hidden">
-                <%
-                  String[][] tiposImovel = {
-                    {"apartamento", "Apartamento"},
-                    {"casa", "Casa"},
-                    {"kitnet", "Kitnet / Studio"},
-                    {"cobertura", "Cobertura"},
-                    {"comercial", "Comercial"},
-                    {"terreno", "Terreno"}
-                  };
-                  for (String[] tipo : tiposImovel) {
-                %>
-                <li role="option" data-value="<%= tipo[0] %>">
-                  <span><%= tipo[1] %></span>
-                  <svg class="combo__check" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </li>
-                <% } %>
-              </ul>
-            </div>
-
-            <button class="btn btn--primary" type="submit">Buscar</button>
-          </div>
+          <input type="hidden" id="operacao" name="operacao" value="comprar">
+          <label class="search__field">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            <span class="sr-only" hidden>Localização</span>
+            <input type="text" name="local" placeholder="Digite um bairro, cidade ou rua" autocomplete="off">
+          </label>
+          <button class="btn btn--primary search__submit" type="submit" aria-label="Buscar imóveis">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          </button>
         </form>
 
-
-        <div class="hero__meta">
-          <span class="mono">156 imóveis em Pinheiros</span>
-          <span class="mono">42 anunciantes ativos</span>
+        <div class="hero__stats">
+          <span><b>1.284</b> imóveis ativos</span>
+          <span><b>156</b> em Pinheiros</span>
+          <span><b>42</b> novos esta semana</span>
         </div>
       </div>
 
-      <!-- Composição: mapa estilizado com pins -->
       <div class="scene" aria-hidden="true">
-        <svg viewBox="0 0 560 420">
+        <svg viewBox="0 0 560 340" role="presentation">
           <defs>
-            <pattern id="mapGrid" width="56" height="56" patternUnits="userSpaceOnUse">
-              <path d="M56 0H0V56" fill="none" stroke="rgba(22,21,31,.10)" stroke-width="1"/>
+            <pattern id="miniGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M40 0H0V40" fill="none" stroke="#16151F" stroke-opacity="0.1" stroke-width="1"/>
             </pattern>
-            <g id="pinOutline">
-              <path d="M8 21s7-6.3 7-11.4A7 7 0 1 0 1 9.6C1 14.7 8 21 8 21Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
-              <circle cx="8" cy="9.4" r="2.3" fill="none" stroke="currentColor" stroke-width="1.5"/>
-            </g>
           </defs>
-          <rect x="0" y="0" width="560" height="420" rx="16" fill="url(#mapGrid)"/>
+          <rect x="8" y="8" width="544" height="324" rx="16" fill="url(#miniGrid)" stroke="#16151F" stroke-opacity="0.08"/>
           <!-- quarteirões -->
-          <g fill="none" stroke="rgba(91,89,103,.20)" stroke-width="1.5">
-            <rect x="40" y="46" width="150" height="96" rx="10"/>
-            <rect x="212" y="46" width="112" height="140" rx="10"/>
-            <rect x="348" y="76" width="168" height="88" rx="10"/>
-            <rect x="40" y="168" width="150" height="120" rx="10"/>
-            <rect x="212" y="212" width="112" height="76" rx="10"/>
-            <rect x="348" y="192" width="168" height="120" rx="10"/>
-            <rect x="128" y="316" width="260" height="66" rx="10"/>
+          <g fill="none" stroke="#5B5967" stroke-opacity="0.2" stroke-width="1.5">
+            <rect x="48" y="48" width="128" height="84" rx="10"/>
+            <rect x="200" y="40" width="96" height="120" rx="10"/>
+            <rect x="324" y="60" width="150" height="72" rx="10"/>
+            <rect x="60" y="164" width="104" height="120" rx="10"/>
+            <rect x="192" y="188" width="132" height="96" rx="10"/>
+            <rect x="352" y="164" width="120" height="120" rx="10"/>
           </g>
-          <!-- pins secundários (ocultos no mobile) -->
-          <g color="#5B5967" opacity=".55" class="hide-mobile">
-            <use href="#pinOutline" x="72" y="70"/>
-            <use href="#pinOutline" x="248" y="120"/>
-            <use href="#pinOutline" x="464" y="96"/>
-            <use href="#pinOutline" x="96" y="230"/>
-            <use href="#pinOutline" x="262" y="240"/>
-            <use href="#pinOutline" x="196" y="336"/>
+          <!-- pins secundários pousados -->
+          <g fill="none" stroke="#5B5967" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.75">
+            <path d="M96 96s6-4.6 6-9.6A6 6 0 0 0 90 86.4c0 5 6 9.6 6 9.6Z"/>
+            <path d="M244 118s6-4.6 6-9.6a6 6 0 0 0-12 0c0 5 6 9.6 6 9.6Z"/>
+            <path d="M420 108s6-4.6 6-9.6a6 6 0 0 0-12 0c0 5 6 9.6 6 9.6Z"/>
+            <path d="M108 236s6-4.6 6-9.6a6 6 0 0 0-12 0c0 5 6 9.6 6 9.6Z"/>
+            <path d="M258 258s6-4.6 6-9.6a6 6 0 0 0-12 0c0 5 6 9.6 6 9.6Z"/>
+            <path d="M462 246s6-4.6 6-9.6a6 6 0 0 0-12 0c0 5 6 9.6 6 9.6Z"/>
           </g>
           <!-- raio de busca -->
-          <circle class="radar" cx="392" cy="240" r="60" fill="rgba(255,106,26,.08)" stroke="#FF6A1A" stroke-width="1.5" stroke-dasharray="6 8"/>
+          <g id="heroRadar">
+            <circle cx="372" cy="168" r="60" fill="#FF6A1A" fill-opacity="0.08" stroke="#FF6A1A" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="5 7"/>
+          </g>
           <!-- pin principal -->
-          <g class="pin-drop" transform="translate(376,206)">
-            <path d="M16 44s16-14.4 16-26A16 16 0 1 0 0 18c0 11.6 16 26 16 26Z" fill="#FF6A1A"/>
-            <circle cx="16" cy="18" r="5.6" fill="#FDF9F5"/>
+          <g id="heroPin">
+            <path d="M372 186s16-12.4 16-25.6A16 16 0 0 0 356 160.4c0 13.2 16 25.6 16 25.6Z" fill="#FF6A1A"/>
+            <circle cx="372" cy="160" r="6" fill="#FFFFFF"/>
           </g>
+          <text x="392" y="206" font-family="Space Mono, monospace" font-size="11" fill="#5B5967">-23.5614, -46.6929</text>
         </svg>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ============ CATEGORIAS (respiro) ============ -->
-<section class="section section--page" id="categorias" style="padding-top:0">
-  <div class="cartogrid" data-parallax></div>
-  <div class="wrap">
-    <div class="cats">
-      <a class="cat reveal" href="<%= ctx %>/buscar?negocio=alugar">
-        <span class="cat__icon">
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 21v-5h5v5" stroke="currentColor" stroke-width="1.5"/></svg>
-        </span>
-        <div>
-          <h3>Alugar</h3>
-          <p>Filtre por bairro, faixa de preço e disponibilidade real — sem anúncio fantasma.</p>
-        </div>
-        <span class="cat__go mono">3.482 opções &rarr;</span>
-      </a>
-      <a class="cat reveal" href="<%= ctx %>/buscar?negocio=comprar">
-        <span class="cat__icon">
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><rect x="4" y="7" width="16" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M4 7 12 3l8 4M9 21v-5h6v5" stroke="currentColor" stroke-width="1.5"/></svg>
-        </span>
-        <div>
-          <h3>Comprar</h3>
-          <p>Do primeiro apê ao imóvel de investimento, com todos os anunciantes no mesmo mapa.</p>
-        </div>
-        <span class="cat__go mono">2.117 opções &rarr;</span>
-      </a>
-      <a class="cat reveal" href="<%= ctx %>/anunciar">
-        <span class="cat__icon">
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="currentColor" stroke-width="1.5"/><path d="M12 7.4v5.2M9.4 10h5.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </span>
-        <div>
-          <h3>Vender</h3>
-          <p>Coloque seu imóvel no mapa e fale direto com quem está buscando na sua região.</p>
-        </div>
-        <span class="cat__go mono">anunciar &rarr;</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- costura: page -> raised -->
-<div class="seam" aria-hidden="true">
-  <svg viewBox="0 0 1440 96" preserveAspectRatio="none"><path d="M0,96 C420,0 1020,0 1440,96 L1440,96 L0,96 Z" fill="#FFFFFF"/></svg>
-</div>
-
-<!-- ============ IMÓVEIS EM DESTAQUE (densa) ============ -->
-<section class="section section--raised" id="destaques">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <span class="mono">Atualizado hoje</span>
-        <h2>Imóveis em destaque</h2>
+  <!-- ===================== CATEGORIAS ===================== -->
+  <section class="section" id="categorias" style="padding-top:0">
+    <div class="map-grid" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="cats reveal">
+        <a class="cat" href="#imoveis">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16151F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9.5 21v-6h5v6"/></svg>
+          <div><h3 class="display">Comprar</h3><p>Apartamentos, casas e terrenos com ficha técnica completa, preço por m² e endereço exato após o login.</p></div>
+          <span class="cat__arrow micro">834 imóveis →</span>
+        </a>
+        <a class="cat" href="#imoveis">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16151F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3M3 13h18"/></svg>
+          <div><h3 class="display">Alugar</h3><p>Do primeiro apê ao imóvel da família: filtro por valor máximo, quartos mínimos e bairro real, não região genérica.</p></div>
+          <span class="cat__arrow micro">450 imóveis →</span>
+        </a>
+        <a class="cat" href="#anunciar">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16151F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><path d="M12 7.5v5M9.5 10h5"/></svg>
+          <div><h3 class="display">Vender</h3><p>Coloque seu imóvel no mapa e receba interesses qualificados, com simulação de financiamento anexada.</p></div>
+          <span class="cat__arrow micro">Anunciar →</span>
+        </a>
       </div>
-      <span class="mono">5.599 imóveis disponíveis agora</span>
     </div>
+  </section>
 
-    <div class="props">
-      <!-- SUBSTITUIR: foto real de imóvel (4:3 / 16:11) -->
-      <article class="card card--big">
-        <div class="card__media">
-          <img src="<%= ctx %>/img/imovel-01.jpg" alt="Apartamento em Pinheiros, São Paulo" loading="lazy">
-          <span class="badge">Aluguel</span>
+  <svg class="seam seam--to-raised" viewBox="0 0 1440 96" preserveAspectRatio="none" aria-hidden="true"><path d="M0 96C360 8 1080 8 1440 96V96H0Z"/></svg>
+
+  <!-- ===================== IMÓVEIS EM DESTAQUE ===================== -->
+  <section class="section section--raised" id="imoveis" style="padding-top:24px">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <div>
+          <p class="eyebrow">Catálogo</p>
+          <h2 class="display">Imóveis em <span class="hl">destaque</span></h2>
         </div>
-        <div class="card__body">
-          <div class="card__price">R$ 4.200 <span class="mono">/mês</span></div>
-          <div class="card__loc">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>
-            Rua dos Pinheiros — Pinheiros, São Paulo
+        <p class="micro">156 imóveis próximos • atualizado há 12 min</p>
+      </div>
+
+      <div class="props">
+        <article class="card card--feature">
+          <div class="card__photo"><span class="badge">Venda</span><span class="micro">Cód. HB-1042</span></div>
+          <div class="card__body">
+            <div class="card__price">R$ 845.000</div>
+            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Pinheiros, São Paulo — SP</div>
+            <div class="card__specs"><span>92 m²</span><span>3 quartos</span><span>2 banh.</span><span>2 vagas</span></div>
           </div>
-          <div class="card__specs"><span>78 m²</span><span>2 quartos</span><span>1 vaga</span></div>
+        </article>
+        <article class="card">
+          <div class="card__photo"><span class="badge">Aluguel</span></div>
+          <div class="card__body">
+            <div class="card__price">R$ 3.200<span class="micro">/mês</span></div>
+            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Vila Madalena — SP</div>
+            <div class="card__specs"><span>58 m²</span><span>2 qtos</span><span>1 vaga</span></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card__photo"><span class="badge">Reservado</span></div>
+          <div class="card__body">
+            <div class="card__price">R$ 620.000</div>
+            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Perdizes — SP</div>
+            <div class="card__specs"><span>74 m²</span><span>2 qtos</span><span>1 vaga</span></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card__photo"><span class="badge">Venda</span></div>
+          <div class="card__body">
+            <div class="card__price">R$ 1.190.000</div>
+            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Alto de Pinheiros — SP</div>
+            <div class="card__specs"><span>148 m²</span><span>4 qtos</span><span>3 vagas</span></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card__photo"><span class="badge">Aluguel</span></div>
+          <div class="card__body">
+            <div class="card__price">R$ 2.150<span class="micro">/mês</span></div>
+            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Butantã — SP</div>
+            <div class="card__specs"><span>44 m²</span><span>1 qto</span><span>1 vaga</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <svg class="seam seam--to-page" viewBox="0 0 1440 96" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0C360 88 1080 88 1440 0V96H0Z"/></svg>
+
+  <!-- ===================== DIFERENCIAIS ===================== -->
+  <section class="section" id="diferenciais" style="padding-top:16px">
+    <div class="map-grid" aria-hidden="true"></div>
+    <div class="wrap">
+
+      <!-- (a) convergência de pins -->
+      <div class="diff reveal">
+        <div class="diff__text">
+          <p class="eyebrow">01 — Catálogo único</p>
+          <h3 class="display">Todo o portfólio em <span class="hl">um só lugar</span></h3>
+          <p class="lead">Nada de abrir cinco abas. Cada imóvel da Habittar entra no mesmo mapa, com o mesmo padrão de ficha e o mesmo nível de detalhe.</p>
         </div>
-      </article>
-
-      <article class="card" style="grid-area:s1">
-        <div class="card__media"><img src="<%= ctx %>/img/imovel-02.jpg" alt="Studio na Vila Madalena" loading="lazy"><span class="badge">Venda</span></div>
-        <div class="card__body">
-          <div class="card__price">R$ 615 mil</div>
-          <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg> Vila Madalena</div>
-          <div class="card__specs"><span>41 m²</span><span>1 quarto</span></div>
+        <div class="scene" aria-hidden="true">
+          <svg viewBox="0 0 640 420" role="presentation">
+            <g fill="none" stroke="#FF6A1A" stroke-opacity="0.3" stroke-width="1">
+              <path class="draw" d="M80 70C200 140 240 180 320 210"/>
+              <path class="draw" d="M560 60C440 130 400 180 320 210"/>
+              <path class="draw" d="M60 340C180 300 240 250 320 210"/>
+              <path class="draw" d="M580 350C460 300 400 250 320 210"/>
+              <path class="draw" d="M320 380C320 320 320 260 320 210"/>
+            </g>
+            <g fill="none" stroke="#5B5967" stroke-width="1.6" stroke-linejoin="round" opacity="0.8">
+              <path d="M80 78s7-5.4 7-11.2A7 7 0 0 0 73 66.8C73 72.6 80 78 80 78Z"/>
+              <path d="M560 68s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/>
+              <path d="M60 348s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/>
+              <path d="M580 358s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/>
+              <path d="M320 388s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/>
+            </g>
+            <g>
+              <path d="M320 232s14-11 14-22.4A14 14 0 0 0 306 209.6c0 11.4 14 22.4 14 22.4Z" fill="#FF6A1A"/>
+              <circle cx="320" cy="209" r="5" fill="#fff"/>
+            </g>
+          </svg>
         </div>
-      </article>
+      </div>
 
-      <article class="card" style="grid-area:s2">
-        <div class="card__media"><img src="<%= ctx %>/img/imovel-03.jpg" alt="Apartamento na Consolação" loading="lazy"><span class="badge">Aluguel</span></div>
-        <div class="card__body">
-          <div class="card__price">R$ 2.850 <span class="mono">/mês</span></div>
-          <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg> Consolação</div>
-          <div class="card__specs"><span>55 m²</span><span>2 quartos</span></div>
+      <!-- (b) raio de busca -->
+      <div class="diff diff--flip reveal">
+        <div class="diff__text">
+          <p class="eyebrow">02 — Busca por localização real</p>
+          <h3 class="display">Você busca por <span class="hl">rua</span>, não por região</h3>
+          <p class="lead">O raio de busca acende exatamente o que existe ao redor do ponto escolhido — com contador ao vivo e filtros de valor, quartos e operação.</p>
         </div>
-      </article>
-
-      <article class="card" style="grid-area:s3">
-        <div class="card__media"><img src="<%= ctx %>/img/imovel-04.jpg" alt="Casa no Butantã" loading="lazy"><span class="badge">Venda</span></div>
-        <div class="card__body">
-          <div class="card__price">R$ 890 mil</div>
-          <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg> Butantã</div>
-          <div class="card__specs"><span>132 m²</span><span>3 quartos</span><span>2 vagas</span></div>
+        <div class="scene" aria-hidden="true">
+          <svg viewBox="0 0 640 420" role="presentation">
+            <g class="radar">
+              <circle cx="320" cy="210" r="170" fill="#FF6A1A" fill-opacity="0.08" stroke="#FF6A1A" stroke-opacity="0.4" stroke-width="1.5" stroke-dasharray="6 8"/>
+            </g>
+            <rect x="180" y="188" width="280" height="48" rx="24" fill="#FFFFFF" stroke="#16151F" stroke-opacity="0.08"/>
+            <path d="M208 222s6-4.8 6-9.8a6 6 0 0 0-12 0c0 5 6 9.8 6 9.8Z" fill="#FF6A1A"/>
+            <rect x="226" y="205" width="150" height="8" rx="4" fill="#16151F" opacity="0.12"/>
+            <text x="392" y="217" font-family="Space Mono, monospace" font-size="12" fill="#5B5967">156</text>
+            <g class="fade-pin" style="transition-delay:.25s" fill="none" stroke="#FF6A1A" stroke-width="1.8"><path d="M240 108s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/></g>
+            <g class="fade-pin" style="transition-delay:.45s" fill="none" stroke="#FF6A1A" stroke-width="1.8"><path d="M420 128s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/></g>
+            <g class="fade-pin" style="transition-delay:.65s" fill="none" stroke="#FF6A1A" stroke-width="1.8"><path d="M250 320s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/></g>
+            <g class="fade-pin" style="transition-delay:.85s" fill="none" stroke="#FF6A1A" stroke-width="1.8"><path d="M430 306s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/></g>
+          </svg>
         </div>
-      </article>
+      </div>
 
-      <article class="card" style="grid-area:s4">
-        <div class="card__media"><img src="<%= ctx %>/img/imovel-05.jpg" alt="Apartamento no Ipiranga" loading="lazy"><span class="badge">Aluguel</span></div>
-        <div class="card__body">
-          <div class="card__price">R$ 1.980 <span class="mono">/mês</span></div>
-          <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg> Ipiranga</div>
-          <div class="card__specs"><span>63 m²</span><span>2 quartos</span></div>
+      <!-- (c) linha do tempo -->
+      <div class="diff reveal" id="sceneTimeline">
+        <div class="diff__text">
+          <p class="eyebrow">03 — Do interesse à negociação</p>
+          <h3 class="display">Do primeiro apê à <span class="hl">chave na mão</span></h3>
+          <p class="lead">Simule o financiamento na própria ficha, envie seu interesse com a simulação anexada e fale com um corretor que já sabe o que você procura.</p>
         </div>
-      </article>
+        <div class="scene" aria-hidden="true">
+          <svg viewBox="0 0 640 200" role="presentation">
+            <line x1="40" y1="100" x2="600" y2="100" stroke="#5B5967" stroke-opacity="0.2" stroke-width="1.5"/>
+            <path id="timelineProgress" d="M40 100H600" stroke="#FF6A1A" stroke-width="2.5" fill="none" stroke-dashoffset="560"/>
+            <circle cx="40" cy="100" r="14" fill="none" stroke="#5B5967" stroke-width="1.6"/>
+            <g transform="translate(556 68)">
+              <rect x="0" y="16" width="48" height="48" rx="6" fill="none" stroke="#5B5967" stroke-width="1.6"/>
+              <path d="M24 14s9-6.9 9-14.4A9 9 0 0 0 15-.4C15 7.1 24 14 24 14Z" fill="#FF6A1A"/>
+            </g>
+            <text x="34" y="140" font-family="Space Mono, monospace" font-size="11" fill="#5B5967">busca</text>
+            <text x="520" y="150" font-family="Space Mono, monospace" font-size="11" fill="#5B5967">negociação</text>
+          </svg>
+        </div>
+      </div>
+
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- costura: raised -> page -->
-<div class="seam" aria-hidden="true">
-  <svg viewBox="0 0 1440 96" preserveAspectRatio="none"><path d="M0,96 C420,0 1020,0 1440,96 L1440,96 L0,96 Z" fill="#FDF9F5"/></svg>
-</div>
+  <svg class="seam seam--to-inverse" viewBox="0 0 1440 96" preserveAspectRatio="none" aria-hidden="true"><path d="M0 96C360 8 1080 8 1440 96V96H0Z"/></svg>
 
-<!-- ============ DIFERENCIAIS ============ -->
-<section class="section section--page" id="diferenciais">
-  <div class="cartogrid" data-parallax></div>
-  <div class="wrap">
-
-    <!-- (a) convergência de anunciantes -->
-    <div class="diff" data-inview>
-      <div class="reveal">
-        <span class="mono">01 — Agregação</span>
-        <h3>Todos os anunciantes num só lugar</h3>
-        <p>Imobiliárias, corretores e proprietários convergem para o mesmo mapa. Você compara tudo sem abrir cinco abas.</p>
+  <!-- ===================== PROVA SOCIAL ===================== -->
+  <section class="section section--inverse" data-counters style="padding-top:40px">
+    <div class="map-grid" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="stats">
+        <div>
+          <div class="stat__num" data-count="1284">0</div>
+          <div class="stat__label">Imóveis no catálogo</div>
+        </div>
+        <div>
+          <div class="stat__num" data-count="3120" data-suffix="+">0</div>
+          <div class="stat__label">Clientes atendidos</div>
+        </div>
+        <div>
+          <div class="stat__num" data-count="418">0</div>
+          <div class="stat__label">Negócios fechados</div>
+        </div>
       </div>
-      <div class="diff__scene" aria-hidden="true">
-        <svg viewBox="0 0 640 380">
-          <g fill="none" stroke="rgba(255,106,26,.3)" stroke-width="1" class="draw" style="--len:520">
-            <path d="M70 60 C 220 90, 260 150, 320 190"/>
-            <path d="M580 70 C 440 110, 400 150, 320 190"/>
-            <path d="M50 300 C 190 280, 250 230, 320 190"/>
-            <path d="M600 300 C 470 290, 400 240, 320 190"/>
-            <path d="M320 350 C 320 300, 320 240, 320 190"/>
-          </g>
-          <g color="#5B5967" opacity=".6" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M70 72s9-8 9-14.6A9 9 0 1 0 61 57.4C61 64 70 72 70 72Z"/>
-            <path d="M580 82s9-8 9-14.6A9 9 0 1 0 571 67.4C571 74 580 82 580 82Z"/>
-            <path d="M50 312s9-8 9-14.6A9 9 0 1 0 41 297.4C41 304 50 312 50 312Z"/>
-            <path d="M600 312s9-8 9-14.6A9 9 0 1 0 591 297.4C591 304 600 312 600 312Z" class="hide-mobile"/>
-            <path d="M320 362s9-8 9-14.6A9 9 0 1 0 311 347.4C311 354 320 362 320 362Z" class="hide-mobile"/>
-          </g>
-          <g transform="translate(306,158)">
-            <path d="M14 40s14-13 14-23.5A14 14 0 1 0 0 16.5C0 27 14 40 14 40Z" fill="#FF6A1A"/>
-            <circle cx="14" cy="16.5" r="5" fill="#FDF9F5"/>
-          </g>
-        </svg>
-      </div>
+
+      <blockquote class="quote">
+        <p>Achei o apartamento em três dias buscando pela rua onde eu já queria morar. A simulação foi junto com o contato e o corretor ligou sabendo do meu orçamento.</p>
+        <span>Depoimento ilustrativo — substituir por texto real aprovado</span>
+      </blockquote>
     </div>
+  </section>
 
-    <!-- (b) busca por localização real -->
-    <div class="diff" data-inview>
-      <div class="reveal">
-        <span class="mono">02 — Precisão</span>
-        <h3>Busca por localização real</h3>
-        <p>Digite o bairro e veja o raio acender: resultados por onde você quer morar, não por onde o anunciante quer vender.</p>
-      </div>
-      <div class="diff__scene" aria-hidden="true">
-        <svg viewBox="0 0 640 380">
-          <circle class="radar-expand" cx="320" cy="200" r="150" fill="rgba(255,106,26,.08)" stroke="#FF6A1A" stroke-width="1.5" stroke-dasharray="6 8"/>
-          <g transform="translate(180,72)">
-            <rect width="280" height="56" rx="28" fill="#FFFFFF" stroke="rgba(22,21,31,.08)"/>
-            <path d="M28 38s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" fill="none" stroke="#FF6A1A" stroke-width="1.6" transform="translate(0,-6)"/>
-            <rect x="52" y="24" width="150" height="8" rx="4" fill="rgba(91,89,103,.28)"/>
-          </g>
-          <g color="#FF6A1A" fill="none" stroke="currentColor" stroke-width="1.6">
-            <path class="lit" style="transition-delay:.35s" d="M220 250s9-8 9-14.6A9 9 0 1 0 211 235.4C211 242 220 250 220 250Z"/>
-            <path class="lit" style="transition-delay:.6s" d="M400 240s9-8 9-14.6A9 9 0 1 0 391 225.4C391 232 400 240 400 240Z"/>
-            <path class="lit" style="transition-delay:.85s" d="M300 320s9-8 9-14.6A9 9 0 1 0 291 305.4C291 312 300 320 300 320Z"/>
-            <path class="lit" style="transition-delay:1.1s" d="M440 320s9-8 9-14.6A9 9 0 1 0 431 305.4C431 312 440 320 440 320Z"/>
-          </g>
-        </svg>
-      </div>
+  <svg class="seam seam--to-page" viewBox="0 0 1440 96" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0C360 88 1080 88 1440 0V96H0Z"/></svg>
+
+  <!-- ===================== CTA FINAL ===================== -->
+  <section class="section cta" id="anunciar" style="padding-top:24px">
+    <div class="map-grid" aria-hidden="true"></div>
+    <div class="cta__pin" aria-hidden="true">
+      <svg width="240" height="240" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-6 8-12.5A8 8 0 1 0 4 9.5C4 16 12 22 12 22Z"/><circle cx="12" cy="9.5" r="3"/></svg>
     </div>
-
-    <!-- (c) linha do tempo -->
-    <div class="diff" data-inview>
-      <div class="reveal">
-        <span class="mono">03 — Do início ao fim</span>
-        <h3>Do primeiro apê à negociação com a imobiliária</h3>
-        <p>Você começa buscando e termina conversando com quem decide. Sem burocracia intermediária, sem cadastro em dez portais.</p>
-      </div>
-      <div class="diff__scene" aria-hidden="true">
-        <svg viewBox="0 0 640 200">
-          <line x1="40" y1="100" x2="600" y2="100" stroke="rgba(91,89,103,.2)" stroke-width="1"/>
-          <line class="draw" style="--len:560" x1="40" y1="100" x2="600" y2="100" stroke="#FF6A1A" stroke-width="2"/>
-          <circle cx="40" cy="100" r="14" fill="none" stroke="#5B5967" stroke-width="1.5"/>
-          <g transform="translate(556,64)">
-            <rect width="48" height="52" rx="6" fill="none" stroke="#5B5967" stroke-width="1.5"/>
-            <path d="M24 -4s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13Z" fill="#FF6A1A" transform="translate(0,-2)"/>
-          </g>
-        </svg>
+    <div class="wrap">
+      <div class="cta__card">
+        <p class="eyebrow">Anuncie com a Habittar</p>
+        <h2 class="display">Seu imóvel pode estar no <span class="hl">mapa hoje</span></h2>
+        <p class="lead">Publicação com ficha técnica completa, selo de status e leads qualificados chegando direto no painel da imobiliária.</p>
+        <div class="cta__actions">
+          <a class="btn btn--primary" href="#top">
+            <span class="btn__pin" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+            Anunciar imóvel
+          </a>
+          <a class="btn btn--secondary" href="#imoveis">Ver catálogo</a>
+        </div>
+        <p class="micro" style="margin-top:24px">Tempo médio de publicação: 6 minutos</p>
       </div>
     </div>
-
-  </div>
-</section>
-
-<!-- costura: page -> inverse -->
-<div class="seam" aria-hidden="true">
-  <svg viewBox="0 0 1440 96" preserveAspectRatio="none"><path d="M0,96 C420,0 1020,0 1440,96 L1440,96 L0,96 Z" fill="#15141C"/></svg>
-</div>
-
-<!-- ============ PROVA SOCIAL (único bloco escuro) ============ -->
-<section class="section section--inverse" id="prova" data-inview>
-  <div class="cartogrid"></div>
-  <div class="wrap">
-    <div class="stats">
-      <div>
-        <div class="stat__num" data-count="5599" data-suffix="">0</div>
-        <div class="stat__label">Imóveis anunciados</div>
-      </div>
-      <div>
-        <div class="stat__num" data-count="420" data-suffix="+">0</div>
-        <div class="stat__label">Anunciantes ativos</div>
-      </div>
-      <div>
-        <div class="stat__num" data-count="1830" data-suffix="">0</div>
-        <div class="stat__label">Negócios fechados</div>
-      </div>
-    </div>
-    <blockquote class="quote">
-      <p>Achei meu apartamento no bairro que eu queria em dois dias. Foi a primeira vez que a busca por localização funcionou de verdade.</p>
-      <footer>Depoimento — substituir por depoimento real aprovado</footer>
-    </blockquote>
-  </div>
-</section>
-
-<!-- costura: inverse -> page -->
-<div class="seam" aria-hidden="true">
-  <svg viewBox="0 0 1440 96" preserveAspectRatio="none"><path d="M0,96 C420,0 1020,0 1440,96 L1440,96 L0,96 Z" fill="#FDF9F5"/></svg>
-</div>
-
-<!-- ============ CTA FINAL ============ -->
-<section class="section section--page cta" id="anunciar" data-inview>
-  <div class="cartogrid" data-parallax></div>
-  <svg class="cta__pin" viewBox="0 0 120 160" fill="none" aria-hidden="true">
-    <path d="M60 154s52-46.5 52-84A52 52 0 1 0 8 70c0 37.5 52 84 52 84Z" stroke="currentColor" stroke-width="4"/>
-    <circle cx="60" cy="68" r="18" stroke="currentColor" stroke-width="4"/>
-  </svg>
-  <div class="wrap">
-    <div class="cta__panel">
-      <span class="mono">Anuncie grátis</span>
-      <h2>Seu imóvel pode estar <span class="accent-word">no mapa</span> agora.</h2>
-      <p>Publique em minutos e apareça para quem está buscando exatamente no seu bairro.</p>
-      <a class="btn btn--primary" href="<%= ctx %>/anunciar">
-        <svg class="pin" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2.4" stroke="currentColor" stroke-width="2"/></svg>
-        Anunciar meu imóvel
-      </a>
-    </div>
-  </div>
-</section>
-
+  </section>
 </main>
 
-<!-- ============ FOOTER ============ -->
+<!-- ===================== FOOTER ===================== -->
 <footer class="footer">
-  <div class="wrap">
-    <div class="footer__grid">
-      <div>
-        <a class="logo" href="<%= ctx %>/" style="color:#fff">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="#FF6A1A" stroke-width="1.8"/>
-            <path d="M9 12.2 12 9.6l3 2.6V15a.6.6 0 0 1-.6.6H9.6A.6.6 0 0 1 9 15v-2.8Z" stroke="#FF6A1A" stroke-width="1.6" stroke-linejoin="round"/>
-          </svg>
-          Habittar
-        </a>
-        <p style="color:#A6A3B0;max-width:34ch;margin-top:16px">Encontrar onde morar é uma questão de precisão, mostrada em tempo real.</p>
-      </div>
-      <div>
-        <h4>Buscar</h4>
-        <ul>
-          <li><a href="<%= ctx %>/buscar?negocio=alugar">Apartamentos para alugar</a></li>
-          <li><a href="<%= ctx %>/buscar?negocio=comprar">Imóveis à venda</a></li>
-          <li><a href="<%= ctx %>/buscar?tipo=casa">Casas</a></li>
-          <li><a href="<%= ctx %>/buscar?tipo=comercial">Comercial</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Anunciantes</h4>
-        <ul>
-          <li><a href="<%= ctx %>/anunciar">Anunciar imóvel</a></li>
-          <li><a href="<%= ctx %>/imobiliarias">Para imobiliárias</a></li>
-          <li><a href="<%= ctx %>/planos">Planos</a></li>
-          <li><a href="<%= ctx %>/login">Área do anunciante</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Institucional</h4>
-        <ul>
-          <li><a href="<%= ctx %>/sobre">Sobre a Habittar</a></li>
-          <li><a href="<%= ctx %>/ajuda">Central de ajuda</a></li>
-          <li><a href="<%= ctx %>/termos">Termos de uso</a></li>
-          <li><a href="<%= ctx %>/privacidade">Privacidade</a></li>
-        </ul>
-      </div>
+  <div class="footer__grid">
+    <div>
+      <a class="logo" href="#top">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><path d="M9 11.2 12 8.8l3 2.4V14h-6z"/></svg>
+        Habittar
+      </a>
+      <p style="font-size:14px;line-height:1.6;margin-top:16px;max-width:26ch">Encontrar onde morar é uma questão de precisão.</p>
     </div>
-    <div class="footer__bottom">
-      <span>&copy; <%= java.time.Year.now().getValue() %> Habittar. Todos os direitos reservados.</span>
-      <span>CNPJ 00.000.000/0001-00</span>
+    <div>
+      <h4>Buscar</h4>
+      <ul><li><a href="#imoveis">Apartamentos à venda</a></li><li><a href="#imoveis">Casas à venda</a></li><li><a href="#imoveis">Apartamentos para alugar</a></li><li><a href="#imoveis">Terrenos</a></li><li><a href="#imoveis">Imóveis comerciais</a></li></ul>
     </div>
+    <div>
+      <h4>Habittar</h4>
+      <ul><li><a href="#diferenciais">Como funciona</a></li><li><a href="#anunciar">Anunciar imóvel</a></li><li><a href="#top">Área do cliente</a></li><li><a href="#top">Painel da imobiliária</a></li><li><a href="#top">Trabalhe conosco</a></li></ul>
+    </div>
+    <div>
+      <h4>Institucional</h4>
+      <ul><li><a href="#top">Termos de uso</a></li><li><a href="#top">Política de privacidade (LGPD)</a></li><li><a href="#top">Consentimento de dados</a></li><li><a href="#top">Contato</a></li><li><a href="#top">CRECI 00000-J</a></li></ul>
+    </div>
+  </div>
+  <div class="footer__base">
+    <span>© 2026 Habittar. Todos os direitos reservados.</span>
+    <span>-23.5614, -46.6929</span>
   </div>
 </footer>
 
-<script src="<%= ctx %>/js/habittar.js" defer></script>
+<script src="${pageContext.request.contextPath}/resources/js/habittar.js"></script>
 </body>
 </html>

@@ -1,13 +1,10 @@
-/* Habittar — interações da LP (JS puro, sem dependências) */
+/* Habittar — interações da landing page (JS puro, sem libs) */
 (function () {
   "use strict";
 
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var isMobile = window.matchMedia("(max-width: 760px)").matches;
-
-  /* ---- Header translúcido a partir de 40px ---- */
-  var header = document.getElementById("header");
-  var parallax = document.querySelectorAll("[data-parallax]");
+  /* Header translúcido a partir de 40px de scroll */
+  var nav = document.querySelector(".nav");
+  var grids = [].slice.call(document.querySelectorAll(".map-grid"));
   var ticking = false;
 
   function onScroll() {
@@ -15,12 +12,11 @@
     ticking = true;
     window.requestAnimationFrame(function () {
       var y = window.pageYOffset || document.documentElement.scrollTop;
-      if (header) header.classList.toggle("is-scrolled", y > 40);
-      if (!reduced) {
-        var offset = Math.min(8, y * 0.02);
-        for (var i = 0; i < parallax.length; i++) {
-          parallax[i].style.transform = "translateY(" + offset + "px)";
-        }
+      if (nav) nav.classList.toggle("is-scrolled", y > 40);
+      /* Parallax sutil do grid cartográfico (máx. 8px) */
+      var offset = Math.min(8, y * 0.02);
+      for (var i = 0; i < grids.length; i++) {
+        grids[i].style.transform = "translateY(" + offset + "px)";
       }
       ticking = false;
     });
@@ -28,108 +24,103 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  /* ---- Segmento alugar/comprar/vender ---- */
-  var seg = document.querySelector("[data-segment]");
-  var hidden = document.getElementById("negocio");
-  if (seg) {
-    seg.addEventListener("click", function (e) {
-      var btn = e.target.closest("button[data-value]");
-      if (!btn) return;
-      seg.querySelectorAll("button").forEach(function (b) {
-        b.classList.toggle("is-active", b === btn);
+  /* Comprimento real dos paths para o efeito de desenho */
+  [].forEach.call(document.querySelectorAll(".draw"), function (path) {
+    try {
+      var len = Math.ceil(path.getTotalLength());
+      path.style.setProperty("--len", len);
+    } catch (e) {
+      /* elemento sem geometria — ignora */
+    }
+  });
+
+  /* Revelação por viewport */
+  var observed = document.querySelectorAll(".reveal, .scene-scroll, .cta, [data-counters]");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("in-view");
+          if (entry.target.hasAttribute("data-counters")) startCounters(entry.target);
+          io.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.25 }
+    );
+    [].forEach.call(observed, function (el) {
+      io.observe(el);
+    });
+  } else {
+    [].forEach.call(observed, function (el) {
+      el.classList.add("in-view");
+    });
+    [].forEach.call(document.querySelectorAll("[data-counters]"), startCounters);
+  }
+
+  /* Contadores da prova social: 0 -> valor final em 1.4s (ease-out) */
+  function startCounters(scope) {
+    [].forEach.call(scope.querySelectorAll("[data-count]"), function (el) {
+      var target = parseFloat(el.getAttribute("data-count"));
+      var suffix = el.getAttribute("data-suffix") || "";
+      var start = null;
+      var dur = 1400;
+      function step(ts) {
+        if (start === null) start = ts;
+        var p = Math.min(1, (ts - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        var value = Math.round(target * eased);
+        el.textContent = value.toLocaleString("pt-BR") + suffix;
+        if (p < 1) window.requestAnimationFrame(step);
+      }
+      window.requestAnimationFrame(step);
+    });
+  }
+
+  /* Linha do tempo do diferencial (c): traço laranja ligado ao scroll */
+  var timeline = document.getElementById("timelineProgress");
+  var timelineBlock = document.getElementById("sceneTimeline");
+  if (timeline && timelineBlock) {
+    var tlLen = 0;
+    try {
+      tlLen = timeline.getTotalLength();
+    } catch (e) {}
+    timeline.style.strokeDasharray = tlLen;
+    var tlTick = false;
+    var updateTimeline = function () {
+      if (tlTick) return;
+      tlTick = true;
+      window.requestAnimationFrame(function () {
+        var r = timelineBlock.getBoundingClientRect();
+        var p = 1 - (r.bottom - window.innerHeight * 0.4) / (r.height + window.innerHeight * 0.4);
+        p = Math.max(0, Math.min(1, p));
+        timeline.style.strokeDashoffset = tlLen * (1 - p);
+        tlTick = false;
       });
+    };
+    window.addEventListener("scroll", updateTimeline, { passive: true });
+    window.addEventListener("resize", updateTimeline);
+    updateTimeline();
+  }
+
+  /* Segmento do formulário de busca (alugar / comprar / vender) */
+  var segment = document.querySelector(".segment");
+  if (segment) {
+    segment.addEventListener("click", function (e) {
+      var btn = e.target.closest("button");
+      if (!btn) return;
+      [].forEach.call(segment.querySelectorAll("button"), function (b) {
+        b.classList.toggle("is-active", b === btn);
+        b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+      });
+      var hidden = document.getElementById("operacao");
       if (hidden) hidden.value = btn.getAttribute("data-value");
     });
   }
 
-  /* ---- Combobox "Tipo de imóvel" ---- */
-  var combo = document.querySelector("[data-combobox]");
-  if (combo) {
-    var toggle = combo.querySelector("[data-combobox-toggle]");
-    var list = combo.querySelector("[data-combobox-list]");
-    var label = combo.querySelector("[data-combobox-label]");
-    var hiddenTipo = combo.querySelector("#tipo");
-    var defaultLabel = label.textContent;
-
-    function closeCombo() {
-      combo.removeAttribute("data-open");
-      list.hidden = true;
-      toggle.setAttribute("aria-expanded", "false");
-    }
-    function openCombo() {
-      combo.setAttribute("data-open", "");
-      list.hidden = false;
-      toggle.setAttribute("aria-expanded", "true");
-    }
-
-    toggle.addEventListener("click", function (e) {
-      e.stopPropagation();
-      if (list.hidden) openCombo(); else closeCombo();
-    });
-
-    list.addEventListener("click", function (e) {
-      var opt = e.target.closest("li[data-value]");
-      if (!opt) return;
-      var value = opt.getAttribute("data-value");
-      list.querySelectorAll("li").forEach(function (li) {
-        li.classList.toggle("is-selected", li === opt);
-      });
-      label.textContent = opt.querySelector("span").textContent;
-      if (hiddenTipo) hiddenTipo.value = value;
-      closeCombo();
-    });
-
-    document.addEventListener("click", function (e) {
-      if (!combo.contains(e.target)) closeCombo();
-    });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") closeCombo();
-    });
-  }
-
-  /* ---- Revelação em viewport ---- */
-  var targets = document.querySelectorAll("[data-inview], .reveal");
-  if (!("IntersectionObserver" in window)) {
-    targets.forEach(function (el) { el.classList.add("in-view"); });
-    countAll();
-  } else {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("in-view");
-        entry.target.querySelectorAll("[data-count]").forEach(startCount);
-        io.unobserve(entry.target);
-      });
-    }, { threshold: 0.25, rootMargin: "0px 0px -10% 0px" });
-    targets.forEach(function (el) { io.observe(el); });
-  }
-
-  /* ---- Stroke draw: stagger de 150ms entre as linhas ---- */
-  document.querySelectorAll("svg g.draw path").forEach(function (p, i) {
-    p.style.transitionDelay = (isMobile ? 0 : i * 0.15) + "s";
+  /* Queda do pin do hero ao carregar */
+  var hero = document.querySelector(".hero .scene");
+  if (hero) window.requestAnimationFrame(function () {
+    hero.classList.add("pin-drop");
   });
-
-  /* ---- Contadores ---- */
-  function startCount(el) {
-    if (el.dataset.done) return;
-    el.dataset.done = "1";
-    var target = parseInt(el.getAttribute("data-count"), 10) || 0;
-    var suffix = el.getAttribute("data-suffix") || "";
-    if (reduced) { el.textContent = format(target) + suffix; return; }
-    var duration = 1400, start = null;
-    function step(ts) {
-      if (start === null) start = ts;
-      var p = Math.min((ts - start) / duration, 1);
-      var eased = 1 - Math.pow(1 - p, 3); // ease-out
-      el.textContent = format(Math.round(target * eased)) + suffix;
-      if (p < 1) window.requestAnimationFrame(step);
-    }
-    window.requestAnimationFrame(step);
-  }
-  function countAll() {
-    document.querySelectorAll("[data-count]").forEach(startCount);
-  }
-  function format(n) {
-    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  }
 })();
