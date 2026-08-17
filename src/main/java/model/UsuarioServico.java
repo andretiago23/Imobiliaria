@@ -8,6 +8,8 @@ import util.HashSenha;
 import util.ValidadorCPF;
 import util.ValidadorEmail;
 
+
+
 /**
  * Regras de negócio ligadas ao usuário: cadastro, autenticação e alteração de
  * dados.
@@ -21,6 +23,7 @@ public class UsuarioServico {
 	private static final int TAMANHO_CPF = 11;
 
 	private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+	private final ImobiliariaServico imobiliariaServico = new ImobiliariaServico();
 
 	/**
 	 * Cadastra um novo usuário.
@@ -30,10 +33,20 @@ public class UsuarioServico {
 	 * o cadastro é recusado quando ela falha, de modo que a coluna cpf_valido
 	 * só recebe registros aprovados.
 	 *
-	 * @param usuario   dados preenchidos no formulário
-	 * @param senhaPura senha digitada, ainda sem hash
+	 * Quando o perfil escolhido é Vendedor, o código da imobiliária é
+	 * obrigatório: é assim que o sistema confirma o vínculo, já que não há
+	 * parceria real com nenhuma imobiliária neste protótipo (ver
+	 * ImobiliariaServico). O CRECI é só informativo — não é exigido nem
+	 * validado, fica só registrado no perfil do vendedor.
+	 *
+	 * @param usuario           dados preenchidos no formulário
+	 * @param senhaPura         senha digitada, ainda sem hash
+	 * @param codigoImobiliaria código da imobiliária informado pelo vendedor;
+	 *                          ignorado quando o perfil é Comprador
 	 */
-	public void cadastrar(Usuario usuario, String senhaPura) throws RegraNegocioException, DAOException {
+	public void cadastrar(Usuario usuario, String senhaPura, String codigoImobiliaria)
+			throws RegraNegocioException, DAOException {
+
 		validarNome(usuario.getNome());
 		validarSenha(senhaPura);
 
@@ -56,16 +69,54 @@ public class UsuarioServico {
 			throw new RegraNegocioException("Este CPF já está cadastrado.");
 		}
 
+		if (usuario.getTipoUsuario() == null) {
+			usuario.setTipoUsuario(TipoUsuario.COMPRADOR);
+		}
+
+		if (usuario.getTipoUsuario() == TipoUsuario.VENDEDOR) {
+			Imobiliaria imobiliaria = imobiliariaServico.buscarPorCodigo(codigoImobiliaria)
+					.orElseThrow(() -> new RegraNegocioException(
+							"Código de imobiliária inválido. Confira o código com quem te repassou."));
+			usuario.setIdImobiliaria(imobiliaria.getId());
+			usuario.setCreci(normalizarCreci(usuario.getCreci()));
+		} else {
+			usuario.setIdImobiliaria(null);
+			usuario.setCreci(null);
+		}
+
 		usuario.setEmail(email);
 		usuario.setCpf(cpf);
 		usuario.setCpfValido(true);
 		usuario.setSenha(HashSenha.gerar(senhaPura));
 
-		if (usuario.getTipoUsuario() == null) {
-			usuario.setTipoUsuario(TipoUsuario.AMBOS);
-		}
-
 		usuarioDAO.inserir(usuario);
+	}
+
+	/**
+	 * @return o CRECI sem espaços nas pontas, ou null se não foi informado —
+	 *         o campo é opcional, só para constar no perfil do vendedor
+	 */
+	private String normalizarCreci(String creci) {
+		if (creci == null || creci.isBlank()) {
+			return null;
+		}
+		return creci.trim();
+	}
+
+	/**
+	 * Autoriza ou revoga a consulta de crédito simulada, ajustável a qualquer
+	 * momento nas configurações do perfil. A revogação não desfaz consultas já
+	 * realizadas: só impede novas consultas sem uma nova autorização explícita.
+	 */
+	public void alterarConsentimentoCredito(int idUsuario, boolean autorizado) throws DAOException {
+		usuarioDAO.atualizarConsentimentoCredito(idUsuario, autorizado);
+	}
+
+	/**
+	 * Usado na tela de perfil, para exibir o nome da imobiliária do vendedor.
+	 */
+	public Optional<Usuario> buscarComImobiliaria(int idUsuario) throws DAOException {
+		return usuarioDAO.buscarPorIdComImobiliaria(idUsuario);
 	}
 
 	/**

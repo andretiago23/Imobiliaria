@@ -21,6 +21,7 @@ public class ImovelServico {
 
 	private static final int LIMITE_PADRAO_FEED = 20;
 	private static final int TAMANHO_SIGLA_ESTADO = 2;
+	private static final int ANO_MINIMO_CONSTRUCAO = 1900;
 
 	private final ImovelDAO imovelDAO = new ImovelDAO();
 	private final FotoImovelDAO fotoImovelDAO = new FotoImovelDAO();
@@ -185,6 +186,11 @@ public class ImovelServico {
 		if (imovel.getEstado() != null && !imovel.getEstado().isBlank()
 				&& imovel.getEstado().trim().length() != TAMANHO_SIGLA_ESTADO) {
 			throw new RegraNegocioException("O estado deve ser informado pela sigla, com 2 letras.");
+		}
+		int anoAtual = java.time.Year.now().getValue();
+		if (imovel.getAno() != null && (imovel.getAno() < ANO_MINIMO_CONSTRUCAO || imovel.getAno() > anoAtual + 1)) {
+			throw new RegraNegocioException(
+					"Informe um ano de construção válido, entre " + ANO_MINIMO_CONSTRUCAO + " e " + (anoAtual + 1) + ".");
 		}
 	}
 }

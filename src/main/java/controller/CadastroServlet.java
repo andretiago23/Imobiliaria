@@ -55,12 +55,14 @@ public class CadastroServlet extends HttpServlet {
 
 		try {
 			Usuario usuario = montarUsuario(requisicao);
-			usuarioServico.cadastrar(usuario, senha);
+			String codigoImobiliaria = requisicao.getParameter("codigoImobiliaria");
+			usuarioServico.cadastrar(usuario, senha, codigoImobiliaria);
 
 			// Entra direto no sistema após o cadastro, evitando pedir os mesmos
-			// dados duas vezes seguidas.
+			// dados duas vezes seguidas, e volta para onde o visitante queria ir.
+			String destino = SessaoUsuario.retirarDestino(requisicao);
 			SessaoUsuario.registrar(requisicao, usuario);
-			resposta.sendRedirect(requisicao.getContextPath() + "/inicio");
+			resposta.sendRedirect(requisicao.getContextPath() + (destino != null ? destino : "/inicio"));
 
 		} catch (RegraNegocioException e) {
 			reexibirFormulario(requisicao, resposta, e.getMessage());
@@ -81,6 +83,7 @@ public class CadastroServlet extends HttpServlet {
 		usuario.setEmail(requisicao.getParameter("email"));
 		usuario.setCpf(requisicao.getParameter("cpf"));
 		usuario.setTelefone(requisicao.getParameter("telefone"));
+		usuario.setCreci(requisicao.getParameter("creci"));
 		usuario.setTipoUsuario(ConversorEnum.paraEnum(TipoUsuario.class, requisicao.getParameter("tipoUsuario")));
 		return usuario;
 	}
@@ -97,7 +100,9 @@ public class CadastroServlet extends HttpServlet {
 		requisicao.setAttribute("email", Html.escapar(requisicao.getParameter("email")));
 		requisicao.setAttribute("cpf", Html.escapar(requisicao.getParameter("cpf")));
 		requisicao.setAttribute("telefone", Html.escapar(requisicao.getParameter("telefone")));
+		requisicao.setAttribute("creci", Html.escapar(requisicao.getParameter("creci")));
 		requisicao.setAttribute("tipoUsuario", Html.escapar(requisicao.getParameter("tipoUsuario")));
+		requisicao.setAttribute("codigoImobiliaria", Html.escapar(requisicao.getParameter("codigoImobiliaria")));
 		requisicao.getRequestDispatcher(PAGINA_CADASTRO).forward(requisicao, resposta);
 	}
 }

@@ -12,6 +12,16 @@
 	<header class="barra-topo">
 		<a class="marca" href="${pageContext.request.contextPath}/inicio">Imobiliária</a>
 		<nav class="menu">
+			<a href="${pageContext.request.contextPath}/imoveis">Catálogo</a>
+			<% if (((model.Usuario) session.getAttribute("usuarioLogado")).getTipoUsuario() == model.TipoUsuario.VENDEDOR) { %>
+				<a href="${pageContext.request.contextPath}/meus-imoveis">Meus imóveis</a>
+				<a href="${pageContext.request.contextPath}/meus-leads">Meus leads</a>
+			<% } else { %>
+				<a href="${pageContext.request.contextPath}/favoritos">Favoritos</a>
+				<a href="${pageContext.request.contextPath}/minhas-buscas">Minhas buscas</a>
+			<% } %>
+			<a href="${pageContext.request.contextPath}/simulador">Simulador</a>
+			<a href="${pageContext.request.contextPath}/perfil">Perfil</a>
 			<span class="saudacao">Olá, ${sessionScope.usuarioLogado.nome}</span>
 			<a class="botao botao-discreto" href="${pageContext.request.contextPath}/logout">Sair</a>
 		</nav>

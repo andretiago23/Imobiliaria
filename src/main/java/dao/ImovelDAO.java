@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import model.Finalidade;
 import model.FiltroImovel;
+import model.Imobiliaria;
 import model.Imovel;
 import model.StatusImovel;
 import model.TipoImovel;
@@ -29,15 +30,15 @@ public class ImovelDAO {
 
 	private static final String SQL_INSERIR = """
 			INSERT INTO imovel (id_usuario, titulo, descricao, tipo, finalidade, preco, area_m2,
-			                    quartos, banheiros, vagas_garagem, endereco, cidade, estado, cep,
+			                    quartos, banheiros, vagas_garagem, ano, endereco, cidade, estado, cep,
 			                    latitude, longitude, status)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			""";
 
 	private static final String SQL_ATUALIZAR = """
 			UPDATE imovel
 			SET titulo = ?, descricao = ?, tipo = ?, finalidade = ?, preco = ?, area_m2 = ?,
-			    quartos = ?, banheiros = ?, vagas_garagem = ?, endereco = ?, cidade = ?,
+			    quartos = ?, banheiros = ?, vagas_garagem = ?, ano = ?, endereco = ?, cidade = ?,
 			    estado = ?, cep = ?, latitude = ?, longitude = ?, status = ?
 			WHERE id = ?
 			""";
@@ -45,18 +46,23 @@ public class ImovelDAO {
 	/**
 	 * Lista de colunas reaproveitada por outros DAOs que precisam devolver
 	 * imóveis. Os apelidos i (imovel) e u (usuario dono) precisam ser mantidos.
+	 * A imobiliária do dono entra com apelido próprio (dono_imobiliaria_*) para
+	 * não colidir com nenhuma coluna de imovel ou usuario.
 	 */
 	static final String COLUNAS = """
 			i.id, i.id_usuario, i.titulo, i.descricao, i.tipo, i.finalidade, i.preco,
-			i.area_m2, i.quartos, i.banheiros, i.vagas_garagem, i.endereco, i.cidade,
+			i.area_m2, i.quartos, i.banheiros, i.vagas_garagem, i.ano, i.endereco, i.cidade,
 			i.estado, i.cep, i.latitude, i.longitude, i.status, i.data_publicacao,
 			u.nome AS dono_nome, u.email AS dono_email, u.telefone AS dono_telefone,
-			u.foto_perfil AS dono_foto
+			u.foto_perfil AS dono_foto, u.creci AS dono_creci,
+			imob.id AS dono_imobiliaria_id, imob.nome AS dono_imobiliaria_nome,
+			imob.codigo AS dono_imobiliaria_codigo
 			""";
 
 	private static final String SQL_SELECT_BASE = "SELECT " + COLUNAS + """
 			FROM imovel i
 			JOIN usuario u ON u.id = i.id_usuario
+			LEFT JOIN imobiliaria imob ON imob.id = u.id_imobiliaria
 			""";
 
 	private static final String SQL_BUSCAR_POR_ID = SQL_SELECT_BASE + " WHERE i.id = ?";
@@ -64,8 +70,13 @@ public class ImovelDAO {
 	private static final String SQL_LISTAR_POR_USUARIO = SQL_SELECT_BASE
 			+ " WHERE i.id_usuario = ? ORDER BY i.data_publicacao DESC";
 
+	/**
+	 * O catálogo público mostra tanto os disponíveis quanto os reservados (que
+	 * seguem visíveis, só com indicação visual de reserva); vendido e alugado
+	 * saem da vitrine mas continuam no banco para histórico.
+	 */
 	private static final String SQL_LISTAR_ATIVOS = SQL_SELECT_BASE
-			+ " WHERE i.status = 'ativo' ORDER BY i.data_publicacao DESC LIMIT ?";
+			+ " WHERE i.status IN ('ativo', 'reservado') ORDER BY i.data_publicacao DESC LIMIT ?";
 
 	private static final String SQL_ATUALIZAR_STATUS = "UPDATE imovel SET status = ? WHERE id = ?";
 
@@ -156,7 +167,7 @@ public class ImovelDAO {
 	 * enviados como parâmetros, sem concatenação de dados na SQL.
 	 */
 	public List<Imovel> buscarComFiltros(FiltroImovel filtro) throws DAOException {
-		StringBuilder sql = new StringBuilder(SQL_SELECT_BASE).append(" WHERE i.status = 'ativo'");
+		StringBuilder sql = new StringBuilder(SQL_SELECT_BASE).append(" WHERE i.status IN ('ativo', 'reservado')");
 		List<Object> parametros = new ArrayList<>();
 
 		if (textoPreenchido(filtro.getCidade())) {
@@ -266,6 +277,7 @@ public class ImovelDAO {
 		comando.setInt(posicao++, imovel.getQuartos());
 		comando.setInt(posicao++, imovel.getBanheiros());
 		comando.setInt(posicao++, imovel.getVagasGaragem());
+		comando.setObject(posicao++, imovel.getAno());
 		comando.setString(posicao++, imovel.getEndereco());
 		comando.setString(posicao++, imovel.getCidade());
 		comando.setString(posicao++, imovel.getEstado());
@@ -295,6 +307,7 @@ public class ImovelDAO {
 		imovel.setQuartos(resultado.getInt("quartos"));
 		imovel.setBanheiros(resultado.getInt("banheiros"));
 		imovel.setVagasGaragem(resultado.getInt("vagas_garagem"));
+		imovel.setAno(LeitorResultSet.lerInteiro(resultado, "ano"));
 		imovel.setEndereco(resultado.getString("endereco"));
 		imovel.setCidade(resultado.getString("cidade"));
 		imovel.setEstado(resultado.getString("estado"));
@@ -308,8 +321,9 @@ public class ImovelDAO {
 	}
 
 	/**
-	 * Monta um Usuario com os dados do anunciante trazidos pelo JOIN.
-	 * Contém apenas o necessário para exibição, sem a senha.
+	 * Monta um Usuario com os dados do anunciante trazidos pelo JOIN, já com a
+	 * imobiliária dele quando houver. Contém apenas o necessário para
+	 * exibição, sem a senha.
 	 */
 	private static Usuario montarDono(ResultSet resultado) throws SQLException {
 		Usuario dono = new Usuario();
@@ -318,6 +332,16 @@ public class ImovelDAO {
 		dono.setEmail(resultado.getString("dono_email"));
 		dono.setTelefone(resultado.getString("dono_telefone"));
 		dono.setFotoPerfil(resultado.getString("dono_foto"));
+		dono.setCreci(resultado.getString("dono_creci"));
+
+		if (resultado.getObject("dono_imobiliaria_id") != null) {
+			Imobiliaria imobiliaria = new Imobiliaria();
+			imobiliaria.setId(resultado.getInt("dono_imobiliaria_id"));
+			imobiliaria.setNome(resultado.getString("dono_imobiliaria_nome"));
+			imobiliaria.setCodigo(resultado.getString("dono_imobiliaria_codigo"));
+			dono.setImobiliaria(imobiliaria);
+		}
+
 		return dono;
 	}
 

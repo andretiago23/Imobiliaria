@@ -37,6 +37,7 @@ public class FavoritoDAO {
 			FROM favorito f
 			JOIN imovel i ON i.id = f.id_imovel
 			JOIN usuario u ON u.id = i.id_usuario
+			LEFT JOIN imobiliaria imob ON imob.id = u.id_imobiliaria
 			WHERE f.id_usuario = ?
 			ORDER BY f.data_adicao DESC
 			""";

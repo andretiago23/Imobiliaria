@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import model.ContatoInteresse;
 import model.Imovel;
+import model.ResultadoCredito;
 import model.StatusContato;
 import model.StatusImovel;
 import model.Usuario;
@@ -26,13 +27,14 @@ import util.LeitorResultSet;
 public class ContatoInteresseDAO {
 
 	private static final String SQL_INSERIR = """
-			INSERT INTO contato_interesse (id_imovel, id_comprador, mensagem, status)
-			VALUES (?, ?, ?, ?)
+			INSERT INTO contato_interesse
+			    (id_imovel, id_comprador, mensagem, status, consulta_credito_autorizada, resultado_credito)
+			VALUES (?, ?, ?, ?, ?, ?)
 			""";
 
 	private static final String SQL_SELECT_BASE = """
 			SELECT c.id AS contato_id, c.id_imovel, c.id_comprador, c.mensagem, c.status,
-			       c.data_contato,
+			       c.consulta_credito_autorizada, c.resultado_credito, c.data_contato,
 			       i.titulo AS imovel_titulo, i.status AS imovel_status, i.id_usuario AS imovel_dono,
 			       comp.nome AS comprador_nome, comp.email AS comprador_email,
 			       comp.telefone AS comprador_telefone, comp.foto_perfil AS comprador_foto
@@ -56,11 +58,17 @@ public class ContatoInteresseDAO {
 
 	private static final String SQL_ATUALIZAR_STATUS = "UPDATE contato_interesse SET status = ? WHERE id = ?";
 
+	private static final String SQL_ATUALIZAR_CREDITO = """
+			UPDATE contato_interesse
+			SET consulta_credito_autorizada = ?, resultado_credito = ?
+			WHERE id = ?
+			""";
+
 	private static final String SQL_CONTAR_PENDENTES = """
 			SELECT COUNT(*)
 			FROM contato_interesse c
 			JOIN imovel i ON i.id = c.id_imovel
-			WHERE i.id_usuario = ? AND c.status = 'pendente'
+			WHERE i.id_usuario = ? AND c.status = 'novo'
 			""";
 
 	private static final String SQL_REMOVER_POR_IMOVEL = "DELETE FROM contato_interesse WHERE id_imovel = ?";
@@ -69,7 +77,10 @@ public class ContatoInteresseDAO {
 	 * Registra uma nova mensagem de interesse e preenche o id gerado no objeto.
 	 */
 	public void inserir(ContatoInteresse contato) throws DAOException {
-		StatusContato status = contato.getStatus() == null ? StatusContato.PENDENTE : contato.getStatus();
+		StatusContato status = contato.getStatus() == null ? StatusContato.NOVO : contato.getStatus();
+		ResultadoCredito resultadoCredito = contato.getResultadoCredito() == null
+				? ResultadoCredito.NAO_SOLICITADO
+				: contato.getResultadoCredito();
 
 		try (Connection conexao = ConnectionFactory.obterConexao();
 				PreparedStatement comando = conexao.prepareStatement(SQL_INSERIR, Statement.RETURN_GENERATED_KEYS)) {
@@ -78,6 +89,8 @@ public class ContatoInteresseDAO {
 			comando.setInt(2, contato.getIdComprador());
 			comando.setString(3, contato.getMensagem());
 			comando.setString(4, ConversorEnum.paraBanco(status));
+			comando.setBoolean(5, contato.isConsultaCreditoAutorizada());
+			comando.setString(6, ConversorEnum.paraBanco(resultadoCredito));
 			comando.executeUpdate();
 
 			try (ResultSet chaves = comando.getGeneratedKeys()) {
@@ -125,6 +138,23 @@ public class ContatoInteresseDAO {
 			comando.executeUpdate();
 		} catch (SQLException e) {
 			throw new DAOException("Erro ao atualizar o status do contato de id " + idContato + ".", e);
+		}
+	}
+
+	/**
+	 * Grava o resultado da verificação de crédito fictícia deste lead.
+	 */
+	public void atualizarCredito(int idContato, boolean autorizada, ResultadoCredito resultado) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_ATUALIZAR_CREDITO)) {
+
+			comando.setBoolean(1, autorizada);
+			comando.setString(2, ConversorEnum.paraBanco(resultado));
+			comando.setInt(3, idContato);
+			comando.executeUpdate();
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao atualizar a verificação de crédito do contato de id " + idContato + ".",
+					e);
 		}
 	}
 
@@ -187,6 +217,9 @@ public class ContatoInteresseDAO {
 		contato.setIdComprador(resultado.getInt("id_comprador"));
 		contato.setMensagem(resultado.getString("mensagem"));
 		contato.setStatus(ConversorEnum.paraEnum(StatusContato.class, resultado.getString("status")));
+		contato.setConsultaCreditoAutorizada(resultado.getBoolean("consulta_credito_autorizada"));
+		contato.setResultadoCredito(
+				ConversorEnum.paraEnum(ResultadoCredito.class, resultado.getString("resultado_credito")));
 		contato.setDataContato(LeitorResultSet.lerDataHora(resultado, "data_contato"));
 
 		Imovel imovel = new Imovel();

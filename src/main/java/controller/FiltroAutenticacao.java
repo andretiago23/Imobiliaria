@@ -27,8 +27,15 @@ import util.SessaoUsuario;
 @WebFilter("/*")
 public class FiltroAutenticacao implements Filter {
 
-	/** Endereços que podem ser acessados sem login. */
-	private static final Set<String> CAMINHOS_LIVRES = Set.of("/", "/login", "/cadastro", "/logout", "/index.jsp");
+	/**
+	 * Endereços que podem ser acessados sem login: o catálogo público (cards,
+	 * busca e filtros) e o cadastro de imobiliária de exemplo, que precisa
+	 * estar disponível antes mesmo de o vendedor ter conta. O detalhamento
+	 * completo do imóvel (/imovel) fica de fora de propósito — continua
+	 * exigindo login, preservando a URL de destino.
+	 */
+	private static final Set<String> CAMINHOS_LIVRES = Set.of(
+			"/", "/login", "/cadastro", "/logout", "/index.jsp", "/imoveis", "/buscar", "/imobiliarias/nova");
 
 	/** Pastas de conteúdo estático, liberadas para que o visual carregue na tela de login. */
 	private static final Set<String> PASTAS_LIVRES = Set.of("/css/", "/js/", "/imagens/");
@@ -45,6 +52,9 @@ public class FiltroAutenticacao implements Filter {
 			return;
 		}
 
+		// Guarda para onde o visitante queria ir, para o LoginServlet devolvê-lo
+		// exatamente ali depois de autenticado.
+		SessaoUsuario.guardarDestino(requisicaoHttp);
 		respostaHttp.sendRedirect(requisicaoHttp.getContextPath() + "/login");
 	}
 
