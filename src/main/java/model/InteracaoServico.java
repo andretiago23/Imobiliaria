@@ -8,6 +8,7 @@ import dao.DAOException;
 import dao.FavoritoDAO;
 import dao.ImovelDAO;
 import dao.SeguidorDAO;
+import dao.SimulacaoFinanciamentoDAO;
 
 /**
  * Regras de negócio das interações entre usuários: favoritos, seguidores,
@@ -24,6 +25,9 @@ public class InteracaoServico {
 	private final AvaliacaoDAO avaliacaoDAO = new AvaliacaoDAO();
 	private final ContatoInteresseDAO contatoInteresseDAO = new ContatoInteresseDAO();
 	private final ImovelDAO imovelDAO = new ImovelDAO();
+	private final SimulacaoFinanciamentoDAO simulacaoFinanciamentoDAO = new SimulacaoFinanciamentoDAO();
+	private final CreditoServico creditoServico = new CreditoServico();
+	private final UsuarioServico usuarioServico = new UsuarioServico();
 
 	/**
 	 * Marca ou desmarca o imóvel como favorito.
@@ -78,9 +82,21 @@ public class InteracaoServico {
 	}
 
 	/**
-	 * Envia uma mensagem de interesse ao anunciante.
+	 * Envia uma mensagem de interesse ao anunciante, criando o lead.
+	 *
+	 * O lead nunca é criado por simples acesso, login, pesquisa ou visualização
+	 * do imóvel — só por esta ação explícita (Regra 7 do PROJECT_SPEC).
+	 *
+	 * @param comprador                cliente autenticado que está demonstrando interesse
+	 * @param autorizarConsultaCredito true se o cliente marcou o checkbox de autorização;
+	 *                                 desmarcado por padrão, então uma consulta só roda
+	 *                                 quando isto vier true nesta chamada específica
+	 * @param simulacaoParaAnexar      simulação de financiamento a anexar ao lead, calculada
+	 *                                 antes em FinanciamentoServico; pode ser null
+	 * @return o lead criado, já com o resultado da verificação de crédito quando solicitada
 	 */
-	public void registrarInteresse(int idImovel, int idComprador, String mensagem)
+	public ContatoInteresse registrarInteresse(int idImovel, Usuario comprador, String mensagem,
+			boolean autorizarConsultaCredito, SimulacaoFinanciamento simulacaoParaAnexar)
 			throws RegraNegocioException, DAOException {
 
 		if (mensagem == null || mensagem.isBlank()) {
@@ -90,14 +106,29 @@ public class InteracaoServico {
 		Imovel imovel = imovelDAO.buscarPorId(idImovel)
 				.orElseThrow(() -> new RegraNegocioException("Imóvel não encontrado."));
 
-		if (imovel.getIdUsuario() == idComprador) {
+		if (imovel.getIdUsuario() == comprador.getId()) {
 			throw new RegraNegocioException("Você não pode demonstrar interesse no próprio anúncio.");
 		}
 		if (!imovel.estaDisponivel()) {
 			throw new RegraNegocioException("Este anúncio não está mais disponível.");
 		}
 
-		contatoInteresseDAO.inserir(new ContatoInteresse(idImovel, idComprador, mensagem.trim()));
+		ContatoInteresse lead = new ContatoInteresse(idImovel, comprador.getId(), mensagem.trim());
+
+		if (autorizarConsultaCredito) {
+			usuarioServico.alterarConsentimentoCredito(comprador.getId(), true);
+			lead.setConsultaCreditoAutorizada(true);
+			lead.setResultadoCredito(creditoServico.consultar(comprador.getCpf()));
+		}
+
+		contatoInteresseDAO.inserir(lead);
+
+		if (simulacaoParaAnexar != null) {
+			simulacaoParaAnexar.setIdContato(lead.getId());
+			simulacaoFinanciamentoDAO.inserir(simulacaoParaAnexar);
+		}
+
+		return lead;
 	}
 
 	public List<ContatoInteresse> listarInteressesRecebidos(int idAnunciante) throws DAOException {

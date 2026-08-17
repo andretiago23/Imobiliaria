@@ -26,6 +26,7 @@ public class Imovel {
 	private int quartos;
 	private int banheiros;
 	private int vagasGaragem;
+	private Integer ano;
 	private String endereco;
 	private String cidade;
 	private String estado;
@@ -74,6 +75,17 @@ public class Imovel {
 	 */
 	public String getEnderecoCompleto() {
 		return endereco + ", " + cidade + " - " + estado;
+	}
+
+	/**
+	 * @return o valor do imóvel dividido pela área, usado no comparador, ou
+	 *         null se a área não estiver preenchida
+	 */
+	public BigDecimal getPrecoPorM2() {
+		if (preco == null || areaM2 <= 0) {
+			return null;
+		}
+		return preco.divide(BigDecimal.valueOf(areaM2), 2, java.math.RoundingMode.HALF_UP);
 	}
 
 	public int getId() {
@@ -162,6 +174,14 @@ public class Imovel {
 
 	public void setVagasGaragem(int vagasGaragem) {
 		this.vagasGaragem = vagasGaragem;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	}
 
 	public String getEndereco() {

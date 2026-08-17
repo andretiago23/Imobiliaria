@@ -56,8 +56,9 @@ public class LoginServlet extends HttpServlet {
 				return;
 			}
 
+			String destino = SessaoUsuario.retirarDestino(requisicao);
 			SessaoUsuario.registrar(requisicao, autenticado.get());
-			resposta.sendRedirect(requisicao.getContextPath() + "/inicio");
+			resposta.sendRedirect(requisicao.getContextPath() + (destino != null ? destino : "/inicio"));
 
 		} catch (DAOException e) {
 			getServletContext().log("Falha ao autenticar o usuário.", e);

@@ -17,29 +17,37 @@ public class ContatoInteresse {
 	private int idComprador;
 	private String mensagem;
 	private StatusContato status;
+	private boolean consultaCreditoAutorizada;
+	private ResultadoCredito resultadoCredito;
 	private LocalDateTime dataContato;
 
 	private Imovel imovel;
 	private Usuario comprador;
+	private SimulacaoFinanciamento simulacao;
 
 	public ContatoInteresse() {
 	}
 
 	/**
 	 * Construtor usado no envio de uma nova mensagem de interesse.
+	 *
+	 * O lead sempre nasce no início do funil, em NOVO, e sem verificação de
+	 * crédito solicitada: essas duas coisas só mudam por ação explícita do
+	 * cliente ou do vendedor.
 	 */
 	public ContatoInteresse(int idImovel, int idComprador, String mensagem) {
 		this.idImovel = idImovel;
 		this.idComprador = idComprador;
 		this.mensagem = mensagem;
-		this.status = StatusContato.PENDENTE;
+		this.status = StatusContato.NOVO;
+		this.resultadoCredito = ResultadoCredito.NAO_SOLICITADO;
 	}
 
 	/**
-	 * @return true se o anunciante ainda não respondeu a este contato
+	 * @return true se o vendedor ainda não deu nenhum andamento a este lead
 	 */
 	public boolean aguardaResposta() {
-		return status == StatusContato.PENDENTE;
+		return status == StatusContato.NOVO;
 	}
 
 	public int getId() {
@@ -80,6 +88,30 @@ public class ContatoInteresse {
 
 	public void setStatus(StatusContato status) {
 		this.status = status;
+	}
+
+	public boolean isConsultaCreditoAutorizada() {
+		return consultaCreditoAutorizada;
+	}
+
+	public void setConsultaCreditoAutorizada(boolean consultaCreditoAutorizada) {
+		this.consultaCreditoAutorizada = consultaCreditoAutorizada;
+	}
+
+	public ResultadoCredito getResultadoCredito() {
+		return resultadoCredito;
+	}
+
+	public void setResultadoCredito(ResultadoCredito resultadoCredito) {
+		this.resultadoCredito = resultadoCredito;
+	}
+
+	public SimulacaoFinanciamento getSimulacao() {
+		return simulacao;
+	}
+
+	public void setSimulacao(SimulacaoFinanciamento simulacao) {
+		this.simulacao = simulacao;
 	}
 
 	public LocalDateTime getDataContato() {

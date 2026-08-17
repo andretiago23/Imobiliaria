@@ -5,7 +5,8 @@ package model;
  */
 public enum StatusImovel implements ValorBanco {
 
-	ATIVO("ativo", "Ativo"),
+	ATIVO("ativo", "Disponível"),
+	RESERVADO("reservado", "Reservado"),
 	VENDIDO("vendido", "Vendido"),
 	ALUGADO("alugado", "Alugado"),
 	INATIVO("inativo", "Inativo");

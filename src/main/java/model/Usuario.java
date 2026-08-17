@@ -20,8 +20,14 @@ public class Usuario {
 	private String telefone;
 	private boolean telefoneConfirmado;
 	private String fotoPerfil;
+	private String creci;
 	private TipoUsuario tipoUsuario;
+	private Integer idImobiliaria;
+	private boolean consentimentoCredito;
 	private LocalDateTime dataCadastro;
+
+	/** Associação opcional, preenchida apenas quando o DAO fizer JOIN com imobiliaria. */
+	private Imobiliaria imobiliaria;
 
 	public Usuario() {
 	}
@@ -131,12 +137,44 @@ public class Usuario {
 		this.fotoPerfil = fotoPerfil;
 	}
 
+	public String getCreci() {
+		return creci;
+	}
+
+	public void setCreci(String creci) {
+		this.creci = creci;
+	}
+
 	public TipoUsuario getTipoUsuario() {
 		return tipoUsuario;
 	}
 
 	public void setTipoUsuario(TipoUsuario tipoUsuario) {
 		this.tipoUsuario = tipoUsuario;
+	}
+
+	public Integer getIdImobiliaria() {
+		return idImobiliaria;
+	}
+
+	public void setIdImobiliaria(Integer idImobiliaria) {
+		this.idImobiliaria = idImobiliaria;
+	}
+
+	public boolean isConsentimentoCredito() {
+		return consentimentoCredito;
+	}
+
+	public void setConsentimentoCredito(boolean consentimentoCredito) {
+		this.consentimentoCredito = consentimentoCredito;
+	}
+
+	public Imobiliaria getImobiliaria() {
+		return imobiliaria;
+	}
+
+	public void setImobiliaria(Imobiliaria imobiliaria) {
+		this.imobiliaria = imobiliaria;
 	}
 
 	public LocalDateTime getDataCadastro() {
