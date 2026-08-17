@@ -1,5 +1,7 @@
 package model;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Optional;
 
 import dao.DAOException;
@@ -21,6 +23,7 @@ public class UsuarioServico {
 	private static final int TAMANHO_CPF = 11;
 
 	private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+	private final SecureRandom geradorAleatorio = new SecureRandom();
 
 	/**
 	 * Cadastra um novo usuário.
@@ -62,7 +65,7 @@ public class UsuarioServico {
 		usuario.setSenha(HashSenha.gerar(senhaPura));
 
 		if (usuario.getTipoUsuario() == null) {
-			usuario.setTipoUsuario(TipoUsuario.AMBOS);
+			usuario.setTipoUsuario(TipoUsuario.COMPRADOR);
 		}
 
 		usuarioDAO.inserir(usuario);
@@ -88,6 +91,38 @@ public class UsuarioServico {
 
 		Usuario usuario = encontrado.get();
 		return HashSenha.verificar(senha, usuario.getSenha()) ? Optional.of(usuario) : Optional.empty();
+	}
+
+	/**
+	 * Busca a conta pelo e-mail, usado para saber se um login social já tem
+	 * cadastro no sistema.
+	 */
+	public Optional<Usuario> buscarPorEmail(String email) throws DAOException {
+		if (email == null) {
+			return Optional.empty();
+		}
+		return usuarioDAO.buscarPorEmail(ValidadorEmail.normalizar(email));
+	}
+
+	/**
+	 * Conclui o cadastro de quem entrou pela primeira vez via login social
+	 * (Google). O e-mail já chega confirmado pelo provedor, mas o CPF ainda é
+	 * obrigatório no nosso cadastro — por isso este método é chamado depois que
+	 * a pessoa preenche o restante do formulário.
+	 *
+	 * Como a conta não usa senha própria, é gravado um hash de uma senha
+	 * aleatória que nunca é revelada a ninguém: ela existe só para satisfazer a
+	 * coluna obrigatória, e não pode ser usada para autenticar.
+	 */
+	public void cadastrarComLoginSocial(Usuario usuario) throws RegraNegocioException, DAOException {
+		String senhaAleatoria = Base64.getEncoder().encodeToString(gerarBytesAleatorios(32));
+		cadastrar(usuario, senhaAleatoria);
+	}
+
+	private byte[] gerarBytesAleatorios(int tamanho) {
+		byte[] bytes = new byte[tamanho];
+		geradorAleatorio.nextBytes(bytes);
+		return bytes;
 	}
 
 	/**

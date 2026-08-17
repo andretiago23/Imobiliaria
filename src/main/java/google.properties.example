@@ -1,0 +1,17 @@
+# Credenciais do login social com Google (OAuth 2.0).
+# Copie este arquivo para google.properties (mesma pasta) e preencha com os
+# dados reais obtidos no Google Cloud Console (console.cloud.google.com):
+#
+#   1. Crie um projeto (ou use um existente) em "APIs e Servicos".
+#   2. Configure a "Tela de consentimento OAuth" (tipo Externo, para testes).
+#   3. Em "Credenciais", crie um "ID do cliente OAuth" do tipo Aplicativo da Web.
+#   4. Em "URIs de redirecionamento autorizados", cadastre exatamente a URL
+#      abaixo (troque host/porta se o deploy nao for local):
+#      http://localhost:8080/imobiliaria/auth/google/callback
+#   5. Copie o Client ID e o Client Secret gerados para as chaves abaixo.
+#
+# O google.properties NAO deve ser versionado - ver .gitignore.
+
+google.clientId=SEU_CLIENT_ID.apps.googleusercontent.com
+google.clientSecret=SEU_CLIENT_SECRET
+google.redirectUri=http://localhost:8080/imobiliaria/auth/google/callback
