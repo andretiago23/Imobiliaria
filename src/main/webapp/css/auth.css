@@ -1,0 +1,280 @@
+/* ==========================================================================
+   Autenticação (login) — reaproveita os tokens de habittar.css.
+   Layout: formulário à esquerda em cartão "vidro", imagem + depoimentos
+   ilustrativos à direita (ocultos em telas estreitas).
+   ========================================================================== */
+
+body {
+  background: var(--surface-page);
+}
+
+.auth {
+  min-height: 100dvh;
+  display: flex;
+}
+
+.auth__form {
+  flex: 1 1 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+  position: relative;
+}
+
+.auth__form-inner {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 40px;
+}
+
+.auth__form-inner .eyebrow {
+  margin-bottom: 8px;
+}
+
+.auth__form-inner h1 {
+  font-size: clamp(30px, 4vw, 40px);
+  margin-bottom: 8px;
+}
+
+.auth__form-inner .lead {
+  max-width: none;
+  margin: 0 0 32px;
+  font-size: 16px;
+}
+
+.auth__campo {
+  margin-bottom: 18px;
+}
+
+.auth__campo label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.glass-input {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: rgba(22, 21, 31, 0.03);
+  transition: border-color 0.2s ease-out, background-color 0.2s ease-out;
+  position: relative;
+}
+.glass-input:focus-within {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary-soft);
+}
+
+.glass-input.tem-erro {
+  border-color: #d64545;
+  background: rgba(214, 69, 69, 0.06);
+}
+
+.campo-erro {
+  display: block;
+  min-height: 18px;
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: #d64545;
+}
+
+.glass-input input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--text-primary);
+  padding: 14px 16px;
+}
+
+.glass-input--senha input {
+  padding-right: 48px;
+}
+
+.alternar-senha {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0 10px;
+}
+.alternar-senha:hover {
+  color: var(--text-primary);
+}
+.alternar-senha svg {
+  width: 18px;
+  height: 18px;
+}
+.alternar-senha .icone-ocultar {
+  display: none;
+}
+.alternar-senha.esta-visivel .icone-mostrar {
+  display: none;
+}
+.alternar-senha.esta-visivel .icone-ocultar {
+  display: block;
+}
+
+.auth__linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.auth__lembrar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+.auth__lembrar input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-primary);
+}
+
+.auth__linha a {
+  color: var(--accent-primary-hover);
+}
+.auth__linha a:hover {
+  text-decoration: underline;
+}
+
+.auth__divisor {
+  position: relative;
+  text-align: center;
+  margin: 28px 0;
+}
+.auth__divisor::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.auth__divisor span {
+  position: relative;
+  background: var(--surface-page);
+  padding: 0 14px;
+}
+
+.auth__social {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.2s ease-out, background-color 0.2s ease-out;
+}
+.auth__social:hover {
+  background: var(--surface-raised);
+  border-color: rgba(22, 21, 31, 0.4);
+}
+
+.auth__rodape {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.auth__rodape a {
+  color: var(--accent-primary-hover);
+}
+.auth__rodape a:hover {
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   Coluna direita: imagem
+   -------------------------------------------------------------------------- */
+.auth__hero {
+  flex: 1 1 50%;
+  position: relative;
+  display: none;
+  padding: 16px;
+}
+
+.auth__hero-imagem {
+  position: absolute;
+  inset: 16px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.auth__hero-imagem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 900px) {
+  .auth__hero {
+    display: block;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Entrada escalonada (mesma essência das animações da landing page)
+   -------------------------------------------------------------------------- */
+@keyframes auth-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-anim {
+  opacity: 0;
+  animation: auth-entrar 0.5s ease-out forwards;
+}
+.auth-anim--1 { animation-delay: 0.05s; }
+.auth-anim--2 { animation-delay: 0.1s; }
+.auth-anim--3 { animation-delay: 0.15s; }
+.auth-anim--4 { animation-delay: 0.2s; }
+.auth-anim--5 { animation-delay: 0.25s; }
+.auth-anim--6 { animation-delay: 0.3s; }
+.auth-anim--7 { animation-delay: 0.35s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-anim {
+    animation: none;
+    opacity: 1;
+  }
+}

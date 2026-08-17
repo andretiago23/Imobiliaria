@@ -4,67 +4,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Entrar | Imobiliária</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+<title>Entrar | Habittar</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
 </head>
 <body>
 
-	<div class="tela-login">
+<div class="auth">
 
-		<div class="coluna-formulario">
-			<form method="post" action="${pageContext.request.contextPath}/login" class="formulario-login" id="formLogin">
+	<!-- ===================== FORMULÁRIO ===================== -->
+	<section class="auth__form">
+		<div class="auth__form-inner">
 
-				<h2>Entre ou crie sua conta</h2>
-				<p class="texto-apoio">Bem-vindo(a) de volta! Acesse sua conta para continuar.</p>
+			<a class="voltar auth-anim auth-anim--1" href="${pageContext.request.contextPath}/index.jsp">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+				Voltar
+			</a>
 
-				<!-- Mensagem de erro vinda do LoginServlet (fica escondida sozinha se estiver vazia) -->
-				<p class="alerta alerta-erro" role="alert">${erro}</p>
+			<a class="auth__logo auth-anim auth-anim--1" href="${pageContext.request.contextPath}/index.jsp">
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/>
+					<path d="M9 11.2 12 8.8l3 2.4V14h-6z"/>
+				</svg>
+				Habittar
+			</a>
 
-				<div class="campo-input campo-input-topo">
-					<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path fill-rule="evenodd" clip-rule="evenodd"
-							d="M0 .55.571 0H15.43l.57.55v9.9l-.571.55H.57L0 10.45zm1.143 1.138V9.9h13.714V1.69l-6.503 4.8h-.697zM13.749 1.1H2.25L8 5.356z"
-							fill="#6B7280" />
-					</svg>
-					<input type="email" id="email" name="email" placeholder="E-mail" value="${email}"
-						autocomplete="email" required autofocus>
+			<h1 class="display auth-anim auth-anim--2">Entrar</h1>
+
+			<p class="alerta alerta-erro auth-anim auth-anim--3" role="alert">${erro}${param.erroGoogle}</p>
+
+			<form method="post" action="${pageContext.request.contextPath}/login" id="formLogin" novalidate>
+
+				<input type="hidden" name="redirecionar" value="${redirecionar}">
+				<input type="hidden" name="csrf" value="${csrf}">
+
+				<div class="auth__campo auth-anim auth-anim--3">
+					<label for="email">E-mail</label>
+					<div class="glass-input">
+						<input type="email" id="email" name="email" placeholder="voce@email.com" value="${email}"
+							autocomplete="email" data-validar="email" required autofocus>
+					</div>
+					<span class="campo-erro" id="erro-email"></span>
 				</div>
 
-				<div class="campo-input campo-senha">
-					<svg width="13" height="17" viewBox="0 0 13 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path
-							d="M13 8.5c0-.938-.729-1.7-1.625-1.7h-.812V4.25C10.563 1.907 8.74 0 6.5 0S2.438 1.907 2.438 4.25V6.8h-.813C.729 6.8 0 7.562 0 8.5v6.8c0 .938.729 1.7 1.625 1.7h9.75c.896 0 1.625-.762 1.625-1.7zM4.063 4.25c0-1.406 1.093-2.55 2.437-2.55s2.438 1.144 2.438 2.55V6.8H4.061z"
-							fill="#6B7280" />
-					</svg>
-					<input type="password" id="senha" name="senha" placeholder="Senha"
-						autocomplete="current-password" required>
-					<button type="button" class="alternar-senha" id="alternarSenha" aria-label="Mostrar senha">👁</button>
+				<div class="auth__campo auth-anim auth-anim--4">
+					<label for="senha">Senha</label>
+					<div class="glass-input glass-input--senha">
+						<input type="password" id="senha" name="senha" placeholder="Sua senha"
+							autocomplete="current-password" data-validar="senhaObrigatoria" required>
+						<button type="button" class="alternar-senha" id="alternarSenha" aria-label="Mostrar senha">
+							<svg class="icone-mostrar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+							<svg class="icone-ocultar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a13.16 13.16 0 0 1-1.67 2.68M6.61 6.61C3.06 8.9 1 12 1 12s4 7 11 7a9.26 9.26 0 0 0 5.39-1.61M1 1l22 22"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/></svg>
+						</button>
+					</div>
+					<span class="campo-erro" id="erro-senha"></span>
 				</div>
 
-				<div class="linha-opcoes">
-					<label class="opcao-lembrar">
+				<div class="auth__linha auth-anim auth-anim--5">
+					<label class="auth__lembrar">
 						<input type="checkbox" id="lembrar">
 						Lembrar de mim
 					</label>
 					<a href="#">Esqueceu a senha?</a>
 				</div>
 
-				<button type="submit" class="botao-entrar" id="botaoEntrar">Entrar</button>
-
-				<p class="texto-cadastro">
-					Ainda não tem conta?
-					<a href="${pageContext.request.contextPath}/cadastro">Cadastre-se</a>
-				</p>
+				<button type="submit" class="btn btn--primary auth-anim auth-anim--5" style="width:100%;" id="botaoEntrar">Entrar</button>
 			</form>
-		</div>
 
-		<!-- Coluna da imagem: escondida em telas pequenas, igual ao "hidden md:inline-block" do original -->
-		<div class="coluna-imagem">
-			<img src="${pageContext.request.contextPath}/imagens/mao-chave.jpg"
-				alt="Ilustração de login">
-		</div>
-	</div>
+			<div class="auth__divisor auth-anim auth-anim--6">
+				<span class="micro">ou continue com</span>
+			</div>
 
-	<script src="${pageContext.request.contextPath}/js/login.js"></script>
+			<a class="auth__social auth-anim auth-anim--6" href="${pageContext.request.contextPath}/auth/google?redirecionar=${redirecionar}">
+				<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+					<path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-2.641-.21-5.236-.611-7.743z"/>
+					<path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+					<path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+					<path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.022 35.026 44 30.038 44 24c0-2.641-.21-5.236-.611-7.743z"/>
+				</svg>
+				Continuar com Google
+			</a>
+
+			<p class="auth__rodape auth-anim auth-anim--7">
+				Ainda não tem conta?
+				<a href="${pageContext.request.contextPath}/cadastro">Cadastre-se</a>
+			</p>
+		</div>
+	</section>
+
+	<!-- ===================== IMAGEM + DEPOIMENTOS ===================== -->
+	<aside class="auth__hero" aria-hidden="true">
+		<div class="auth__hero-imagem">
+			<img src="${pageContext.request.contextPath}/imagens/mao-chave.jpg" alt="">
+		</div>
+	</aside>
+
+</div>
+
+<script src="${pageContext.request.contextPath}/js/validacao.js"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js"></script>
 </body>
 </html>
