@@ -147,6 +147,37 @@ public class UsuarioServico {
 		usuarioDAO.atualizar(usuario);
 	}
 
+	private static final int TAMANHO_MAXIMO_APELIDO = 60;
+
+	/**
+	 * Atualiza o apelido e o telefone exibidos no perfil. Diferente de
+	 * atualizarPerfil, não mexe em nome nem e-mail — usado na tela de perfil,
+	 * onde só esses dois campos ficam editáveis.
+	 */
+	public void atualizarApelidoETelefone(int idUsuario, String apelido, String telefone)
+			throws RegraNegocioException, DAOException {
+
+		if (apelido != null && apelido.trim().length() > TAMANHO_MAXIMO_APELIDO) {
+			throw new RegraNegocioException("O apelido pode ter no máximo " + TAMANHO_MAXIMO_APELIDO + " caracteres.");
+		}
+
+		Usuario atual = usuarioDAO.buscarPorId(idUsuario)
+				.orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+		atual.setApelido(apelido == null || apelido.isBlank() ? null : apelido.trim());
+		atual.setTelefone(telefone == null || telefone.isBlank() ? null : telefone.trim());
+		usuarioDAO.atualizar(atual);
+	}
+
+	/**
+	 * Troca a foto de perfil pelo arquivo recém-enviado.
+	 *
+	 * @param caminhoFoto caminho relativo já salvo em disco (ver PerfilServlet)
+	 */
+	public void atualizarFotoPerfil(int idUsuario, String caminhoFoto) throws DAOException {
+		usuarioDAO.atualizarFotoPerfil(idUsuario, caminhoFoto);
+	}
+
 	/**
 	 * Troca a senha, exigindo a confirmação da senha atual.
 	 */

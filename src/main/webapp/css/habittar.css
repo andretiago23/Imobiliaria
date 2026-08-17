@@ -188,6 +188,35 @@ h3.display {
   flex: 0 0 auto;
 }
 
+/* --------------------------------------------------------------------------
+   Avatar do usuário logado — link para /perfil no canto superior direito
+   -------------------------------------------------------------------------- */
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--accent-primary);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  overflow: hidden;
+  flex: 0 0 auto;
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease-out;
+}
+.avatar:hover {
+  border-color: var(--accent-primary);
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .lead {
   font-size: 18px;
   line-height: 1.6;

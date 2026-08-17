@@ -12,6 +12,7 @@ public class Usuario {
 
 	private int id;
 	private String nome;
+	private String apelido;
 	private String email;
 	private boolean emailConfirmado;
 	private String senha;
@@ -45,6 +46,22 @@ public class Usuario {
 	}
 
 	/**
+	 * @return o apelido, se a pessoa tiver definido um, ou o nome completo
+	 */
+	public String getNomeExibicao() {
+		return (apelido != null && !apelido.isBlank()) ? apelido : nome;
+	}
+
+	/**
+	 * @return a primeira letra do nome de exibição, em maiúscula, para o
+	 *         avatar quando não há foto de perfil
+	 */
+	public String getInicial() {
+		String base = getNomeExibicao();
+		return (base == null || base.isBlank()) ? "?" : base.substring(0, 1).toUpperCase();
+	}
+
+	/**
 	 * @return true se a conta passou pelas verificações de e-mail e CPF
 	 */
 	public boolean estaVerificado() {
@@ -65,6 +82,14 @@ public class Usuario {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getApelido() {
+		return apelido;
+	}
+
+	public void setApelido(String apelido) {
+		this.apelido = apelido;
 	}
 
 	public String getEmail() {

@@ -29,10 +29,10 @@ public class UsuarioDAO {
 
 	/**
 	 * Lista de colunas reaproveitada por outros DAOs que fazem JOIN com usuario.
-	 * O apelido u precisa ser mantido nessas consultas.
+	 * O alias u precisa ser mantido nessas consultas.
 	 */
 	static final String COLUNAS = """
-			u.id, u.nome, u.email, u.email_confirmado, u.senha, u.cpf, u.cpf_valido, u.telefone,
+			u.id, u.nome, u.apelido, u.email, u.email_confirmado, u.senha, u.cpf, u.cpf_valido, u.telefone,
 			u.telefone_confirmado, u.foto_perfil, u.tipo_usuario, u.data_cadastro
 			""";
 
@@ -46,11 +46,13 @@ public class UsuarioDAO {
 
 	private static final String SQL_ATUALIZAR = """
 			UPDATE usuario
-			SET nome = ?, email = ?, telefone = ?, foto_perfil = ?, tipo_usuario = ?
+			SET nome = ?, apelido = ?, email = ?, telefone = ?, foto_perfil = ?, tipo_usuario = ?
 			WHERE id = ?
 			""";
 
 	private static final String SQL_ATUALIZAR_SENHA = "UPDATE usuario SET senha = ? WHERE id = ?";
+
+	private static final String SQL_ATUALIZAR_FOTO_PERFIL = "UPDATE usuario SET foto_perfil = ? WHERE id = ?";
 
 	private static final String SQL_CONFIRMAR_EMAIL = "UPDATE usuario SET email_confirmado = TRUE WHERE id = ?";
 
@@ -123,15 +125,25 @@ public class UsuarioDAO {
 				PreparedStatement comando = conexao.prepareStatement(SQL_ATUALIZAR)) {
 
 			comando.setString(1, usuario.getNome());
-			comando.setString(2, usuario.getEmail());
-			comando.setString(3, usuario.getTelefone());
-			comando.setString(4, usuario.getFotoPerfil());
-			comando.setString(5, ConversorEnum.paraBanco(usuario.getTipoUsuario()));
-			comando.setInt(6, usuario.getId());
+			comando.setString(2, usuario.getApelido());
+			comando.setString(3, usuario.getEmail());
+			comando.setString(4, usuario.getTelefone());
+			comando.setString(5, usuario.getFotoPerfil());
+			comando.setString(6, ConversorEnum.paraBanco(usuario.getTipoUsuario()));
+			comando.setInt(7, usuario.getId());
 			comando.executeUpdate();
 		} catch (SQLException e) {
 			throw new DAOException("Erro ao atualizar o usuário de id " + usuario.getId() + ".", e);
 		}
+	}
+
+	/**
+	 * Atualiza só a foto de perfil, sem precisar recarregar e regravar o
+	 * restante dos dados do usuário.
+	 */
+	public void atualizarFotoPerfil(int idUsuario, String caminhoFoto) throws DAOException {
+		executarAtualizacao(SQL_ATUALIZAR_FOTO_PERFIL,
+				"Erro ao atualizar a foto de perfil do usuário de id " + idUsuario + ".", caminhoFoto, idUsuario);
 	}
 
 	/**
@@ -219,6 +231,7 @@ public class UsuarioDAO {
 		Usuario usuario = new Usuario();
 		usuario.setId(resultado.getInt("id"));
 		usuario.setNome(resultado.getString("nome"));
+		usuario.setApelido(resultado.getString("apelido"));
 		usuario.setEmail(resultado.getString("email"));
 		usuario.setEmailConfirmado(resultado.getBoolean("email_confirmado"));
 		usuario.setSenha(resultado.getString("senha"));

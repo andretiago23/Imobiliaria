@@ -60,7 +60,7 @@ public class ContatoInteresseDAO {
 			SELECT COUNT(*)
 			FROM contato_interesse c
 			JOIN imovel i ON i.id = c.id_imovel
-			WHERE i.id_usuario = ? AND c.status = 'pendente'
+			WHERE i.id_usuario = ? AND c.status = 'novo'
 			""";
 
 	private static final String SQL_REMOVER_POR_IMOVEL = "DELETE FROM contato_interesse WHERE id_imovel = ?";
@@ -69,7 +69,7 @@ public class ContatoInteresseDAO {
 	 * Registra uma nova mensagem de interesse e preenche o id gerado no objeto.
 	 */
 	public void inserir(ContatoInteresse contato) throws DAOException {
-		StatusContato status = contato.getStatus() == null ? StatusContato.PENDENTE : contato.getStatus();
+		StatusContato status = contato.getStatus() == null ? StatusContato.NOVO : contato.getStatus();
 
 		try (Connection conexao = ConnectionFactory.obterConexao();
 				PreparedStatement comando = conexao.prepareStatement(SQL_INSERIR, Statement.RETURN_GENERATED_KEYS)) {

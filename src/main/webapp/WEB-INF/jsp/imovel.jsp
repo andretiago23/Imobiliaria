@@ -21,7 +21,15 @@
       Habittar
     </a>
     <nav class="nav__links">
-      <span class="micro">Olá, ${sessionScope.usuarioLogado.nome}</span>
+      <a class="avatar" href="${pageContext.request.contextPath}/perfil" title="Meu perfil" aria-label="Meu perfil">
+        <% if (session.getAttribute("usuarioLogado") != null
+              && ((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil() != null
+              && !((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil().isBlank()) { %>
+          <img src="${pageContext.request.contextPath}${sessionScope.usuarioLogado.fotoPerfil}" alt="">
+        <% } else { %>
+          ${sessionScope.usuarioLogado.inicial}
+        <% } %>
+      </a>
       <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/logout">Sair</a>
     </nav>
   </div>
@@ -110,10 +118,32 @@
       </div>
       <p class="micro" style="margin-top:6px;">Código do anúncio: HB-<%= imovel.getId() %></p>
 
-      <button class="btn btn--primary" type="button" disabled aria-disabled="true" title="Fluxo de leads ainda não disponível neste protótipo">
-        Tenho interesse
-      </button>
-      <p class="imovel-painel__aviso micro">O envio de interesse (com simulação de financiamento opcional) chega em uma próxima etapa do protótipo.</p>
+      <%
+        model.Usuario usuarioLogado = (model.Usuario) session.getAttribute("usuarioLogado");
+        boolean donoDoAnuncio = usuarioLogado != null && usuarioLogado.getId() == imovel.getIdUsuario();
+      %>
+
+      <% if ("1".equals(request.getParameter("interesseEnviado"))) { %>
+        <p class="alerta" style="background:#e6f5ec;border-color:#bfe3cd;color:#1c6b3f;margin-top:16px;">
+          Interesse enviado! O anunciante vai receber seus dados de contato.
+        </p>
+      <% } else if (request.getParameter("erroInteresse") != null) { %>
+        <p class="alerta alerta-erro" style="margin-top:16px;"><%= util.Html.escapar(request.getParameter("erroInteresse")) %></p>
+      <% } %>
+
+      <% if (donoDoAnuncio) { %>
+        <p class="imovel-painel__aviso micro">Este é o seu próprio anúncio.</p>
+      <% } else { %>
+        <form method="post" action="${pageContext.request.contextPath}/interesse">
+          <input type="hidden" name="csrf" value="${csrf}">
+          <input type="hidden" name="idImovel" value="<%= imovel.getId() %>">
+          <textarea name="mensagem" rows="3" required maxlength="500"
+            placeholder="Escreva uma mensagem para o anunciante (ex.: horários para visita, dúvidas sobre o imóvel)."
+            style="width:100%;margin-top:16px;font-family:var(--font-sans);font-size:14px;color:var(--text-primary);background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px 14px;resize:vertical;"></textarea>
+          <button class="btn btn--primary" type="submit" style="width:100%;margin-top:12px;">Tenho interesse</button>
+        </form>
+        <p class="imovel-painel__aviso micro">O anunciante recebe seu nome, e-mail e a mensagem enviada.</p>
+      <% } %>
     </aside>
   </div>
   <% } %>

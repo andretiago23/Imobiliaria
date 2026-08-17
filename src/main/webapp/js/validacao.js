@@ -42,6 +42,11 @@
 	document.querySelectorAll("[data-mascara]").forEach(function (campo) {
 		var aplicar = MASCARAS[campo.dataset.mascara];
 		if (!aplicar) return;
+
+		// Formata também o valor que já vier preenchido pelo servidor
+		// (ex.: telefone salvo sem máscara no banco).
+		if (campo.value) campo.value = aplicar(campo.value);
+
 		campo.addEventListener("input", function () {
 			var posicaoOriginal = campo.selectionStart;
 			var tamanhoAntes = campo.value.length;

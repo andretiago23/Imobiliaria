@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Imovel;
+import util.TokenCsrf;
 
 /**
  * Detalhamento completo de um imóvel: endereço exato, descrição e ficha
@@ -48,6 +49,7 @@ public class ImovelServlet extends HttpServlet {
 			requisicao.setAttribute("erro", "Não foi possível carregar este imóvel agora.");
 		}
 
+		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 		requisicao.getRequestDispatcher(PAGINA_IMOVEL).forward(requisicao, resposta);
 	}
 

@@ -21,7 +21,14 @@
     </a>
     <nav class="nav__links">
       <a href="${pageContext.request.contextPath}/inicio">Catálogo</a>
-      <span class="micro">Olá, ${sessionScope.usuarioLogado.nome}</span>
+      <a class="avatar" href="${pageContext.request.contextPath}/perfil" title="Meu perfil" aria-label="Meu perfil">
+        <% if (((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil() != null
+              && !((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil().isBlank()) { %>
+          <img src="${pageContext.request.contextPath}${sessionScope.usuarioLogado.fotoPerfil}" alt="">
+        <% } else { %>
+          ${sessionScope.usuarioLogado.inicial}
+        <% } %>
+      </a>
       <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/logout">Sair</a>
     </nav>
   </div>

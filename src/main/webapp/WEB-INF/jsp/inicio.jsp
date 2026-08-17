@@ -26,7 +26,14 @@
       <a class="${filtro.finalidade == 'VENDA' ? 'is-current' : ''}" href="${pageContext.request.contextPath}/inicio?finalidade=venda" ${filtro.finalidade == 'VENDA' ? 'aria-current="page"' : ''}>Comprar</a>
       <a class="${filtro.finalidade == 'ALUGUEL' ? 'is-current' : ''}" href="${pageContext.request.contextPath}/inicio?finalidade=aluguel" ${filtro.finalidade == 'ALUGUEL' ? 'aria-current="page"' : ''}>Alugar</a>
       <% if (session.getAttribute("usuarioLogado") != null) { %>
-        <span class="micro">Olá, ${sessionScope.usuarioLogado.nome}</span>
+        <a class="avatar" href="${pageContext.request.contextPath}/perfil" title="Meu perfil" aria-label="Meu perfil">
+          <% if (((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil() != null
+                && !((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil().isBlank()) { %>
+            <img src="${pageContext.request.contextPath}${sessionScope.usuarioLogado.fotoPerfil}" alt="">
+          <% } else { %>
+            ${sessionScope.usuarioLogado.inicial}
+          <% } %>
+        </a>
         <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/logout">Sair</a>
       <% } else { %>
         <a class="btn btn--primary btn--sm" href="${pageContext.request.contextPath}/login">Entrar</a>

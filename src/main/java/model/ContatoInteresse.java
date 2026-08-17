@@ -32,14 +32,14 @@ public class ContatoInteresse {
 		this.idImovel = idImovel;
 		this.idComprador = idComprador;
 		this.mensagem = mensagem;
-		this.status = StatusContato.PENDENTE;
+		this.status = StatusContato.NOVO;
 	}
 
 	/**
-	 * @return true se o anunciante ainda não respondeu a este contato
+	 * @return true se o anunciante ainda não deu andamento a este contato
 	 */
 	public boolean aguardaResposta() {
-		return status == StatusContato.PENDENTE;
+		return status == StatusContato.NOVO;
 	}
 
 	public int getId() {
