@@ -6,6 +6,7 @@ package model;
 public enum StatusImovel implements ValorBanco {
 
 	ATIVO("ativo", "Ativo"),
+	RESERVADO("reservado", "Reservado"),
 	VENDIDO("vendido", "Vendido"),
 	ALUGADO("alugado", "Alugado"),
 	INATIVO("inativo", "Inativo");
@@ -32,6 +33,6 @@ public enum StatusImovel implements ValorBanco {
 	 * @return true se o imóvel ainda deve aparecer nas buscas do feed
 	 */
 	public boolean estaDisponivel() {
-		return this == ATIVO;
+		return this == ATIVO || this == RESERVADO;
 	}
 }

@@ -65,7 +65,7 @@ public class ImovelDAO {
 			+ " WHERE i.id_usuario = ? ORDER BY i.data_publicacao DESC";
 
 	private static final String SQL_LISTAR_ATIVOS = SQL_SELECT_BASE
-			+ " WHERE i.status = 'ativo' ORDER BY i.data_publicacao DESC LIMIT ?";
+			+ " WHERE i.status IN ('ativo', 'reservado') ORDER BY i.data_publicacao DESC LIMIT ?";
 
 	private static final String SQL_ATUALIZAR_STATUS = "UPDATE imovel SET status = ? WHERE id = ?";
 
@@ -156,7 +156,7 @@ public class ImovelDAO {
 	 * enviados como parâmetros, sem concatenação de dados na SQL.
 	 */
 	public List<Imovel> buscarComFiltros(FiltroImovel filtro) throws DAOException {
-		StringBuilder sql = new StringBuilder(SQL_SELECT_BASE).append(" WHERE i.status = 'ativo'");
+		StringBuilder sql = new StringBuilder(SQL_SELECT_BASE).append(" WHERE i.status IN ('ativo', 'reservado')");
 		List<Object> parametros = new ArrayList<>();
 
 		if (textoPreenchido(filtro.getCidade())) {
