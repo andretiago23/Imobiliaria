@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 import jakarta.servlet.Filter;
@@ -27,8 +28,13 @@ import util.SessaoUsuario;
 @WebFilter("/*")
 public class FiltroAutenticacao implements Filter {
 
-	/** Endereços que podem ser acessados sem login. */
-	private static final Set<String> CAMINHOS_LIVRES = Set.of("/", "/login", "/cadastro", "/logout", "/index.jsp");
+	/**
+	 * Endereços que podem ser acessados sem login. O catálogo (/inicio) é
+	 * público: visitantes navegam e buscam livremente, e só esbarram no login
+	 * ao tentar abrir o detalhamento completo de um imóvel (/imovel).
+	 */
+	private static final Set<String> CAMINHOS_LIVRES = Set.of("/", "/login", "/cadastro", "/logout", "/index.jsp",
+			"/inicio", "/auth/google", "/auth/google/callback");
 
 	/** Pastas de conteúdo estático, liberadas para que o visual carregue na tela de login. */
 	private static final Set<String> PASTAS_LIVRES = Set.of("/css/", "/js/", "/imagens/");
@@ -45,7 +51,19 @@ public class FiltroAutenticacao implements Filter {
 			return;
 		}
 
-		respostaHttp.sendRedirect(requisicaoHttp.getContextPath() + "/login");
+		respostaHttp.sendRedirect(requisicaoHttp.getContextPath() + "/login?redirecionar=" + destinoOriginal(requisicaoHttp));
+	}
+
+	/**
+	 * Codifica o caminho + query string que o visitante tentou acessar, para
+	 * que o login o devolva exatamente ali depois de autenticar (ex.: o imóvel
+	 * que ele tentou detalhar).
+	 */
+	private String destinoOriginal(HttpServletRequest requisicao) {
+		String caminho = requisicao.getRequestURI().substring(requisicao.getContextPath().length());
+		String query = requisicao.getQueryString();
+		String destino = query == null ? caminho : caminho + "?" + query;
+		return java.net.URLEncoder.encode(destino, StandardCharsets.UTF_8);
 	}
 
 	private boolean ehCaminhoLivre(HttpServletRequest requisicao) {

@@ -168,6 +168,26 @@ h3.display {
   color: var(--accent-primary);
 }
 
+/* --------------------------------------------------------------------------
+   Navegação "voltar" — usado em qualquer página que não seja um destino
+   final (detalhe, formulários), para sempre haver um caminho de volta além
+   do botão do navegador.
+   -------------------------------------------------------------------------- */
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+.voltar:hover {
+  color: var(--text-primary);
+}
+.voltar svg {
+  flex: 0 0 auto;
+}
+
 .lead {
   font-size: 18px;
   line-height: 1.6;

@@ -24,9 +24,11 @@
       Habittar
     </a>
     <nav class="nav__links">
-      <a href="#imoveis">Comprar</a>
-      <a href="#imoveis">Alugar</a>
+      <a href="${pageContext.request.contextPath}/inicio?finalidade=venda">Comprar</a>
+      <a href="${pageContext.request.contextPath}/inicio?finalidade=aluguel">Alugar</a>
+      <a href="${pageContext.request.contextPath}/inicio">Catálogo</a>
       <a href="#diferenciais">Como funciona</a>
+      <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/login">Entrar</a>
       <a class="btn btn--primary btn--sm" href="#anunciar">
         <span class="btn__pin" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
@@ -47,17 +49,17 @@
         <h1 class="display">Seu bairro, seu tipo de negócio,<br><span class="hl">um clique</span>.</h1>
         <p class="lead">Busque por rua, bairro ou cidade e veja o catálogo completo da Habittar na hora. Sem cadastro para explorar, sem promessa vaga: o resultado aparece antes do discurso.</p>
 
-        <form class="search" action="#imoveis" method="get" role="search">
+        <form class="search" action="${pageContext.request.contextPath}/inicio" method="get" role="search" id="formBuscaHero">
           <div class="segment" role="group" aria-label="Tipo de negócio">
-            <button type="button" class="is-active" data-value="comprar" aria-pressed="true">Comprar</button>
-            <button type="button" data-value="alugar" aria-pressed="false">Alugar</button>
+            <button type="button" class="is-active" data-value="venda" aria-pressed="true">Comprar</button>
+            <button type="button" data-value="aluguel" aria-pressed="false">Alugar</button>
             <button type="button" data-value="vender" aria-pressed="false">Vender</button>
           </div>
-          <input type="hidden" id="operacao" name="operacao" value="comprar">
+          <input type="hidden" id="finalidade" name="finalidade" value="venda">
           <label class="search__field">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
             <span class="sr-only" hidden>Localização</span>
-            <input type="text" name="local" placeholder="Digite um bairro, cidade ou rua" autocomplete="off">
+            <input type="text" name="cidade" placeholder="Digite um bairro, cidade ou rua" autocomplete="off">
           </label>
           <button class="btn btn--primary search__submit" type="submit" aria-label="Buscar imóveis">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
@@ -117,15 +119,15 @@
     <div class="map-grid" aria-hidden="true"></div>
     <div class="wrap">
       <div class="cats reveal">
-        <a class="cat" href="#imoveis">
+        <a class="cat" href="${pageContext.request.contextPath}/inicio?finalidade=venda">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16151F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9.5 21v-6h5v6"/></svg>
           <div><h3 class="display">Comprar</h3><p>Apartamentos, casas e terrenos com ficha técnica completa, preço por m² e endereço exato após o login.</p></div>
-          <span class="cat__arrow micro">834 imóveis →</span>
+          <span class="cat__arrow micro">Ver catálogo →</span>
         </a>
-        <a class="cat" href="#imoveis">
+        <a class="cat" href="${pageContext.request.contextPath}/inicio?finalidade=aluguel">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16151F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3M3 13h18"/></svg>
           <div><h3 class="display">Alugar</h3><p>Do primeiro apê ao imóvel da família: filtro por valor máximo, quartos mínimos e bairro real, não região genérica.</p></div>
-          <span class="cat__arrow micro">450 imóveis →</span>
+          <span class="cat__arrow micro">Ver catálogo →</span>
         </a>
         <a class="cat" href="#anunciar">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16151F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><path d="M12 7.5v5M9.5 10h5"/></svg>
@@ -323,11 +325,11 @@
         <h2 class="display">Seu imóvel pode estar no <span class="hl">mapa hoje</span></h2>
         <p class="lead">Publicação com ficha técnica completa, selo de status e leads qualificados chegando direto no painel da imobiliária.</p>
         <div class="cta__actions">
-          <a class="btn btn--primary" href="#top">
+          <a class="btn btn--primary" href="${pageContext.request.contextPath}/anunciar">
             <span class="btn__pin" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
             Anunciar imóvel
           </a>
-          <a class="btn btn--secondary" href="#imoveis">Ver catálogo</a>
+          <a class="btn btn--secondary" href="${pageContext.request.contextPath}/inicio">Ver catálogo</a>
         </div>
         <p class="micro" style="margin-top:24px">Tempo médio de publicação: 6 minutos</p>
       </div>
@@ -347,11 +349,17 @@
     </div>
     <div>
       <h4>Buscar</h4>
-      <ul><li><a href="#imoveis">Apartamentos à venda</a></li><li><a href="#imoveis">Casas à venda</a></li><li><a href="#imoveis">Apartamentos para alugar</a></li><li><a href="#imoveis">Terrenos</a></li><li><a href="#imoveis">Imóveis comerciais</a></li></ul>
+      <ul>
+        <li><a href="${pageContext.request.contextPath}/inicio?tipo=apartamento&finalidade=venda">Apartamentos à venda</a></li>
+        <li><a href="${pageContext.request.contextPath}/inicio?tipo=casa&finalidade=venda">Casas à venda</a></li>
+        <li><a href="${pageContext.request.contextPath}/inicio?tipo=apartamento&finalidade=aluguel">Apartamentos para alugar</a></li>
+        <li><a href="${pageContext.request.contextPath}/inicio?tipo=terreno">Terrenos</a></li>
+        <li><a href="${pageContext.request.contextPath}/inicio?tipo=comercial">Imóveis comerciais</a></li>
+      </ul>
     </div>
     <div>
       <h4>Habittar</h4>
-      <ul><li><a href="#diferenciais">Como funciona</a></li><li><a href="#anunciar">Anunciar imóvel</a></li><li><a href="#top">Área do cliente</a></li><li><a href="#top">Painel da imobiliária</a></li><li><a href="#top">Trabalhe conosco</a></li></ul>
+      <ul><li><a href="#diferenciais">Como funciona</a></li><li><a href="${pageContext.request.contextPath}/anunciar">Anunciar imóvel</a></li><li><a href="${pageContext.request.contextPath}/login">Área do cliente</a></li><li><a href="${pageContext.request.contextPath}/login">Painel da imobiliária</a></li><li><a href="#top">Trabalhe conosco</a></li></ul>
     </div>
     <div>
       <h4>Institucional</h4>

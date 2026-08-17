@@ -1,0 +1,590 @@
+/* ==========================================================================
+   Catálogo (páginas logadas/públicas pós-landing)
+   Usa os tokens e componentes de habittar.css (nav, botões, .card, .badge)
+   como base — este arquivo cobre só o que é específico do catálogo e do
+   detalhamento de imóvel.
+   ========================================================================== */
+
+body {
+  padding-top: var(--nav-h);
+}
+
+.app-main {
+  position: relative;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 40px 24px 96px;
+}
+
+/* --------------------------------------------------------------------------
+   Cabeçalho da página
+   -------------------------------------------------------------------------- */
+.app-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.app-header h1 {
+  margin: 4px 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   Resumo da conta (só para quem está logado)
+   -------------------------------------------------------------------------- */
+.resumo-conta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.resumo-conta__item {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 18px 20px;
+}
+
+.resumo-conta__valor {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--accent-primary);
+}
+
+.resumo-conta__rotulo {
+  margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Catálogo com sidebar de filtros
+   -------------------------------------------------------------------------- */
+.app-main--catalogo {
+  max-width: 1240px;
+}
+
+.catalogo-layout {
+  display: grid;
+  grid-template-columns: 264px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .catalogo-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filtro-sidebar {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+  position: sticky;
+  top: calc(var(--nav-h) + 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: calc(100vh - var(--nav-h) - 40px);
+  overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+  .filtro-sidebar {
+    position: static;
+    max-height: none;
+  }
+}
+
+/* Abas Comprar / Alugar / Todos */
+.filtro-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface-page);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+.filtro-tab-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.filtro-tab {
+  flex: 1;
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+.filtro-tab-input:checked + .filtro-tab {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-card);
+}
+.filtro-tab-input:focus-visible + .filtro-tab {
+  outline: 2px solid var(--accent-primary);
+}
+
+.filtro-secao {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 20px;
+}
+.filtro-sidebar > .filtro-tabs + .filtro-secao {
+  border-top: none;
+  padding-top: 0;
+}
+.filtro-secao h3 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filtro-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-primary);
+  padding: 6px 0;
+  cursor: pointer;
+}
+.filtro-checkbox input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.filtro-checkbox__caixa {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid var(--border-subtle);
+  position: relative;
+}
+.filtro-checkbox input:checked + .filtro-checkbox__caixa {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+.filtro-checkbox input:checked + .filtro-checkbox__caixa::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.filtro-checkbox input:focus-visible + .filtro-checkbox__caixa {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Pílulas (quartos mínimos) */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pill-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.pill {
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s ease-out, color 0.15s ease-out, border-color 0.15s ease-out;
+}
+.pill-input:checked + .pill {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #fff;
+}
+.pill-input:focus-visible + .pill {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.filtro-preco {
+  display: flex;
+  gap: 12px;
+}
+.filtro-preco label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.filtro-preco input {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.filtro-sidebar__acoes {
+  display: flex;
+  gap: 8px;
+}
+.filtro-sidebar__acoes .btn {
+  flex: 1;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* Busca por localização, no topo do conteúdo principal */
+.busca-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-card);
+  padding: 6px 6px 6px 18px;
+  margin-bottom: 20px;
+  color: var(--text-secondary);
+}
+.busca-topo input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--text-primary);
+  padding: 10px 0;
+}
+.busca-topo input[name="cidade"] {
+  flex: 1;
+  min-width: 0;
+}
+.busca-topo__uf {
+  width: 48px;
+  flex: 0 0 auto;
+  border-left: 1px solid var(--border-subtle) !important;
+  padding-left: 12px !important;
+  text-transform: uppercase;
+}
+.busca-topo .btn {
+  flex: 0 0 auto;
+  height: 44px;
+  padding: 0 20px;
+}
+@media (max-width: 560px) {
+  .busca-topo {
+    flex-wrap: wrap;
+    border-radius: var(--radius-md);
+  }
+  .busca-topo .btn {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Barra de busca e filtros
+   -------------------------------------------------------------------------- */
+.filtros {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 20px 24px;
+  margin-bottom: 40px;
+}
+
+.filtros__grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px 20px;
+  align-items: end;
+}
+
+.filtros__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filtros__campo--largo {
+  grid-column: span 2;
+}
+
+.filtros__campo label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.filtros input,
+.filtros select {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--text-primary);
+  background: var(--surface-page);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  width: 100%;
+}
+
+.filtros input:focus,
+.filtros select:focus {
+  outline: 2px solid var(--accent-primary-soft);
+  border-color: var(--accent-primary);
+}
+
+.filtros__acoes {
+  display: flex;
+  gap: 10px;
+}
+
+.filtros__acoes .btn {
+  height: 48px;
+  padding: 0 24px;
+}
+
+@media (max-width: 640px) {
+  .filtros__campo--largo {
+    grid-column: span 1;
+  }
+}
+
+/* Estado atual na navegação do topo (Comprar / Alugar) */
+.nav__links a.is-current {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+/* Filtros aplicados, como chips removíveis individualmente */
+.filtros-ativos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--accent-primary-soft);
+  border: 1px solid rgba(255, 106, 26, 0.25);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  transition: background-color 0.15s ease-out;
+}
+.chip:hover {
+  background: rgba(255, 106, 26, 0.16);
+}
+.chip span {
+  color: var(--accent-primary-hover);
+  font-weight: 700;
+}
+
+.chip--limpar {
+  background: transparent;
+  border-style: dashed;
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Grade do catálogo
+   -------------------------------------------------------------------------- */
+.catalogo__cabecalho {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.catalogo__grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+/* habittar.css desenha .card__photo para placeholder (listras + rótulo
+   "FOTO REAL"); com uma <img> de verdade dentro, ela precisa ficar atrás
+   do rótulo e dos badges, que voltam a ser posicionados explicitamente. */
+.card__photo.tem-foto::after {
+  content: none;
+}
+.card__photo.tem-foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.card__photo.tem-foto .badge {
+  position: relative;
+  z-index: 1;
+}
+
+/* Selo de status sobre a foto do card, junto do badge de negócio */
+.card__photo .badge--status,
+.card__photo .badge--reservado {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+}
+.card__photo .badge--status {
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+}
+.badge--reservado {
+  background: #fdf3e0;
+  color: #8a5a12;
+}
+
+.card__link {
+  display: block;
+  padding: 0 20px 20px;
+  margin-top: -6px;
+}
+
+.estado-vazio {
+  background: var(--surface-raised);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.estado-vazio p {
+  margin: 0 0 6px;
+}
+
+/* --------------------------------------------------------------------------
+   Detalhamento do imóvel
+   -------------------------------------------------------------------------- */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.breadcrumb a:hover {
+  color: var(--text-primary);
+}
+.breadcrumb__atual {
+  color: var(--text-primary);
+  max-width: 40ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.imovel-detalhe {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 48px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .imovel-detalhe {
+    grid-template-columns: 1fr;
+  }
+}
+
+.imovel-detalhe__foto {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+}
+.imovel-detalhe__foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imovel-detalhe__badges {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0 8px;
+}
+
+.imovel-detalhe__endereco {
+  color: var(--text-secondary);
+  margin: 4px 0 24px;
+}
+
+.ficha-tecnica {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 20px;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 20px 0;
+  margin-bottom: 24px;
+}
+
+.ficha-tecnica__valor {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+}
+
+/* Painel lateral: preço + ação de interesse */
+.imovel-painel {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 28px;
+  position: sticky;
+  top: calc(var(--nav-h) + 24px);
+}
+
+.imovel-painel__preco {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+}
+
+.imovel-painel .btn {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.imovel-painel__aviso {
+  margin-top: 16px;
+  font-size: 13px;
+}

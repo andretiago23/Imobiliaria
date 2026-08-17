@@ -103,7 +103,7 @@
     updateTimeline();
   }
 
-  /* Segmento do formulário de busca (alugar / comprar / vender) */
+  /* Segmento do formulário de busca (comprar / alugar / vender) */
   var segment = document.querySelector(".segment");
   if (segment) {
     segment.addEventListener("click", function (e) {
@@ -113,8 +113,21 @@
         b.classList.toggle("is-active", b === btn);
         b.setAttribute("aria-pressed", b === btn ? "true" : "false");
       });
-      var hidden = document.getElementById("operacao");
+      var hidden = document.getElementById("finalidade");
       if (hidden) hidden.value = btn.getAttribute("data-value");
+    });
+  }
+
+  /* "Vender" não é um filtro do catálogo — leva para o bloco de anúncio */
+  var formBusca = document.getElementById("formBuscaHero");
+  if (formBusca) {
+    formBusca.addEventListener("submit", function (e) {
+      var hidden = document.getElementById("finalidade");
+      if (hidden && hidden.value === "vender") {
+        e.preventDefault();
+        var alvo = document.getElementById("anunciar");
+        if (alvo) alvo.scrollIntoView({ behavior: "smooth" });
+      }
     });
   }
 
