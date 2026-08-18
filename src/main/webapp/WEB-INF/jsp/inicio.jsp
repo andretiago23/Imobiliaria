@@ -6,8 +6,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catálogo | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=8">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=8">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=9">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=9">
 </head>
 <body>
 
@@ -47,7 +47,14 @@
           </div>
         </div>
       <% } else { %>
-        <a class="btn btn--primary btn--sm" href="${pageContext.request.contextPath}/login">Entrar</a>
+        <a class="btn btn--primary btn--sm btn--interactive" href="${pageContext.request.contextPath}/login">
+          <span class="btn__label">Entrar</span>
+          <span class="btn__reveal" aria-hidden="true">
+            Entrar
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </span>
+          <span class="btn__dot" aria-hidden="true"></span>
+        </a>
       <% } %>
     </nav>
   </div>

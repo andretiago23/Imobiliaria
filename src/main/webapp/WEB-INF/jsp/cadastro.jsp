@@ -26,8 +26,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Criar conta | Habittar</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=8">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=8">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=9">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=9">
 </head>
 <body>
 
@@ -150,7 +150,14 @@
 					<span class="campo-erro" id="erro-aceiteTermos"></span>
 				</div>
 
-				<button type="submit" class="btn btn--primary auth-anim auth-anim--6" style="width:100%;margin-top:8px;" id="botaoCadastrar">Criar conta</button>
+				<button type="submit" class="btn btn--primary btn--interactive auth-anim auth-anim--6" style="width:100%;margin-top:8px;" id="botaoCadastrar">
+					<span class="btn__label">Criar conta</span>
+					<span class="btn__reveal" aria-hidden="true">
+						Criar conta
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+					</span>
+					<span class="btn__dot" aria-hidden="true"></span>
+				</button>
 			</form>
 
 			<p class="auth__rodape auth-anim auth-anim--7">
@@ -169,7 +176,7 @@
 
 </div>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=8"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=8"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=9"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=9"></script>
 </body>
 </html>

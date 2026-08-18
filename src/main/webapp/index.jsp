@@ -10,7 +10,7 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=8">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=9">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -25,11 +25,18 @@
       <a href="${pageContext.request.contextPath}/inicio">Catálogo</a>
       <a href="#diferenciais">Como funciona</a>
       <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/login">Entrar</a>
-      <a class="btn btn--primary btn--sm" href="#anunciar">
-        <span class="btn__pin" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+      <a class="btn btn--primary btn--sm btn--interactive" href="#anunciar">
+        <span class="btn__label">
+          <span class="btn__pin" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </span>
+          Anunciar imóvel
         </span>
-        Anunciar imóvel
+        <span class="btn__reveal" aria-hidden="true">
+          Anunciar imóvel
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </span>
+        <span class="btn__dot" aria-hidden="true"></span>
       </a>
     </nav>
   </div>
@@ -342,11 +349,25 @@
         <h2 class="display">Chega de esperar. <span class="hl">Anuncie agora.</span></h2>
         <p class="lead">Grátis, rápido e direto ao ponto: seu imóvel no ar em minutos, visível para quem já está procurando.</p>
         <div class="cta__actions">
-          <a class="btn btn--primary" href="${pageContext.request.contextPath}/anunciar">
-            <span class="btn__pin" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-            Anunciar imóvel
+          <a class="btn btn--primary btn--interactive" href="${pageContext.request.contextPath}/anunciar">
+            <span class="btn__label">
+              <span class="btn__pin" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+              Anunciar imóvel
+            </span>
+            <span class="btn__reveal" aria-hidden="true">
+              Anunciar imóvel
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+            <span class="btn__dot" aria-hidden="true"></span>
           </a>
-          <a class="btn btn--secondary" href="${pageContext.request.contextPath}/inicio">Ver catálogo</a>
+          <a class="btn btn--secondary btn--interactive" href="${pageContext.request.contextPath}/inicio">
+            <span class="btn__label">Ver catálogo</span>
+            <span class="btn__reveal" aria-hidden="true">
+              Ver catálogo
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+            <span class="btn__dot" aria-hidden="true"></span>
+          </a>
         </div>
         <p class="micro" style="margin-top:24px">Tempo médio de publicação: 6 minutos</p>
       </div>
@@ -388,6 +409,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=8"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=9"></script>
 </body>
 </html>

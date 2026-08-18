@@ -5,8 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Entrar | Habittar</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=8">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=8">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=9">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=9">
 </head>
 <body>
 
@@ -66,7 +66,14 @@
 					<a href="#">Esqueceu a senha?</a>
 				</div>
 
-				<button type="submit" class="btn btn--primary auth-anim auth-anim--5" style="width:100%;" id="botaoEntrar">Entrar</button>
+				<button type="submit" class="btn btn--primary btn--interactive auth-anim auth-anim--5" style="width:100%;" id="botaoEntrar">
+					<span class="btn__label">Entrar</span>
+					<span class="btn__reveal" aria-hidden="true">
+						Entrar
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+					</span>
+					<span class="btn__dot" aria-hidden="true"></span>
+				</button>
 			</form>
 
 			<div class="auth__divisor auth-anim auth-anim--6">
@@ -99,7 +106,7 @@
 
 </div>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=8"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=8"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=9"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=9"></script>
 </body>
 </html>

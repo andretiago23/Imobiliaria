@@ -341,6 +341,89 @@ h3.display {
 .btn--primary:active .btn__pin {
   transform: translateY(3px);
 }
+
+/* Botão interativo: o texto original desliza para fora enquanto uma versão
+   com seta desliza para dentro, sobre um preenchimento que se expande a
+   partir de um pequeno ponto — usado nos CTAs principais do site. */
+.btn--interactive {
+  position: relative;
+  overflow: hidden;
+}
+.btn--interactive .btn__label {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(4px);
+  transition:
+    transform 0.3s ease-out,
+    opacity 0.3s ease-out;
+}
+.btn--interactive:hover .btn__label {
+  transform: translateX(48px);
+  opacity: 0;
+}
+.btn--interactive .btn__reveal {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-inverse);
+  transform: translateX(48px);
+  opacity: 0;
+  transition:
+    transform 0.3s ease-out,
+    opacity 0.3s ease-out;
+}
+.btn--interactive:hover .btn__reveal {
+  transform: translateX(-4px);
+  opacity: 1;
+}
+.btn--interactive .btn__reveal svg {
+  transition: transform 0.3s ease-out;
+}
+.btn--interactive:hover .btn__reveal svg {
+  transform: translateX(2px);
+}
+.btn--interactive .btn__dot {
+  position: absolute;
+  left: 20%;
+  top: 40%;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--accent-primary-hover);
+  opacity: 0;
+  transform: scale(1);
+  transition: all 0.35s ease-out;
+  z-index: 1;
+}
+.btn--interactive:hover .btn__dot {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  opacity: 1;
+  transform: scale(1);
+  background: var(--accent-primary-hover);
+}
+/* Variante para botões outline (.btn--secondary): preenche com a cor de
+   marca no hover, igual ao componente original (bg-background -> bg-primary) */
+.btn--secondary.btn--interactive .btn__dot {
+  background: var(--accent-primary);
+}
+.btn--secondary.btn--interactive:hover .btn__dot {
+  background: var(--accent-primary);
+}
+.btn--secondary.btn--interactive .btn__reveal {
+  color: var(--text-inverse);
+}
+
 .btn__pin {
   transition: transform 0.2s ease-out;
 }

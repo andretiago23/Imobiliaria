@@ -6,8 +6,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= request.getAttribute("imovel") != null ? util.Html.escapar(((Imovel) request.getAttribute("imovel")).getTitulo()) + " | Habittar" : "Imóvel | Habittar" %></title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=8">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=8">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=9">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=9">
 </head>
 <body>
 
@@ -153,7 +153,14 @@
           <textarea name="mensagem" rows="3" required maxlength="500"
             placeholder="Escreva uma mensagem para o anunciante (ex.: horários para visita, dúvidas sobre o imóvel)."
             style="width:100%;margin-top:16px;font-family:var(--font-sans);font-size:14px;color:var(--text-primary);background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px 14px;resize:vertical;"></textarea>
-          <button class="btn btn--primary" type="submit" style="width:100%;margin-top:12px;">Tenho interesse</button>
+          <button class="btn btn--primary btn--interactive" type="submit" style="width:100%;margin-top:12px;">
+            <span class="btn__label">Tenho interesse</span>
+            <span class="btn__reveal" aria-hidden="true">
+              Tenho interesse
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+            <span class="btn__dot" aria-hidden="true"></span>
+          </button>
         </form>
         <p class="imovel-painel__aviso micro">O anunciante recebe seu nome, e-mail e a mensagem enviada.</p>
       <% } %>

@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Anunciar imóvel | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=8">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=8">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=9">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=9">
 </head>
 <body>
 
@@ -158,13 +158,20 @@
         <textarea id="descricao" name="descricao" rows="5" placeholder="Detalhes que ajudam quem está buscando: acabamento, condomínio, proximidade de transporte..." style="width:100%;font-family:var(--font-sans);font-size:15px;color:var(--text-primary);background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px 14px;resize:vertical;">${descricao}</textarea>
       </div>
 
-      <button class="btn btn--primary" type="submit" style="width:100%;margin-top:24px;">Publicar anúncio</button>
+      <button class="btn btn--primary btn--interactive" type="submit" style="width:100%;margin-top:24px;">
+        <span class="btn__label">Publicar anúncio</span>
+        <span class="btn__reveal" aria-hidden="true">
+          Publicar anúncio
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </span>
+        <span class="btn__dot" aria-hidden="true"></span>
+      </button>
     </form>
 
   <% } %>
 
 </main>
 
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=8"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=9"></script>
 </body>
 </html>
