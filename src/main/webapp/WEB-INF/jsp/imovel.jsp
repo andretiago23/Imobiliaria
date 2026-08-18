@@ -74,8 +74,8 @@
   <div class="imovel-detalhe">
     <div>
       <div class="imovel-detalhe__foto">
-        <img src="${pageContext.request.contextPath}/imagens/placeholder-imovel.svg"
-          alt="Foto de <%= util.Html.escapar(imovel.getTitulo()) %>">
+        <img src="<%= util.ImagemImovel.urlIlustrativa(imovel.getTipo(), imovel.getId()) %>"
+          alt="Foto ilustrativa de <%= util.Html.escapar(imovel.getTitulo()) %>">
       </div>
 
       <div class="imovel-detalhe__badges">

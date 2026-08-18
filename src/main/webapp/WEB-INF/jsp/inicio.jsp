@@ -211,8 +211,8 @@
           %>
           <article class="card">
             <div class="card__photo tem-foto">
-              <img src="${pageContext.request.contextPath}/imagens/placeholder-imovel.svg"
-                alt="Foto de <%= util.Html.escapar(imovel.getTitulo()) %>">
+              <img src="<%= util.ImagemImovel.urlIlustrativa(imovel.getTipo(), imovel.getId()) %>"
+                alt="Foto ilustrativa de <%= util.Html.escapar(imovel.getTitulo()) %>" loading="lazy">
               <span class="badge"><%= aluguel ? "Aluguel" : "Venda" %></span>
               <% if (reservado) { %>
                 <span class="badge badge--reservado">Reservado</span>
