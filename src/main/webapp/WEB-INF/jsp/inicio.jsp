@@ -25,16 +25,31 @@
       <a href="${pageContext.request.contextPath}/index.jsp">Início</a>
       <a class="${filtro.finalidade == 'VENDA' ? 'is-current' : ''}" href="${pageContext.request.contextPath}/inicio?finalidade=venda" ${filtro.finalidade == 'VENDA' ? 'aria-current="page"' : ''}>Comprar</a>
       <a class="${filtro.finalidade == 'ALUGUEL' ? 'is-current' : ''}" href="${pageContext.request.contextPath}/inicio?finalidade=aluguel" ${filtro.finalidade == 'ALUGUEL' ? 'aria-current="page"' : ''}>Alugar</a>
+      <a href="${pageContext.request.contextPath}/anunciar">Anunciar</a>
+      <a href="${pageContext.request.contextPath}/financiamento">Financiamento</a>
       <% if (session.getAttribute("usuarioLogado") != null) { %>
-        <a class="avatar" href="${pageContext.request.contextPath}/perfil" title="Meu perfil" aria-label="Meu perfil">
-          <% if (((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil() != null
-                && !((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil().isBlank()) { %>
-            <img src="${pageContext.request.contextPath}${sessionScope.usuarioLogado.fotoPerfil}" alt="">
-          <% } else { %>
-            ${sessionScope.usuarioLogado.inicial}
-          <% } %>
-        </a>
-        <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/logout">Sair</a>
+        <div class="avatar-menu">
+          <a class="avatar" href="${pageContext.request.contextPath}/perfil" title="Meu perfil" aria-label="Meu perfil">
+            <% if (((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil() != null
+                  && !((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil().isBlank()) { %>
+              <img src="${pageContext.request.contextPath}${sessionScope.usuarioLogado.fotoPerfil}" alt="">
+            <% } else { %>
+              ${sessionScope.usuarioLogado.inicial}
+            <% } %>
+          </a>
+          <div class="avatar-menu__dropdown">
+            <div class="avatar-menu__dropdown-inner">
+              <a href="${pageContext.request.contextPath}/perfil">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="8" r="5"/></svg>
+                Ver meu perfil
+              </a>
+              <a href="${pageContext.request.contextPath}/logout">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+                Sair
+              </a>
+            </div>
+          </div>
+        </div>
       <% } else { %>
         <a class="btn btn--primary btn--sm" href="${pageContext.request.contextPath}/login">Entrar</a>
       <% } %>
@@ -46,23 +61,6 @@
   <div class="map-grid" aria-hidden="true"></div>
 
   <p class="alerta alerta-erro" role="alert">${erro}</p>
-
-  <% if (session.getAttribute("usuarioLogado") != null) { %>
-    <section class="resumo-conta">
-      <div class="resumo-conta__item">
-        <div class="resumo-conta__valor">${reputacao}</div>
-        <div class="resumo-conta__rotulo micro">Sua reputação</div>
-      </div>
-      <div class="resumo-conta__item">
-        <div class="resumo-conta__valor">${totalAvaliacoes}</div>
-        <div class="resumo-conta__rotulo micro">Avaliações recebidas</div>
-      </div>
-      <div class="resumo-conta__item">
-        <div class="resumo-conta__valor">${interessesPendentes}</div>
-        <div class="resumo-conta__rotulo micro">Interesses pendentes</div>
-      </div>
-    </section>
-  <% } %>
 
   <form method="get" action="${pageContext.request.contextPath}/inicio" class="catalogo-layout">
 

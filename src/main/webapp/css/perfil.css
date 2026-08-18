@@ -2,11 +2,88 @@
    Perfil do usuário
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   Cabeçalho: avatar grande + nome + tipo de conta
+   -------------------------------------------------------------------------- */
+.perfil-hero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 24px 0 28px;
+}
+
+.perfil-avatar-upload {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 96px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+
+.avatar--grande {
+  width: 96px;
+  height: 96px;
+  font-size: 32px;
+  border: none;
+}
+
+.perfil-avatar-upload__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: var(--radius-full);
+  background: rgba(21, 20, 28, 0.55);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+.perfil-avatar-upload:hover .perfil-avatar-upload__overlay,
+.perfil-avatar-upload:focus-within .perfil-avatar-upload__overlay {
+  opacity: 1;
+}
+
+.perfil-hero__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.perfil-hero__info .badge {
+  align-self: flex-start;
+}
+.perfil-hero__info h1 {
+  font-size: clamp(24px, 3vw, 32px);
+  overflow-wrap: anywhere;
+}
+.perfil-hero__info .micro {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 560px) {
+  .perfil-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Grade de conteúdo
+   -------------------------------------------------------------------------- */
 .perfil-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   align-items: start;
+  margin-top: 24px;
 }
 
 @media (max-width: 800px) {
@@ -27,49 +104,6 @@
   margin: 0 0 16px;
   font-family: var(--font-display);
   font-size: 18px;
-}
-
-/* --------------------------------------------------------------------------
-   Foto de perfil
-   -------------------------------------------------------------------------- */
-.perfil-foto {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.avatar--grande {
-  width: 72px;
-  height: 72px;
-  font-size: 26px;
-  border: none;
-  flex: 0 0 auto;
-}
-
-.perfil-foto__campo {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  min-width: 0;
-}
-
-.perfil-foto__campo label {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-secondary);
-}
-
-.perfil-foto__campo input[type="file"] {
-  font-size: 13px;
-  color: var(--text-primary);
-}
-
-.perfil-foto__campo .btn {
-  align-self: flex-start;
-  margin-top: 4px;
 }
 
 /* --------------------------------------------------------------------------

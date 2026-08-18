@@ -168,6 +168,20 @@ h3.display {
   color: var(--accent-primary);
 }
 
+/* Some visualmente mas mantém acessível a leitor de tela e navegável por
+   teclado — usado, por exemplo, no input de arquivo do upload de foto. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* --------------------------------------------------------------------------
    Navegação "voltar" — usado em qualquer página que não seja um destino
    final (detalhe, formulários), para sempre haver um caminho de volta além
@@ -215,6 +229,55 @@ h3.display {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Menu suspenso do avatar: "Ver meu perfil" / "Sair" ao passar o mouse
+   (ou ao focar via teclado, para continuar acessível). */
+.avatar-menu {
+  position: relative;
+}
+.avatar-menu__dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  padding-top: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out, visibility 0.15s;
+  z-index: 60;
+}
+.avatar-menu:hover .avatar-menu__dropdown,
+.avatar-menu:focus-within .avatar-menu__dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.avatar-menu__dropdown-inner {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card-hover);
+  min-width: 180px;
+  padding: 6px;
+}
+.avatar-menu__dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.avatar-menu__dropdown a:hover {
+  background: var(--surface-page);
+}
+.avatar-menu__dropdown a svg {
+  flex: 0 0 auto;
+  color: var(--text-secondary);
 }
 
 .lead {

@@ -54,9 +54,26 @@ public class PerfilServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest requisicao, HttpServletResponse resposta)
 			throws ServletException, IOException {
 
+		carregarResumoConta(requisicao);
 		carregarSecaoDoPerfil(requisicao);
 		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 		requisicao.getRequestDispatcher(PAGINA_PERFIL).forward(requisicao, resposta);
+	}
+
+	/**
+	 * A nota é formatada aqui para que o JSP cuide apenas da apresentação,
+	 * sem precisar de biblioteca de tags para arredondar o número.
+	 */
+	private void carregarResumoConta(HttpServletRequest requisicao) {
+		Usuario usuario = SessaoUsuario.obter(requisicao);
+		try {
+			double reputacao = interacaoServico.calcularReputacao(usuario.getId());
+			requisicao.setAttribute("reputacao", String.format("%.1f", reputacao));
+			requisicao.setAttribute("totalAvaliacoes", interacaoServico.contarAvaliacoes(usuario.getId()));
+			requisicao.setAttribute("interessesPendentes", interacaoServico.contarInteressesPendentes(usuario.getId()));
+		} catch (DAOException e) {
+			getServletContext().log("Falha ao carregar o resumo da conta.", e);
+		}
 	}
 
 	@Override

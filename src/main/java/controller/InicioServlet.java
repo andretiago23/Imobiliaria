@@ -14,18 +14,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Finalidade;
 import model.FiltroImovel;
 import model.Imovel;
-import model.InteracaoServico;
 import model.TipoImovel;
-import model.Usuario;
 import util.ConversorEnum;
-import util.SessaoUsuario;
 
 /**
  * Catálogo de imóveis, aberto tanto a visitantes quanto a clientes logados.
  *
- * Quem não tem sessão vê o mesmo catálogo e a mesma busca, mas sem o resumo
- * de conta; o detalhamento completo de um imóvel (rota /imovel) continua
- * exigindo login, barrado pelo FiltroAutenticacao.
+ * O detalhamento completo de um imóvel (rota /imovel) continua exigindo
+ * login, barrado pelo FiltroAutenticacao. O resumo da conta (reputação,
+ * avaliações, interesses) mora em /perfil, não aqui.
  */
 @WebServlet("/inicio")
 public class InicioServlet extends HttpServlet {
@@ -36,39 +33,15 @@ public class InicioServlet extends HttpServlet {
 
 	private static final int LIMITE_FEED_SEM_FILTRO = 24;
 
-	private final InteracaoServico interacaoServico = new InteracaoServico();
 	private final ImovelDAO imovelDAO = new ImovelDAO();
 
 	@Override
 	protected void doGet(HttpServletRequest requisicao, HttpServletResponse resposta)
 			throws ServletException, IOException {
 
-		Usuario usuario = SessaoUsuario.obter(requisicao);
-
-		if (usuario != null) {
-			carregarResumoConta(requisicao, usuario);
-		}
-
 		carregarCatalogo(requisicao);
 
 		requisicao.getRequestDispatcher(PAGINA_INICIO).forward(requisicao, resposta);
-	}
-
-	/**
-	 * A nota é formatada aqui para que o JSP cuide apenas da apresentação,
-	 * sem precisar de biblioteca de tags para arredondar o número.
-	 */
-	private void carregarResumoConta(HttpServletRequest requisicao, Usuario usuario) {
-		try {
-			double reputacao = interacaoServico.calcularReputacao(usuario.getId());
-			requisicao.setAttribute("reputacao", String.format("%.1f", reputacao));
-			requisicao.setAttribute("totalAvaliacoes", interacaoServico.contarAvaliacoes(usuario.getId()));
-			requisicao.setAttribute("interessesPendentes",
-					interacaoServico.contarInteressesPendentes(usuario.getId()));
-		} catch (DAOException e) {
-			getServletContext().log("Falha ao carregar o resumo da conta.", e);
-			requisicao.setAttribute("erro", "Não foi possível carregar seus dados agora.");
-		}
 	}
 
 	/**

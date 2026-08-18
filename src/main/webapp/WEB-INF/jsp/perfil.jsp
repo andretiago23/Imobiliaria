@@ -33,48 +33,65 @@
   boolean temFoto = usuario.getFotoPerfil() != null && !usuario.getFotoPerfil().isBlank();
 %>
 
-<main class="app-main" style="max-width:860px;">
+<main class="app-main" style="max-width:900px;">
 
   <a class="voltar" href="${pageContext.request.contextPath}/inicio">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
     Voltar ao catálogo
   </a>
 
-  <div class="app-header">
-    <div>
-      <p class="eyebrow">Sua conta</p>
-      <h1 class="display">Meu perfil</h1>
-    </div>
-  </div>
-
   <p class="alerta alerta-erro" role="alert">${erro}</p>
 
-  <div class="perfil-grid">
-
-    <!-- ===================== FOTO + DADOS ===================== -->
-    <section class="perfil-card">
-      <h2>Foto de perfil</h2>
-      <form method="post" action="${pageContext.request.contextPath}/perfil" enctype="multipart/form-data" class="perfil-foto">
-        <input type="hidden" name="acao" value="foto">
-        <input type="hidden" name="csrf" value="${csrf}">
-
-        <div class="avatar avatar--grande">
+  <!-- ===================== CABEÇALHO DO PERFIL ===================== -->
+  <section class="perfil-hero">
+    <form method="post" action="${pageContext.request.contextPath}/perfil" enctype="multipart/form-data" id="formFoto">
+      <input type="hidden" name="acao" value="foto">
+      <input type="hidden" name="csrf" value="${csrf}">
+      <label for="foto" class="perfil-avatar-upload" title="Alterar foto de perfil">
+        <span class="avatar avatar--grande">
           <% if (temFoto) { %>
             <img src="${pageContext.request.contextPath}${sessionScope.usuarioLogado.fotoPerfil}" alt="">
           <% } else { %>
             ${sessionScope.usuarioLogado.inicial}
           <% } %>
-        </div>
+        </span>
+        <span class="perfil-avatar-upload__overlay">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          Alterar foto
+        </span>
+      </label>
+      <input type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp"
+        class="sr-only" onchange="this.form.requestSubmit()">
+    </form>
 
-        <div class="perfil-foto__campo">
-          <label for="foto">Escolher nova imagem</label>
-          <input type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp" required>
-          <p class="micro">JPG, PNG ou WEBP — até 3 MB.</p>
-          <button class="btn btn--secondary btn--sm" type="submit">Salvar foto</button>
-        </div>
-      </form>
+    <div class="perfil-hero__info">
+      <span class="badge" style="position:static;">${sessionScope.usuarioLogado.tipoUsuario.rotulo}</span>
+      <h1 class="display">${sessionScope.usuarioLogado.nomeExibicao}</h1>
+      <p class="micro">${sessionScope.usuarioLogado.email}</p>
+    </div>
+  </section>
 
-      <h2 style="margin-top:32px;">Seus dados</h2>
+  <!-- ===================== RESUMO DA CONTA ===================== -->
+  <section class="resumo-conta">
+    <div class="resumo-conta__item">
+      <div class="resumo-conta__valor">${reputacao}</div>
+      <div class="resumo-conta__rotulo micro">Sua reputação</div>
+    </div>
+    <div class="resumo-conta__item">
+      <div class="resumo-conta__valor">${totalAvaliacoes}</div>
+      <div class="resumo-conta__rotulo micro">Avaliações recebidas</div>
+    </div>
+    <div class="resumo-conta__item">
+      <div class="resumo-conta__valor">${interessesPendentes}</div>
+      <div class="resumo-conta__rotulo micro">Interesses pendentes</div>
+    </div>
+  </section>
+
+  <div class="perfil-grid">
+
+    <!-- ===================== DADOS DA CONTA ===================== -->
+    <section class="perfil-card">
+      <h2>Seus dados</h2>
       <form method="post" action="${pageContext.request.contextPath}/perfil" class="perfil-dados">
         <input type="hidden" name="acao" value="perfil">
         <input type="hidden" name="csrf" value="${csrf}">
