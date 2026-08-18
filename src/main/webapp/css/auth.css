@@ -37,6 +37,12 @@ body {
   margin-bottom: 40px;
 }
 
+.auth__logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
 .auth__form-inner .eyebrow {
   margin-bottom: 8px;
 }

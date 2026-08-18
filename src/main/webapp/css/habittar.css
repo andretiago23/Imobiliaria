@@ -407,6 +407,12 @@ h3.display {
   letter-spacing: -0.02em;
 }
 
+.logo img {
+  height: 30px;
+  width: auto;
+  display: block;
+}
+
 .nav__links {
   margin-left: auto;
   display: flex;

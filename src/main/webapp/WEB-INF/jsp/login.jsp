@@ -1,12 +1,12 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Entrar | Habittar</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=2">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=2">
 </head>
 <body>
 
@@ -22,11 +22,7 @@
 			</a>
 
 			<a class="auth__logo auth-anim auth-anim--1" href="${pageContext.request.contextPath}/index.jsp">
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-					<path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/>
-					<path d="M9 11.2 12 8.8l3 2.4V14h-6z"/>
-				</svg>
-				Habittar
+				<img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
 			</a>
 
 			<h1 class="display auth-anim auth-anim--2">Entrar</h1>
@@ -101,7 +97,7 @@
 
 </div>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=2"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=2"></script>
 </body>
 </html>

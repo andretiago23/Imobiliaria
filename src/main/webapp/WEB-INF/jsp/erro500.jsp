@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isErrorPage="true" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isErrorPage="true" %>
 <%
 	// A exceção não é exibida ao usuário — só fica registrada no log do
 	// servidor, com um código curto para localizar o incidente sem expor
@@ -15,8 +15,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Algo deu errado | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=2">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=2">
 </head>
 <body>
 <main class="app-main" style="max-width:520px;text-align:center;padding-top:96px;">

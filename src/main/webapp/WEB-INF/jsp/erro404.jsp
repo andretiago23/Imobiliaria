@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <% response.setStatus(404); %>
 <!doctype html>
 <html lang="pt-BR">
@@ -6,8 +6,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Página não encontrada | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=2">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=2">
 </head>
 <body>
 <main class="app-main" style="max-width:520px;text-align:center;padding-top:96px;">
