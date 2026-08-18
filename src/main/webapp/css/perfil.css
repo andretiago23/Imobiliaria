@@ -151,3 +151,30 @@
   font-size: 14px;
   transition: color 0.15s ease-out;
 }
+
+/* --------------------------------------------------------------------------
+   Privacidade e dados (LGPD)
+   -------------------------------------------------------------------------- */
+.perfil-privacidade__acoes {
+  margin-bottom: 8px;
+}
+
+.perfil-excluir {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+.perfil-excluir summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  color: #d64545;
+}
+.perfil-excluir input[type="text"] {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}

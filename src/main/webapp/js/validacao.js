@@ -123,6 +123,10 @@
 			if (senha && campo.value !== senha.value) return "As senhas não coincidem.";
 			return "";
 		},
+		aceiteTermos: function (campo) {
+			if (!campo.checked) return "É preciso concordar com a Política de Privacidade e os Termos de Uso.";
+			return "";
+		},
 	};
 
 	// -------------------------------------------------------------------

@@ -1,6 +1,7 @@
 package model;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -33,10 +34,20 @@ public class UsuarioServico {
 	 * o cadastro é recusado quando ela falha, de modo que a coluna cpf_valido
 	 * só recebe registros aprovados.
 	 *
-	 * @param usuario   dados preenchidos no formulário
-	 * @param senhaPura senha digitada, ainda sem hash
+	 * @param usuario       dados preenchidos no formulário
+	 * @param senhaPura     senha digitada, ainda sem hash
+	 * @param aceitouTermos true se a pessoa marcou a caixa de concordância com
+	 *                      a Política de Privacidade e os Termos de Uso — sem
+	 *                      isso, o cadastro não é aceito (LGPD, art. 8º)
 	 */
-	public void cadastrar(Usuario usuario, String senhaPura) throws RegraNegocioException, DAOException {
+	public void cadastrar(Usuario usuario, String senhaPura, boolean aceitouTermos)
+			throws RegraNegocioException, DAOException {
+
+		if (!aceitouTermos) {
+			throw new RegraNegocioException(
+					"É preciso concordar com a Política de Privacidade e os Termos de Uso para criar a conta.");
+		}
+
 		validarNome(usuario.getNome());
 		validarSenha(senhaPura);
 
@@ -63,6 +74,7 @@ public class UsuarioServico {
 		usuario.setCpf(cpf);
 		usuario.setCpfValido(true);
 		usuario.setSenha(HashSenha.gerar(senhaPura));
+		usuario.setTermosAceitosEm(LocalDateTime.now());
 
 		if (usuario.getTipoUsuario() == null) {
 			usuario.setTipoUsuario(TipoUsuario.COMPRADOR);
@@ -114,9 +126,10 @@ public class UsuarioServico {
 	 * aleatória que nunca é revelada a ninguém: ela existe só para satisfazer a
 	 * coluna obrigatória, e não pode ser usada para autenticar.
 	 */
-	public void cadastrarComLoginSocial(Usuario usuario) throws RegraNegocioException, DAOException {
+	public void cadastrarComLoginSocial(Usuario usuario, boolean aceitouTermos)
+			throws RegraNegocioException, DAOException {
 		String senhaAleatoria = Base64.getEncoder().encodeToString(gerarBytesAleatorios(32));
-		cadastrar(usuario, senhaAleatoria);
+		cadastrar(usuario, senhaAleatoria, aceitouTermos);
 	}
 
 	private byte[] gerarBytesAleatorios(int tamanho) {
@@ -193,6 +206,48 @@ public class UsuarioServico {
 
 		validarSenha(novaSenha);
 		usuarioDAO.atualizarSenha(idUsuario, HashSenha.gerar(novaSenha));
+	}
+
+	/**
+	 * Monta um relatório em texto simples com os dados pessoais do titular,
+	 * para atender ao direito de acesso e portabilidade (LGPD, art. 18, I e V).
+	 * Não inclui o hash da senha.
+	 */
+	public String exportarDados(int idUsuario) throws RegraNegocioException, DAOException {
+		Usuario usuario = usuarioDAO.buscarPorId(idUsuario)
+				.orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+		StringBuilder relatorio = new StringBuilder();
+		relatorio.append("Habittar — seus dados pessoais\n");
+		relatorio.append("Gerado em: ").append(LocalDateTime.now()).append("\n");
+		relatorio.append("=".repeat(48)).append("\n\n");
+		relatorio.append("Nome: ").append(vazioSeNulo(usuario.getNome())).append("\n");
+		relatorio.append("Apelido: ").append(vazioSeNulo(usuario.getApelido())).append("\n");
+		relatorio.append("E-mail: ").append(vazioSeNulo(usuario.getEmail())).append("\n");
+		relatorio.append("CPF: ").append(vazioSeNulo(usuario.getCpf())).append("\n");
+		relatorio.append("Telefone: ").append(vazioSeNulo(usuario.getTelefone())).append("\n");
+		relatorio.append("Tipo de conta: ")
+				.append(usuario.getTipoUsuario() == null ? "" : usuario.getTipoUsuario().getRotulo()).append("\n");
+		relatorio.append("Conta criada em: ").append(usuario.getDataCadastro()).append("\n");
+		relatorio.append("Termos de privacidade aceitos em: ").append(usuario.getTermosAceitosEm()).append("\n");
+		return relatorio.toString();
+	}
+
+	private String vazioSeNulo(String valor) {
+		return valor == null ? "" : valor;
+	}
+
+	/**
+	 * Atende ao direito de eliminação dos dados (LGPD, art. 18, VI): remove os
+	 * dados de identificação direta da conta. A linha em si é preservada —
+	 * anonimizada — porque imóveis, interesses e avaliações de outras pessoas
+	 * mantêm chave estrangeira para ela, e o banco não usa ON DELETE CASCADE.
+	 * A conta anonimizada não consegue mais autenticar.
+	 */
+	public void excluirConta(int idUsuario) throws DAOException {
+		String emailPlaceholder = "usuario-" + idUsuario + "@removido.habittar.invalid";
+		String senhaInutilizavel = HashSenha.gerar(Base64.getEncoder().encodeToString(gerarBytesAleatorios(32)));
+		usuarioDAO.anonimizar(idUsuario, emailPlaceholder, senhaInutilizavel);
 	}
 
 	private void validarNome(String nome) throws RegraNegocioException {

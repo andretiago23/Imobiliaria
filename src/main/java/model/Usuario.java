@@ -23,6 +23,7 @@ public class Usuario {
 	private String fotoPerfil;
 	private TipoUsuario tipoUsuario;
 	private LocalDateTime dataCadastro;
+	private LocalDateTime termosAceitosEm;
 
 	public Usuario() {
 	}
@@ -170,6 +171,19 @@ public class Usuario {
 
 	public void setDataCadastro(LocalDateTime dataCadastro) {
 		this.dataCadastro = dataCadastro;
+	}
+
+	/**
+	 * @return quando a pessoa aceitou a Política de Privacidade e os Termos de
+	 *         Uso vigentes no momento do cadastro, ou null se ainda não aceitou
+	 *         (contas antigas, criadas antes deste controle existir)
+	 */
+	public LocalDateTime getTermosAceitosEm() {
+		return termosAceitosEm;
+	}
+
+	public void setTermosAceitosEm(LocalDateTime termosAceitosEm) {
+		this.termosAceitosEm = termosAceitosEm;
 	}
 
 	/**

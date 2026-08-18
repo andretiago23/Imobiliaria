@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -10,18 +10,14 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=2">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
 <header class="nav">
   <div class="nav__inner">
     <a class="logo" href="#top" aria-label="Habittar — início">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/>
-        <path d="M9 11.2 12 8.8l3 2.4V14h-6z"/>
-      </svg>
-      Habittar
+      <img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
     </a>
     <nav class="nav__links">
       <a href="${pageContext.request.contextPath}/inicio?finalidade=venda">Comprar</a>
@@ -40,6 +36,13 @@
 </header>
 
 <main id="top">
+  <% if ("1".equals(request.getParameter("contaExcluida"))) { %>
+    <div class="wrap" style="padding-top:96px;">
+      <p class="alerta" style="background:#e6f5ec;border:1px solid #bfe3cd;color:#1c6b3f;border-radius:12px;padding:14px 18px;">
+        Sua conta foi excluída. Seus dados pessoais foram removidos, conforme a Política de Privacidade.
+      </p>
+    </div>
+  <% } %>
   <!-- ===================== HERO ===================== -->
   <section class="section hero">
     <div class="map-grid" aria-hidden="true"></div>
@@ -342,8 +345,7 @@
   <div class="footer__grid">
     <div>
       <a class="logo" href="#top">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><path d="M9 11.2 12 8.8l3 2.4V14h-6z"/></svg>
-        Habittar
+        <img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
       </a>
       <p style="font-size:14px;line-height:1.6;margin-top:16px;max-width:26ch">Encontrar onde morar é uma questão de precisão.</p>
     </div>
@@ -363,7 +365,7 @@
     </div>
     <div>
       <h4>Institucional</h4>
-      <ul><li><a href="#top">Termos de uso</a></li><li><a href="#top">Política de privacidade (LGPD)</a></li><li><a href="#top">Consentimento de dados</a></li><li><a href="#top">Contato</a></li><li><a href="#top">CRECI 00000-J</a></li></ul>
+      <ul><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Termos de uso</a></li><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Política de privacidade (LGPD)</a></li><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Segurança da informação</a></li><li><a href="#top">Contato</a></li><li><a href="#top">CRECI 00000-J</a></li></ul>
     </div>
   </div>
   <div class="footer__base">
@@ -372,6 +374,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/resources/js/habittar.js"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=2"></script>
 </body>
 </html>

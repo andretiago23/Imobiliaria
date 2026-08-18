@@ -54,10 +54,34 @@ public class PerfilServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest requisicao, HttpServletResponse resposta)
 			throws ServletException, IOException {
 
+		if ("exportar".equals(requisicao.getParameter("acao"))) {
+			exportarDados(requisicao, resposta);
+			return;
+		}
+
 		carregarResumoConta(requisicao);
 		carregarSecaoDoPerfil(requisicao);
 		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 		requisicao.getRequestDispatcher(PAGINA_PERFIL).forward(requisicao, resposta);
+	}
+
+	/**
+	 * Direito de acesso e portabilidade (LGPD, art. 18): entrega um arquivo de
+	 * texto com os dados pessoais do próprio titular, para download imediato.
+	 */
+	private void exportarDados(HttpServletRequest requisicao, HttpServletResponse resposta)
+			throws IOException {
+
+		Usuario usuario = SessaoUsuario.obter(requisicao);
+		try {
+			String relatorio = usuarioServico.exportarDados(usuario.getId());
+			resposta.setContentType("text/plain; charset=UTF-8");
+			resposta.setHeader("Content-Disposition", "attachment; filename=\"meus-dados-habittar.txt\"");
+			resposta.getWriter().write(relatorio);
+		} catch (RegraNegocioException | DAOException e) {
+			getServletContext().log("Falha ao exportar os dados do usuário.", e);
+			resposta.sendRedirect(requisicao.getContextPath() + "/perfil");
+		}
 	}
 
 	/**
@@ -91,8 +115,42 @@ public class PerfilServlet extends HttpServlet {
 		String acao = requisicao.getParameter("acao");
 		if ("foto".equals(acao)) {
 			atualizarFoto(requisicao, resposta);
+		} else if ("excluir".equals(acao)) {
+			excluirConta(requisicao, resposta);
 		} else {
 			atualizarDadosBasicos(requisicao, resposta);
+		}
+	}
+
+	/**
+	 * Direito de eliminação (LGPD, art. 18, VI): anonimiza a conta e encerra a
+	 * sessão. Exige que a pessoa digite "EXCLUIR" para confirmar — ação
+	 * irreversível pelo próprio usuário.
+	 */
+	private void excluirConta(HttpServletRequest requisicao, HttpServletResponse resposta)
+			throws ServletException, IOException {
+
+		if (!"EXCLUIR".equals(requisicao.getParameter("confirmacao"))) {
+			requisicao.setAttribute("erro", "Digite EXCLUIR, em maiúsculas, para confirmar a exclusão da conta.");
+			carregarResumoConta(requisicao);
+			carregarSecaoDoPerfil(requisicao);
+			requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
+			requisicao.getRequestDispatcher(PAGINA_PERFIL).forward(requisicao, resposta);
+			return;
+		}
+
+		Usuario usuario = SessaoUsuario.obter(requisicao);
+		try {
+			usuarioServico.excluirConta(usuario.getId());
+			SessaoUsuario.encerrar(requisicao);
+			resposta.sendRedirect(requisicao.getContextPath() + "/index.jsp?contaExcluida=1");
+		} catch (DAOException e) {
+			getServletContext().log("Falha ao excluir a conta do usuário " + usuario.getId() + ".", e);
+			requisicao.setAttribute("erro", "Não foi possível excluir a conta agora. Tente novamente em instantes.");
+			carregarResumoConta(requisicao);
+			carregarSecaoDoPerfil(requisicao);
+			requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
+			requisicao.getRequestDispatcher(PAGINA_PERFIL).forward(requisicao, resposta);
 		}
 	}
 

@@ -1,0 +1,10 @@
+# Garante que binários nunca passem pela conversão de fim de linha do
+# Git (core.autocrlf) — isso corromperia o arquivo.
+*.pdf -text
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.jar -text
+*.msi -text
+*.ico -text
+*.webp -text

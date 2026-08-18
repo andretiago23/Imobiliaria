@@ -83,7 +83,8 @@ public class CadastroServlet extends HttpServlet {
 
 		try {
 			Usuario usuario = montarUsuario(requisicao);
-			usuarioServico.cadastrar(usuario, senha);
+			boolean aceitouTermos = "on".equals(requisicao.getParameter("aceiteTermos"));
+			usuarioServico.cadastrar(usuario, senha, aceitouTermos);
 
 			// Entra direto no sistema após o cadastro, evitando pedir os mesmos
 			// dados duas vezes seguidas.
@@ -120,7 +121,8 @@ public class CadastroServlet extends HttpServlet {
 			usuario.setTelefone(requisicao.getParameter("telefone"));
 			usuario.setTipoUsuario(ConversorEnum.paraEnum(TipoUsuario.class, requisicao.getParameter("tipoUsuario")));
 
-			usuarioServico.cadastrarComLoginSocial(usuario);
+			boolean aceitouTermos = "on".equals(requisicao.getParameter("aceiteTermos"));
+			usuarioServico.cadastrarComLoginSocial(usuario, aceitouTermos);
 
 			HttpSession sessao = requisicao.getSession();
 			sessao.removeAttribute(GoogleOAuthServlet.SESSAO_PENDENTE_NOME);
@@ -172,6 +174,7 @@ public class CadastroServlet extends HttpServlet {
 		requisicao.setAttribute("cpf", Html.escapar(requisicao.getParameter("cpf")));
 		requisicao.setAttribute("telefone", Html.escapar(requisicao.getParameter("telefone")));
 		requisicao.setAttribute("tipoUsuario", Html.escapar(requisicao.getParameter("tipoUsuario")));
+		requisicao.setAttribute("aceiteTermos", "on".equals(requisicao.getParameter("aceiteTermos")));
 		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 		requisicao.getRequestDispatcher(PAGINA_CADASTRO).forward(requisicao, resposta);
 	}

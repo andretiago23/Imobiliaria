@@ -23,8 +23,8 @@ import util.LeitorResultSet;
 public class UsuarioDAO {
 
 	private static final String SQL_INSERIR = """
-			INSERT INTO usuario (nome, email, senha, cpf, cpf_valido, telefone, foto_perfil, tipo_usuario)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+			INSERT INTO usuario (nome, email, senha, cpf, cpf_valido, telefone, foto_perfil, tipo_usuario, termos_aceitos_em)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 			""";
 
 	/**
@@ -33,7 +33,7 @@ public class UsuarioDAO {
 	 */
 	static final String COLUNAS = """
 			u.id, u.nome, u.apelido, u.email, u.email_confirmado, u.senha, u.cpf, u.cpf_valido, u.telefone,
-			u.telefone_confirmado, u.foto_perfil, u.tipo_usuario, u.data_cadastro
+			u.telefone_confirmado, u.foto_perfil, u.tipo_usuario, u.data_cadastro, u.termos_aceitos_em
 			""";
 
 	private static final String SQL_SELECT_BASE = "SELECT " + COLUNAS + " FROM usuario u";
@@ -60,6 +60,23 @@ public class UsuarioDAO {
 
 	private static final String SQL_REMOVER = "DELETE FROM usuario WHERE id = ?";
 
+	/**
+	 * Anonimiza os dados de identificação diretos, preservando a linha (e as
+	 * chaves estrangeiras que outras tabelas mantêm com ela — imóveis,
+	 * interesses, avaliações) como histórico. É assim que o "excluir minha
+	 * conta" da LGPD é atendido sem quebrar integridade referencial nem apagar
+	 * o histórico de negociações de terceiros.
+	 */
+	private static final String SQL_ANONIMIZAR = """
+			UPDATE usuario
+			SET nome = 'Usuário removido', apelido = NULL, email = ?, senha = ?,
+			    telefone = NULL, foto_perfil = NULL
+			WHERE id = ?
+			""";
+
+	private static final String SQL_REGISTRAR_ACEITE_TERMOS =
+			"UPDATE usuario SET termos_aceitos_em = ? WHERE id = ?";
+
 	private static final String SQL_CONTAR_POR_EMAIL = "SELECT COUNT(*) FROM usuario WHERE email = ?";
 
 	private static final String SQL_CONTAR_POR_CPF = "SELECT COUNT(*) FROM usuario WHERE cpf = ?";
@@ -79,6 +96,7 @@ public class UsuarioDAO {
 			comando.setString(6, usuario.getTelefone());
 			comando.setString(7, usuario.getFotoPerfil());
 			comando.setString(8, ConversorEnum.paraBanco(usuario.getTipoUsuario()));
+			comando.setObject(9, usuario.getTermosAceitosEm());
 			comando.executeUpdate();
 
 			try (ResultSet chaves = comando.getGeneratedKeys()) {
@@ -169,6 +187,21 @@ public class UsuarioDAO {
 	}
 
 	/**
+	 * @param emailPlaceholder e-mail único e não reaproveitável para liberar o
+	 *                         e-mail original para um futuro cadastro
+	 * @param senhaHash        hash de uma senha aleatória: a conta some do login
+	 */
+	public void anonimizar(int idUsuario, String emailPlaceholder, String senhaHash) throws DAOException {
+		executarAtualizacao(SQL_ANONIMIZAR, "Erro ao anonimizar o usuário de id " + idUsuario + ".",
+				emailPlaceholder, senhaHash, idUsuario);
+	}
+
+	public void registrarAceiteTermos(int idUsuario, java.time.LocalDateTime momento) throws DAOException {
+		executarAtualizacao(SQL_REGISTRAR_ACEITE_TERMOS,
+				"Erro ao registrar o aceite dos termos do usuário de id " + idUsuario + ".", momento, idUsuario);
+	}
+
+	/**
 	 * Verificação usada no cadastro, já que a coluna email é UNIQUE.
 	 */
 	public boolean emailJaCadastrado(String email) throws DAOException {
@@ -242,6 +275,7 @@ public class UsuarioDAO {
 		usuario.setFotoPerfil(resultado.getString("foto_perfil"));
 		usuario.setTipoUsuario(ConversorEnum.paraEnum(TipoUsuario.class, resultado.getString("tipo_usuario")));
 		usuario.setDataCadastro(LeitorResultSet.lerDataHora(resultado, "data_cadastro"));
+		usuario.setTermosAceitosEm(LeitorResultSet.lerDataHora(resultado, "termos_aceitos_em"));
 		return usuario;
 	}
 }

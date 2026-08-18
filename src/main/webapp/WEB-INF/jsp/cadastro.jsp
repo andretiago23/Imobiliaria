@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
 	// Mapeia a mensagem de erro do servidor para o campo correspondente, para
 	// que ela apareça embaixo do campo certo em vez de só num aviso genérico.
@@ -26,8 +26,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Criar conta | Habittar</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=2">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=2">
 </head>
 <body>
 
@@ -43,11 +43,7 @@
 			</a>
 
 			<a class="auth__logo auth-anim auth-anim--1" href="${pageContext.request.contextPath}/index.jsp">
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-					<path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/>
-					<path d="M9 11.2 12 8.8l3 2.4V14h-6z"/>
-				</svg>
-				Habittar
+				<img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
 			</a>
 
 			<h1 class="display auth-anim auth-anim--2">
@@ -140,6 +136,18 @@
 				</div>
 				<% } %>
 
+				<div class="auth__campo auth-anim auth-anim--5">
+					<label class="auth__lembrar" for="aceiteTermos" style="align-items:flex-start;">
+						<input type="checkbox" id="aceiteTermos" name="aceiteTermos" data-validar="aceiteTermos"
+							${aceiteTermos ? 'checked' : ''} required>
+						<span>Li e concordo com a
+							<a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Política de Privacidade e os Termos de Uso</a>
+							(LGPD).
+						</span>
+					</label>
+					<span class="campo-erro" id="erro-aceiteTermos"></span>
+				</div>
+
 				<button type="submit" class="btn btn--primary auth-anim auth-anim--6" style="width:100%;margin-top:8px;" id="botaoCadastrar">Criar conta</button>
 			</form>
 
@@ -159,7 +167,7 @@
 
 </div>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=2"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=2"></script>
 </body>
 </html>

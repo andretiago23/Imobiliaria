@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List, java.util.Locale, java.text.NumberFormat, model.Usuario, model.Imovel, model.ContatoInteresse, model.StatusImovel" %>
 <!doctype html>
 <html lang="pt-BR">
@@ -6,20 +6,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Meu perfil | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/perfil.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=2">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=2">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/perfil.css?v=2">
 </head>
 <body>
 
 <header class="nav is-scrolled">
   <div class="nav__inner">
     <a class="logo" href="${pageContext.request.contextPath}/inicio" aria-label="Habittar — catálogo">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/>
-        <path d="M9 11.2 12 8.8l3 2.4V14h-6z"/>
-      </svg>
-      Habittar
+      <img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
     </a>
     <nav class="nav__links">
       <a href="${pageContext.request.contextPath}/inicio">Catálogo</a>
@@ -181,9 +177,47 @@
     </section>
   </div>
 
+  <!-- ===================== PRIVACIDADE E DADOS (LGPD) ===================== -->
+  <section class="perfil-card" style="margin-top:24px;">
+    <h2>Privacidade e dados</h2>
+    <p class="micro" style="margin:0 0 16px;">
+      Você concordou com a
+      <a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Política de Privacidade e os Termos de Uso</a>
+      <% if (usuario.getTermosAceitosEm() != null) { %>
+        em <%= usuario.getTermosAceitosEm().toLocalDate() %>.
+      <% } else { %>
+        — ainda não temos o registro desse aceite para esta conta (criada antes deste controle existir).
+      <% } %>
+    </p>
+
+    <div class="perfil-privacidade__acoes">
+      <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/perfil?acao=exportar">
+        Baixar meus dados
+      </a>
+    </div>
+
+    <details class="perfil-excluir">
+      <summary>Excluir minha conta</summary>
+      <p class="micro" style="margin:12px 0;">
+        Isso remove seu nome, apelido, telefone e foto de perfil, e desativa o login. Seus anúncios,
+        interesses e avaliações permanecem como histórico, sem dados que te identifiquem — assim como
+        já informado no envio de interesse. Essa ação não pode ser desfeita.
+      </p>
+      <form method="post" action="${pageContext.request.contextPath}/perfil">
+        <input type="hidden" name="acao" value="excluir">
+        <input type="hidden" name="csrf" value="${csrf}">
+        <label for="confirmacaoExclusao" class="micro">Digite <b>EXCLUIR</b> para confirmar</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <input type="text" id="confirmacaoExclusao" name="confirmacao" placeholder="EXCLUIR" style="flex:1;">
+          <button class="btn" type="submit" style="background:#d64545;color:#fff;flex:0 0 auto;">Excluir conta</button>
+        </div>
+      </form>
+    </details>
+  </section>
+
 </main>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=2"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=2"></script>
 </body>
 </html>

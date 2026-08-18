@@ -37,7 +37,7 @@ public class FiltroAutenticacao implements Filter {
 			"/inicio", "/auth/google", "/auth/google/callback", "/financiamento");
 
 	/** Pastas de conteúdo estático, liberadas para que o visual carregue na tela de login. */
-	private static final Set<String> PASTAS_LIVRES = Set.of("/css/", "/js/", "/imagens/");
+	private static final Set<String> PASTAS_LIVRES = Set.of("/css/", "/js/", "/imagens/", "/legal/");
 
 	@Override
 	public void doFilter(ServletRequest requisicao, ServletResponse resposta, FilterChain cadeia)
