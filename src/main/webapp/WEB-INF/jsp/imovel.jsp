@@ -6,8 +6,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= request.getAttribute("imovel") != null ? util.Html.escapar(((Imovel) request.getAttribute("imovel")).getTitulo()) + " | Habittar" : "Imóvel | Habittar" %></title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=7">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=7">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=8">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=8">
 </head>
 <body>
 

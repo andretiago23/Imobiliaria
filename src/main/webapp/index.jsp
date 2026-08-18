@@ -10,7 +10,7 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=7">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=8">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -49,8 +49,7 @@
     <div class="wrap hero__grid">
       <div>
         <p class="eyebrow">Portal imobiliário por localização</p>
-        <h1 class="display">Seu bairro, seu tipo de negócio,<br><span class="hl">um clique</span>.</h1>
-        <p class="lead">Busque por rua, bairro ou cidade e veja o catálogo completo da Habittar na hora. Sem cadastro para explorar, sem promessa vaga: o resultado aparece antes do discurso.</p>
+        <h1 class="display">O imóvel certo está <span class="hl">mais perto</span> do que você imagina.</h1>
 
         <form class="search" action="${pageContext.request.contextPath}/inicio" method="get" role="search" id="formBuscaHero">
           <div class="segment" role="group" aria-label="Tipo de negócio">
@@ -68,12 +67,6 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
           </button>
         </form>
-
-        <div class="hero__stats">
-          <span><b>1.284</b> imóveis ativos</span>
-          <span><b>156</b> em Pinheiros</span>
-          <span><b>42</b> novos esta semana</span>
-        </div>
       </div>
 
       <div class="scene" aria-hidden="true">
@@ -123,17 +116,23 @@
     <div class="wrap">
       <div class="cats reveal">
         <a class="cat" href="${pageContext.request.contextPath}/inicio?finalidade=venda">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16151F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9.5 21v-6h5v6"/></svg>
+          <span class="cat__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9.5 21v-6h5v6"/></svg>
+          </span>
           <div><h3 class="display">Comprar</h3><p>Apartamentos, casas e terrenos com ficha técnica completa, preço por m² e endereço exato após o login.</p></div>
           <span class="cat__arrow micro">Ver catálogo →</span>
         </a>
         <a class="cat" href="${pageContext.request.contextPath}/inicio?finalidade=aluguel">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16151F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3M3 13h18"/></svg>
+          <span class="cat__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V4h8v3M3 13h18"/></svg>
+          </span>
           <div><h3 class="display">Alugar</h3><p>Do primeiro apê ao imóvel da família: filtro por valor máximo, quartos mínimos e bairro real, não região genérica.</p></div>
           <span class="cat__arrow micro">Ver catálogo →</span>
         </a>
         <a class="cat" href="#anunciar">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16151F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><path d="M12 7.5v5M9.5 10h5"/></svg>
+          <span class="cat__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><path d="M12 7.5v5M9.5 10h5"/></svg>
+          </span>
           <div><h3 class="display">Vender</h3><p>Coloque seu imóvel no mapa e receba interesses qualificados, com simulação de financiamento anexada.</p></div>
           <span class="cat__arrow micro">Anunciar →</span>
         </a>
@@ -151,7 +150,7 @@
           <p class="eyebrow">Catálogo</p>
           <h2 class="display">Imóveis em <span class="hl">destaque</span></h2>
         </div>
-        <p class="micro">156 imóveis próximos • atualizado há 12 min</p>
+        <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/inicio">Ver mais →</a>
       </div>
 
       <div class="props">
@@ -340,8 +339,8 @@
     <div class="wrap">
       <div class="cta__card">
         <p class="eyebrow">Anuncie com a Habittar</p>
-        <h2 class="display">Seu imóvel pode estar no <span class="hl">mapa hoje</span></h2>
-        <p class="lead">Publicação com ficha técnica completa, selo de status e leads qualificados chegando direto no painel da imobiliária.</p>
+        <h2 class="display">Chega de esperar. <span class="hl">Anuncie agora.</span></h2>
+        <p class="lead">Grátis, rápido e direto ao ponto: seu imóvel no ar em minutos, visível para quem já está procurando.</p>
         <div class="cta__actions">
           <a class="btn btn--primary" href="${pageContext.request.contextPath}/anunciar">
             <span class="btn__pin" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
@@ -389,6 +388,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=7"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=8"></script>
 </body>
 </html>
