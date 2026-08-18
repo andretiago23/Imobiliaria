@@ -168,6 +168,25 @@ h3.display {
   color: var(--accent-primary);
 }
 
+/* Remove as setinhas nativas de incremento/decremento dos campos numéricos
+   (filtros de preço, área, formulário de anúncio) — visualmente destoavam
+   do resto dos inputs "glass"/outline do site. */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Ícones inline usados nas fichas técnicas de imóvel (catálogo e detalhe) */
+.ficha-icone {
+  display: inline-flex;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
 /* Some visualmente mas mantém acessível a leitor de tela e navegável por
    teclado — usado, por exemplo, no input de arquivo do upload de foto. */
 .sr-only {
@@ -805,13 +824,19 @@ h3.display {
 }
 .card__specs {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 14px;
   margin-top: 14px;
   padding-top: 14px;
   border-top: 1px solid var(--border-subtle);
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--text-secondary);
+}
+.card__specs span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 @media (max-width: 900px) {
   .props {

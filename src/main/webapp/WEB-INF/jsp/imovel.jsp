@@ -6,8 +6,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= request.getAttribute("imovel") != null ? util.Html.escapar(((Imovel) request.getAttribute("imovel")).getTitulo()) + " | Habittar" : "Imóvel | Habittar" %></title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=9">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=9">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=11">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=11">
 </head>
 <body>
 
@@ -94,18 +94,22 @@
 
       <div class="ficha-tecnica">
         <div>
+          <svg class="ficha-icone" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
           <div class="ficha-tecnica__valor"><%= area.format(imovel.getAreaM2()) %> m²</div>
           <div class="micro">Área</div>
         </div>
         <div>
+          <svg class="ficha-icone" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
           <div class="ficha-tecnica__valor"><%= imovel.getQuartos() %></div>
           <div class="micro">Quarto(s)</div>
         </div>
         <div>
+          <svg class="ficha-icone" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.7 17.66 8.4A8 8 0 1 1 6.34 8.4Z"/></svg>
           <div class="ficha-tecnica__valor"><%= imovel.getBanheiros() %></div>
           <div class="micro">Banheiro(s)</div>
         </div>
         <div>
+          <svg class="ficha-icone" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>
           <div class="ficha-tecnica__valor"><%= imovel.getVagasGaragem() %></div>
           <div class="micro">Vaga(s)</div>
         </div>
@@ -166,6 +170,41 @@
       <% } %>
     </aside>
   </div>
+
+  <%
+    @SuppressWarnings("unchecked")
+    java.util.List<Imovel> similares = (java.util.List<Imovel>) request.getAttribute("similares");
+    if (similares != null && !similares.isEmpty()) {
+  %>
+  <section class="imovel-similares">
+    <h2 class="display" style="font-size:22px;">Similares na mesma <span class="hl">região</span></h2>
+    <div class="catalogo__grade">
+      <% for (Imovel parecido : similares) {
+        boolean aluguelParecido = parecido.getFinalidade() == Finalidade.ALUGUEL;
+      %>
+      <article class="card">
+        <div class="card__photo tem-foto">
+          <img src="<%= util.ImagemImovel.urlIlustrativa(parecido.getTipo(), parecido.getId()) %>"
+            alt="Foto ilustrativa de <%= util.Html.escapar(parecido.getTitulo()) %>" loading="lazy">
+          <span class="badge"><%= aluguelParecido ? "Aluguel" : "Venda" %></span>
+        </div>
+        <div class="card__body">
+          <div class="card__price">
+            <%= moeda.format(parecido.getPreco()) %>
+            <% if (aluguelParecido) { %><span class="micro">/mês</span><% } %>
+          </div>
+          <p style="margin:6px 0 0;font-weight:600;"><%= util.Html.escapar(parecido.getTitulo()) %></p>
+          <div class="card__specs">
+            <span><%= area.format(parecido.getAreaM2()) %> m²</span>
+            <span><%= parecido.getQuartos() %> qto(s)</span>
+          </div>
+        </div>
+        <a class="btn btn--secondary btn--sm card__link" href="${pageContext.request.contextPath}/imovel?id=<%= parecido.getId() %>">Ver detalhes</a>
+      </article>
+      <% } %>
+    </div>
+  </section>
+  <% } %>
   <% } %>
 
 </main>

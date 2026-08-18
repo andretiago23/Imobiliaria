@@ -44,6 +44,7 @@ public class ImovelServlet extends HttpServlet {
 				return;
 			}
 			requisicao.setAttribute("imovel", imovel.get());
+			requisicao.setAttribute("similares", imovelDAO.listarSimilares(imovel.get().getCidade(), id, 3));
 		} catch (DAOException e) {
 			getServletContext().log("Falha ao carregar o imóvel de id " + id + ".", e);
 			requisicao.setAttribute("erro", "Não foi possível carregar este imóvel agora.");

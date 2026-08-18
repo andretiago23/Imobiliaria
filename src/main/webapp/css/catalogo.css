@@ -556,6 +556,7 @@ body {
   overflow: hidden;
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
 }
 .imovel-detalhe__foto img {
   width: 100%;
@@ -583,11 +584,23 @@ body {
   padding: 20px 0;
   margin-bottom: 24px;
 }
+.ficha-tecnica .ficha-icone {
+  margin-bottom: 6px;
+}
 
 .ficha-tecnica__valor {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 22px;
+}
+
+.imovel-similares {
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border-subtle);
+}
+.imovel-similares h2 {
+  margin: 0 0 20px;
 }
 
 /* Painel lateral: preço + ação de interesse */

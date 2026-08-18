@@ -67,6 +67,10 @@ public class ImovelDAO {
 	private static final String SQL_LISTAR_ATIVOS = SQL_SELECT_BASE
 			+ " WHERE i.status IN ('ativo', 'reservado') ORDER BY i.data_publicacao DESC LIMIT ?";
 
+	private static final String SQL_LISTAR_SIMILARES = SQL_SELECT_BASE
+			+ " WHERE i.status IN ('ativo', 'reservado') AND i.cidade = ? AND i.id <> ?"
+			+ " ORDER BY i.data_publicacao DESC LIMIT ?";
+
 	private static final String SQL_ATUALIZAR_STATUS = "UPDATE imovel SET status = ? WHERE id = ?";
 
 	private static final String SQL_REMOVER = "DELETE FROM imovel WHERE id = ?";
@@ -187,6 +191,18 @@ public class ImovelDAO {
 			sql.append(" AND i.quartos >= ?");
 			parametros.add(filtro.getQuartosMinimo());
 		}
+		if (filtro.getBanheirosMinimo() != null) {
+			sql.append(" AND i.banheiros >= ?");
+			parametros.add(filtro.getBanheirosMinimo());
+		}
+		if (filtro.getVagasMinimo() != null) {
+			sql.append(" AND i.vagas_garagem >= ?");
+			parametros.add(filtro.getVagasMinimo());
+		}
+		if (filtro.getAreaMinima() != null) {
+			sql.append(" AND i.area_m2 >= ?");
+			parametros.add(filtro.getAreaMinima());
+		}
 		sql.append(" ORDER BY i.data_publicacao DESC");
 
 		try (Connection conexao = ConnectionFactory.obterConexao();
@@ -198,6 +214,27 @@ public class ImovelDAO {
 			return executarConsulta(comando);
 		} catch (SQLException e) {
 			throw new DAOException("Erro ao buscar imóveis com filtros.", e);
+		}
+	}
+
+	/**
+	 * Lista outros anúncios ativos na mesma cidade, usados na seção "Similares
+	 * na mesma região" da página de detalhe. Sem cidade cadastrada, retorna
+	 * uma lista vazia em vez de trazer imóveis de qualquer lugar.
+	 */
+	public List<Imovel> listarSimilares(String cidade, int idExcluir, int limite) throws DAOException {
+		if (cidade == null || cidade.isBlank()) {
+			return new ArrayList<>();
+		}
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_LISTAR_SIMILARES)) {
+
+			comando.setString(1, cidade);
+			comando.setInt(2, idExcluir);
+			comando.setInt(3, limite);
+			return executarConsulta(comando);
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao listar imóveis similares na cidade " + cidade + ".", e);
 		}
 	}
 

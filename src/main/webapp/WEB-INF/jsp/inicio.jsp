@@ -6,19 +6,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catálogo | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=9">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=9">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=11">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=11">
 </head>
 <body>
 
 <!-- ===================== HEADER ===================== -->
 <header class="nav is-scrolled">
   <div class="nav__inner">
-    <a class="logo" href="${pageContext.request.contextPath}/inicio" aria-label="Habittar — catálogo">
+    <a class="logo" href="${pageContext.request.contextPath}/index.jsp" aria-label="Habittar — página principal">
       <img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
     </a>
     <nav class="nav__links">
-      <a href="${pageContext.request.contextPath}/index.jsp">Início</a>
       <a class="${filtro.finalidade == 'VENDA' ? 'is-current' : ''}" href="${pageContext.request.contextPath}/inicio?finalidade=venda" ${filtro.finalidade == 'VENDA' ? 'aria-current="page"' : ''}>Comprar</a>
       <a class="${filtro.finalidade == 'ALUGUEL' ? 'is-current' : ''}" href="${pageContext.request.contextPath}/inicio?finalidade=aluguel" ${filtro.finalidade == 'ALUGUEL' ? 'aria-current="page"' : ''}>Alugar</a>
       <a href="${pageContext.request.contextPath}/anunciar">Anunciar</a>
@@ -124,15 +123,61 @@
       </div>
 
       <div class="filtro-secao">
+        <h3>Banheiros</h3>
+        <div class="pills">
+          <input type="radio" name="banheirosMinimo" value="" id="b0" class="pill-input" ${empty filtro.banheirosMinimo ? 'checked' : ''}>
+          <label for="b0" class="pill">Todos</label>
+          <input type="radio" name="banheirosMinimo" value="1" id="b1" class="pill-input" ${filtro.banheirosMinimo == 1 ? 'checked' : ''}>
+          <label for="b1" class="pill">1+</label>
+          <input type="radio" name="banheirosMinimo" value="2" id="b2" class="pill-input" ${filtro.banheirosMinimo == 2 ? 'checked' : ''}>
+          <label for="b2" class="pill">2+</label>
+          <input type="radio" name="banheirosMinimo" value="3" id="b3" class="pill-input" ${filtro.banheirosMinimo == 3 ? 'checked' : ''}>
+          <label for="b3" class="pill">3+</label>
+          <input type="radio" name="banheirosMinimo" value="4" id="b4" class="pill-input" ${filtro.banheirosMinimo == 4 ? 'checked' : ''}>
+          <label for="b4" class="pill">4+</label>
+        </div>
+      </div>
+
+      <div class="filtro-secao">
+        <h3>Vagas de garagem</h3>
+        <div class="pills">
+          <input type="radio" name="vagasMinimo" value="" id="v0" class="pill-input" ${empty filtro.vagasMinimo ? 'checked' : ''}>
+          <label for="v0" class="pill">Todas</label>
+          <input type="radio" name="vagasMinimo" value="1" id="v1" class="pill-input" ${filtro.vagasMinimo == 1 ? 'checked' : ''}>
+          <label for="v1" class="pill">1+</label>
+          <input type="radio" name="vagasMinimo" value="2" id="v2" class="pill-input" ${filtro.vagasMinimo == 2 ? 'checked' : ''}>
+          <label for="v2" class="pill">2+</label>
+          <input type="radio" name="vagasMinimo" value="3" id="v3" class="pill-input" ${filtro.vagasMinimo == 3 ? 'checked' : ''}>
+          <label for="v3" class="pill">3+</label>
+        </div>
+      </div>
+
+      <div class="filtro-secao">
+        <h3>Área do imóvel</h3>
+        <div class="pills">
+          <input type="radio" name="areaMinima" value="" id="a0" class="pill-input" ${empty filtro.areaMinima ? 'checked' : ''}>
+          <label for="a0" class="pill">Qualquer</label>
+          <input type="radio" name="areaMinima" value="40" id="a1" class="pill-input" ${filtro.areaMinima == 40.0 ? 'checked' : ''}>
+          <label for="a1" class="pill">40m²+</label>
+          <input type="radio" name="areaMinima" value="70" id="a2" class="pill-input" ${filtro.areaMinima == 70.0 ? 'checked' : ''}>
+          <label for="a2" class="pill">70m²+</label>
+          <input type="radio" name="areaMinima" value="100" id="a3" class="pill-input" ${filtro.areaMinima == 100.0 ? 'checked' : ''}>
+          <label for="a3" class="pill">100m²+</label>
+          <input type="radio" name="areaMinima" value="150" id="a4" class="pill-input" ${filtro.areaMinima == 150.0 ? 'checked' : ''}>
+          <label for="a4" class="pill">150m²+</label>
+        </div>
+      </div>
+
+      <div class="filtro-secao">
         <h3>Preço</h3>
         <div class="filtro-preco">
           <label>
             <span class="micro">Mínimo</span>
-            <input type="number" name="precoMinimo" min="0" step="1000" placeholder="R$ 0" value="${filtro.precoMinimo}">
+            <input type="number" name="precoMinimo" min="0" step="1" inputmode="numeric" placeholder="R$ 0" value="${filtro.precoMinimo}">
           </label>
           <label>
             <span class="micro">Máximo</span>
-            <input type="number" name="precoMaximo" min="0" step="1000" placeholder="R$ 0" value="${filtro.precoMaximo}">
+            <input type="number" name="precoMaximo" min="0" step="1" inputmode="numeric" placeholder="R$ 0" value="${filtro.precoMaximo}">
           </label>
         </div>
       </div>
@@ -160,6 +205,9 @@
         rotulosFiltro.put("finalidade", "Negócio: ");
         rotulosFiltro.put("tipo", "Tipo: ");
         rotulosFiltro.put("quartosMinimo", "Quartos ≥ ");
+        rotulosFiltro.put("banheirosMinimo", "Banheiros ≥ ");
+        rotulosFiltro.put("vagasMinimo", "Vagas ≥ ");
+        rotulosFiltro.put("areaMinima", "Área ≥ ");
         rotulosFiltro.put("precoMinimo", "Preço mín. ");
         rotulosFiltro.put("precoMaximo", "Preço máx. ");
         java.util.List<String> chips = new java.util.ArrayList<>();
@@ -248,10 +296,22 @@
                 <% } %>
               </div>
               <div class="card__specs">
-                <span><%= area.format(imovel.getAreaM2()) %> m²</span>
-                <span><%= imovel.getQuartos() %> qto(s)</span>
-                <span><%= imovel.getBanheiros() %> banh.</span>
-                <span><%= imovel.getVagasGaragem() %> vaga(s)</span>
+                <span title="Área">
+                  <svg class="ficha-icone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+                  <%= area.format(imovel.getAreaM2()) %> m²
+                </span>
+                <span title="Quartos">
+                  <svg class="ficha-icone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+                  <%= imovel.getQuartos() %> qto(s)
+                </span>
+                <span title="Banheiros">
+                  <svg class="ficha-icone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.7 17.66 8.4A8 8 0 1 1 6.34 8.4Z"/></svg>
+                  <%= imovel.getBanheiros() %> banh.
+                </span>
+                <span title="Vagas de garagem">
+                  <svg class="ficha-icone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>
+                  <%= imovel.getVagasGaragem() %> vaga(s)
+                </span>
               </div>
             </div>
             <a class="btn btn--secondary btn--sm card__link" href="${pageContext.request.contextPath}/imovel?id=<%= imovel.getId() %>">Ver detalhes</a>

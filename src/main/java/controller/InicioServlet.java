@@ -72,13 +72,18 @@ public class InicioServlet extends HttpServlet {
 		filtro.setPrecoMinimo(paramDecimal(requisicao, "precoMinimo"));
 		filtro.setPrecoMaximo(paramDecimal(requisicao, "precoMaximo"));
 		filtro.setQuartosMinimo(paramInteiro(requisicao, "quartosMinimo"));
+		filtro.setBanheirosMinimo(paramInteiro(requisicao, "banheirosMinimo"));
+		filtro.setVagasMinimo(paramInteiro(requisicao, "vagasMinimo"));
+		filtro.setAreaMinima(paramDouble(requisicao, "areaMinima"));
 		return filtro;
 	}
 
 	private boolean filtroVazio(FiltroImovel filtro) {
 		return filtro.getCidade() == null && filtro.getEstado() == null && filtro.getTipo() == null
 				&& filtro.getFinalidade() == null && filtro.getPrecoMinimo() == null
-				&& filtro.getPrecoMaximo() == null && filtro.getQuartosMinimo() == null;
+				&& filtro.getPrecoMaximo() == null && filtro.getQuartosMinimo() == null
+				&& filtro.getBanheirosMinimo() == null && filtro.getVagasMinimo() == null
+				&& filtro.getAreaMinima() == null;
 	}
 
 	private String paramTexto(HttpServletRequest requisicao, String nome) {
@@ -115,6 +120,18 @@ public class InicioServlet extends HttpServlet {
 		}
 		try {
 			return Integer.valueOf(valor);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	private Double paramDouble(HttpServletRequest requisicao, String nome) {
+		String valor = paramTexto(requisicao, nome);
+		if (valor == null) {
+			return null;
+		}
+		try {
+			return Double.valueOf(valor);
 		} catch (NumberFormatException e) {
 			return null;
 		}

@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Anunciar imóvel | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=9">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=9">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=11">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=11">
 </head>
 <body>
 
@@ -172,6 +172,6 @@
 
 </main>
 
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=9"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=11"></script>
 </body>
 </html>

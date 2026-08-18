@@ -17,6 +17,9 @@ public class FiltroImovel {
 	private BigDecimal precoMinimo;
 	private BigDecimal precoMaximo;
 	private Integer quartosMinimo;
+	private Integer banheirosMinimo;
+	private Integer vagasMinimo;
+	private Double areaMinima;
 
 	public String getCidade() {
 		return cidade;
@@ -72,5 +75,29 @@ public class FiltroImovel {
 
 	public void setQuartosMinimo(Integer quartosMinimo) {
 		this.quartosMinimo = quartosMinimo;
+	}
+
+	public Integer getBanheirosMinimo() {
+		return banheirosMinimo;
+	}
+
+	public void setBanheirosMinimo(Integer banheirosMinimo) {
+		this.banheirosMinimo = banheirosMinimo;
+	}
+
+	public Integer getVagasMinimo() {
+		return vagasMinimo;
+	}
+
+	public void setVagasMinimo(Integer vagasMinimo) {
+		this.vagasMinimo = vagasMinimo;
+	}
+
+	public Double getAreaMinima() {
+		return areaMinima;
+	}
+
+	public void setAreaMinima(Double areaMinima) {
+		this.areaMinima = areaMinima;
 	}
 }
