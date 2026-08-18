@@ -24,6 +24,7 @@ public class UsuarioServico {
 	private static final int TAMANHO_CPF = 11;
 
 	private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+	private final ImobiliariaServico imobiliariaServico = new ImobiliariaServico();
 	private final SecureRandom geradorAleatorio = new SecureRandom();
 
 	/**
@@ -34,13 +35,20 @@ public class UsuarioServico {
 	 * o cadastro é recusado quando ela falha, de modo que a coluna cpf_valido
 	 * só recebe registros aprovados.
 	 *
-	 * @param usuario       dados preenchidos no formulário
-	 * @param senhaPura     senha digitada, ainda sem hash
-	 * @param aceitouTermos true se a pessoa marcou a caixa de concordância com
-	 *                      a Política de Privacidade e os Termos de Uso — sem
-	 *                      isso, o cadastro não é aceito (LGPD, art. 8º)
+	 * Quando o perfil escolhido é Vendedor, o código da imobiliária é
+	 * obrigatório: é assim que o sistema confirma o vínculo, já que não há
+	 * parceria real com nenhuma imobiliária neste protótipo (ver
+	 * ImobiliariaServico).
+	 *
+	 * @param usuario           dados preenchidos no formulário
+	 * @param senhaPura         senha digitada, ainda sem hash
+	 * @param aceitouTermos     true se a pessoa marcou a caixa de concordância
+	 *                          com a Política de Privacidade e os Termos de Uso
+	 *                          — sem isso, o cadastro não é aceito (LGPD, art. 8º)
+	 * @param codigoImobiliaria código da imobiliária informado pelo vendedor;
+	 *                          ignorado quando o perfil é Comprador
 	 */
-	public void cadastrar(Usuario usuario, String senhaPura, boolean aceitouTermos)
+	public void cadastrar(Usuario usuario, String senhaPura, boolean aceitouTermos, String codigoImobiliaria)
 			throws RegraNegocioException, DAOException {
 
 		if (!aceitouTermos) {
@@ -70,15 +78,24 @@ public class UsuarioServico {
 			throw new RegraNegocioException("Este CPF já está cadastrado.");
 		}
 
+		if (usuario.getTipoUsuario() == null) {
+			usuario.setTipoUsuario(TipoUsuario.COMPRADOR);
+		}
+
+		if (usuario.getTipoUsuario() == TipoUsuario.VENDEDOR) {
+			Imobiliaria imobiliaria = imobiliariaServico.buscarPorCodigo(codigoImobiliaria)
+					.orElseThrow(() -> new RegraNegocioException(
+							"Código de imobiliária inválido. Confira o código com quem te repassou."));
+			usuario.setIdImobiliaria(imobiliaria.getId());
+		} else {
+			usuario.setIdImobiliaria(null);
+		}
+
 		usuario.setEmail(email);
 		usuario.setCpf(cpf);
 		usuario.setCpfValido(true);
 		usuario.setSenha(HashSenha.gerar(senhaPura));
 		usuario.setTermosAceitosEm(LocalDateTime.now());
-
-		if (usuario.getTipoUsuario() == null) {
-			usuario.setTipoUsuario(TipoUsuario.COMPRADOR);
-		}
 
 		usuarioDAO.inserir(usuario);
 	}
@@ -126,10 +143,10 @@ public class UsuarioServico {
 	 * aleatória que nunca é revelada a ninguém: ela existe só para satisfazer a
 	 * coluna obrigatória, e não pode ser usada para autenticar.
 	 */
-	public void cadastrarComLoginSocial(Usuario usuario, boolean aceitouTermos)
+	public void cadastrarComLoginSocial(Usuario usuario, boolean aceitouTermos, String codigoImobiliaria)
 			throws RegraNegocioException, DAOException {
 		String senhaAleatoria = Base64.getEncoder().encodeToString(gerarBytesAleatorios(32));
-		cadastrar(usuario, senhaAleatoria, aceitouTermos);
+		cadastrar(usuario, senhaAleatoria, aceitouTermos, codigoImobiliaria);
 	}
 
 	private byte[] gerarBytesAleatorios(int tamanho) {

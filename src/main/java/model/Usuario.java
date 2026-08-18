@@ -22,6 +22,7 @@ public class Usuario {
 	private boolean telefoneConfirmado;
 	private String fotoPerfil;
 	private TipoUsuario tipoUsuario;
+	private Integer idImobiliaria;
 	private LocalDateTime dataCadastro;
 	private LocalDateTime termosAceitosEm;
 
@@ -171,6 +172,19 @@ public class Usuario {
 
 	public void setDataCadastro(LocalDateTime dataCadastro) {
 		this.dataCadastro = dataCadastro;
+	}
+
+	/**
+	 * @return o id da imobiliária à qual o vendedor está afiliado, ou null
+	 *         para compradores e para vendedores cadastrados antes deste
+	 *         controle existir
+	 */
+	public Integer getIdImobiliaria() {
+		return idImobiliaria;
+	}
+
+	public void setIdImobiliaria(Integer idImobiliaria) {
+		this.idImobiliaria = idImobiliaria;
 	}
 
 	/**

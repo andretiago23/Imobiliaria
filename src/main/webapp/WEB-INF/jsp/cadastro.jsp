@@ -14,6 +14,8 @@
 			erroCampo = "email";
 		} else if (minusculo.contains("senha")) {
 			erroCampo = "senha";
+		} else if (minusculo.contains("imobiliária") || minusculo.contains("imobiliaria")) {
+			erroCampo = "codigoImobiliaria";
 		} else if (minusculo.contains("nome")) {
 			erroCampo = "nome";
 		}
@@ -114,6 +116,15 @@
 					</div>
 				</div>
 
+				<div class="auth__campo auth-anim auth-anim--4" id="campoCodigoImobiliaria" style="display:none;">
+					<label for="codigoImobiliaria">Código da imobiliária</label>
+					<div class="glass-input">
+						<input type="text" id="codigoImobiliaria" name="codigoImobiliaria" placeholder="IMB-XXXXXX"
+							value="${codigoImobiliaria}">
+					</div>
+					<span class="campo-erro" id="erro-codigoImobiliaria">${erroCampo == 'codigoImobiliaria' ? erro : ''}</span>
+				</div>
+
 				<% if (!Boolean.TRUE.equals(request.getAttribute("modoGoogle"))) { %>
 				<div class="auth__campo auth-anim auth-anim--5">
 					<label for="senha">Senha</label>
@@ -167,6 +178,27 @@
 
 </div>
 
+<script>
+	// Mostra o campo de código da imobiliária só quando o tipo de conta
+	// escolhido é Vendedor — para Comprador ele fica escondido e não é enviado
+	// como obrigatório.
+	(function () {
+		"use strict";
+		var selectTipo = document.getElementById("tipoUsuario");
+		var campoCodigo = document.getElementById("campoCodigoImobiliaria");
+		var inputCodigo = document.getElementById("codigoImobiliaria");
+
+		function atualizar() {
+			var ehVendedor = selectTipo.value === "vendedor";
+			campoCodigo.style.display = ehVendedor ? "" : "none";
+			inputCodigo.required = ehVendedor;
+			if (!ehVendedor) inputCodigo.value = "";
+		}
+
+		selectTipo.addEventListener("change", atualizar);
+		atualizar();
+	})();
+</script>
 <script src="${pageContext.request.contextPath}/js/validacao.js?v=2"></script>
 <script src="${pageContext.request.contextPath}/js/formulario.js?v=2"></script>
 </body>

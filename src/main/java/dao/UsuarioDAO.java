@@ -23,8 +23,9 @@ import util.LeitorResultSet;
 public class UsuarioDAO {
 
 	private static final String SQL_INSERIR = """
-			INSERT INTO usuario (nome, email, senha, cpf, cpf_valido, telefone, foto_perfil, tipo_usuario, termos_aceitos_em)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+			INSERT INTO usuario
+			    (nome, email, senha, cpf, cpf_valido, telefone, foto_perfil, tipo_usuario, id_imobiliaria, termos_aceitos_em)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			""";
 
 	/**
@@ -33,7 +34,7 @@ public class UsuarioDAO {
 	 */
 	static final String COLUNAS = """
 			u.id, u.nome, u.apelido, u.email, u.email_confirmado, u.senha, u.cpf, u.cpf_valido, u.telefone,
-			u.telefone_confirmado, u.foto_perfil, u.tipo_usuario, u.data_cadastro, u.termos_aceitos_em
+			u.telefone_confirmado, u.foto_perfil, u.tipo_usuario, u.id_imobiliaria, u.data_cadastro, u.termos_aceitos_em
 			""";
 
 	private static final String SQL_SELECT_BASE = "SELECT " + COLUNAS + " FROM usuario u";
@@ -96,7 +97,8 @@ public class UsuarioDAO {
 			comando.setString(6, usuario.getTelefone());
 			comando.setString(7, usuario.getFotoPerfil());
 			comando.setString(8, ConversorEnum.paraBanco(usuario.getTipoUsuario()));
-			comando.setObject(9, usuario.getTermosAceitosEm());
+			comando.setObject(9, usuario.getIdImobiliaria());
+			comando.setObject(10, usuario.getTermosAceitosEm());
 			comando.executeUpdate();
 
 			try (ResultSet chaves = comando.getGeneratedKeys()) {
@@ -274,6 +276,7 @@ public class UsuarioDAO {
 		usuario.setTelefoneConfirmado(resultado.getBoolean("telefone_confirmado"));
 		usuario.setFotoPerfil(resultado.getString("foto_perfil"));
 		usuario.setTipoUsuario(ConversorEnum.paraEnum(TipoUsuario.class, resultado.getString("tipo_usuario")));
+		usuario.setIdImobiliaria(LeitorResultSet.lerInteiro(resultado, "id_imobiliaria"));
 		usuario.setDataCadastro(LeitorResultSet.lerDataHora(resultado, "data_cadastro"));
 		usuario.setTermosAceitosEm(LeitorResultSet.lerDataHora(resultado, "termos_aceitos_em"));
 		return usuario;
