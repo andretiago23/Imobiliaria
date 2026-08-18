@@ -10,7 +10,7 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=3">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=7">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -156,7 +156,10 @@
 
       <div class="props">
         <article class="card card--feature">
-          <div class="card__photo"><span class="badge">Venda</span><span class="micro">Cód. HB-1042</span></div>
+          <div class="card__photo tem-foto">
+            <img src="https://images.pexels.com/photos/21284473/pexels-photo-21284473.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
+            <span class="badge">Venda</span><span class="micro">Cód. HB-1042</span>
+          </div>
           <div class="card__body">
             <div class="card__price">R$ 845.000</div>
             <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Pinheiros, São Paulo — SP</div>
@@ -164,7 +167,10 @@
           </div>
         </article>
         <article class="card">
-          <div class="card__photo"><span class="badge">Aluguel</span></div>
+          <div class="card__photo tem-foto">
+            <img src="https://images.pexels.com/photos/19239905/pexels-photo-19239905.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
+            <span class="badge">Aluguel</span>
+          </div>
           <div class="card__body">
             <div class="card__price">R$ 3.200<span class="micro">/mês</span></div>
             <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Vila Madalena — SP</div>
@@ -172,7 +178,10 @@
           </div>
         </article>
         <article class="card">
-          <div class="card__photo"><span class="badge">Reservado</span></div>
+          <div class="card__photo tem-foto">
+            <img src="https://images.pexels.com/photos/2128329/pexels-photo-2128329.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
+            <span class="badge">Reservado</span>
+          </div>
           <div class="card__body">
             <div class="card__price">R$ 620.000</div>
             <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Perdizes — SP</div>
@@ -180,7 +189,10 @@
           </div>
         </article>
         <article class="card">
-          <div class="card__photo"><span class="badge">Venda</span></div>
+          <div class="card__photo tem-foto">
+            <img src="https://images.pexels.com/photos/18078684/pexels-photo-18078684.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
+            <span class="badge">Venda</span>
+          </div>
           <div class="card__body">
             <div class="card__price">R$ 1.190.000</div>
             <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Alto de Pinheiros — SP</div>
@@ -188,7 +200,10 @@
           </div>
         </article>
         <article class="card">
-          <div class="card__photo"><span class="badge">Aluguel</span></div>
+          <div class="card__photo tem-foto">
+            <img src="https://images.pexels.com/photos/2030037/pexels-photo-2030037.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
+            <span class="badge">Aluguel</span>
+          </div>
           <div class="card__body">
             <div class="card__price">R$ 2.150<span class="micro">/mês</span></div>
             <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Butantã — SP</div>
@@ -374,6 +389,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=3"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=7"></script>
 </body>
 </html>

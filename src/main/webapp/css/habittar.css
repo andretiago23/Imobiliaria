@@ -711,6 +711,26 @@ h3.display {
   }
 }
 
+/* habittar.css desenha .card__photo para placeholder (listras + rótulo
+   "FOTO REAL"); com uma <img> de verdade dentro, ela precisa ficar atrás
+   do rótulo e dos badges, que voltam a ser posicionados explicitamente. */
+.card__photo.tem-foto::after {
+  content: none;
+}
+.card__photo.tem-foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.card__photo.tem-foto .badge,
+.card__photo.tem-foto .micro {
+  position: relative;
+  z-index: 1;
+}
+
 .section__head {
   display: flex;
   align-items: flex-end;
@@ -937,6 +957,13 @@ h3.display {
 }
 .footer .logo {
   color: var(--text-inverse);
+}
+/* A logo tem o texto "Habittar" em tinta escura, pensada para fundos
+   claros — no rodapé escuro ela ficava ilegível. Converte a imagem
+   para branco sólido, técnica padrão para reaproveitar uma logo
+   colorida sobre fundo escuro sem precisar de um arquivo à parte. */
+.footer .logo img {
+  filter: brightness(0) invert(1);
 }
 
 /* --------------------------------------------------------------------------

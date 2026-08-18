@@ -22,7 +22,7 @@ public final class ImagemImovel {
 					"https://images.pexels.com/photos/18078684/pexels-photo-18078684.jpeg?auto=compress&cs=tinysrgb&w=800",
 					"https://images.pexels.com/photos/6342356/pexels-photo-6342356.jpeg?auto=compress&cs=tinysrgb&w=800"),
 			TipoImovel.APARTAMENTO, List.of(
-					"https://images.pexels.com/photos/16753029/pexels-photo-16753029.jpeg?auto=compress&cs=tinysrgb&w=800",
+					"https://images.pexels.com/photos/21284473/pexels-photo-21284473.jpeg?auto=compress&cs=tinysrgb&w=800",
 					"https://images.pexels.com/photos/19239905/pexels-photo-19239905.jpeg?auto=compress&cs=tinysrgb&w=800",
 					"https://images.pexels.com/photos/2030037/pexels-photo-2030037.jpeg?auto=compress&cs=tinysrgb&w=800"),
 			TipoImovel.TERRENO, List.of(

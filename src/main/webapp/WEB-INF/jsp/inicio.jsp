@@ -6,8 +6,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catálogo | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=3">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=3">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=7">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=7">
 </head>
 <body>
 
@@ -186,6 +186,8 @@
           imoveis = java.util.Collections.emptyList();
         }
         NumberFormat moeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        NumberFormat area = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
+        area.setMaximumFractionDigits(1);
       %>
       <div class="catalogo__cabecalho">
         <h1 class="display" style="font-size:26px;">Imóveis <span class="hl">disponíveis</span></h1>
@@ -222,10 +224,24 @@
               <p style="margin:6px 0 0;font-weight:600;"><%= util.Html.escapar(imovel.getTitulo()) %></p>
               <div class="card__loc">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg>
-                <%= util.Html.escapar(imovel.getCidade()) %> — <%= util.Html.escapar(imovel.getEstado()) %>
+                <%
+                  String cidade = imovel.getCidade();
+                  String estado = imovel.getEstado();
+                  boolean temCidade = cidade != null && !cidade.isBlank();
+                  boolean temEstado = estado != null && !estado.isBlank();
+                %>
+                <% if (temCidade && temEstado) { %>
+                  <%= util.Html.escapar(cidade) %> — <%= util.Html.escapar(estado) %>
+                <% } else if (temCidade) { %>
+                  <%= util.Html.escapar(cidade) %>
+                <% } else if (temEstado) { %>
+                  <%= util.Html.escapar(estado) %>
+                <% } else { %>
+                  Localização não informada
+                <% } %>
               </div>
               <div class="card__specs">
-                <span><%= imovel.getAreaM2() %> m²</span>
+                <span><%= area.format(imovel.getAreaM2()) %> m²</span>
                 <span><%= imovel.getQuartos() %> qto(s)</span>
                 <span><%= imovel.getBanheiros() %> banh.</span>
                 <span><%= imovel.getVagasGaragem() %> vaga(s)</span>

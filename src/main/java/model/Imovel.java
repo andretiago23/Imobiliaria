@@ -70,10 +70,29 @@ public class Imovel {
 	}
 
 	/**
-	 * @return o endereço formatado para exibição nas páginas
+	 * @return o endereço formatado para exibição nas páginas, juntando só as
+	 *         partes realmente preenchidas — o cadastro do imóvel não exige
+	 *         endereço, cidade ou estado, e a formatação ingênua deixava
+	 *         vírgulas e travessões soltos quando algum campo ficava vazio
 	 */
 	public String getEnderecoCompleto() {
-		return endereco + ", " + cidade + " - " + estado;
+		StringBuilder partes = new StringBuilder();
+		if (endereco != null && !endereco.isBlank()) {
+			partes.append(endereco);
+		}
+		if (cidade != null && !cidade.isBlank()) {
+			if (!partes.isEmpty()) {
+				partes.append(", ");
+			}
+			partes.append(cidade);
+		}
+		if (estado != null && !estado.isBlank()) {
+			if (!partes.isEmpty()) {
+				partes.append(" - ");
+			}
+			partes.append(estado);
+		}
+		return partes.isEmpty() ? "Endereço não informado" : partes.toString();
 	}
 
 	public int getId() {

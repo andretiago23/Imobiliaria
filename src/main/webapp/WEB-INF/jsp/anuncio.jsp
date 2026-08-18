@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Anunciar imóvel | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=3">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=3">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=7">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=7">
 </head>
 <body>
 
@@ -72,8 +72,8 @@
     <form class="filtros" method="post" action="${pageContext.request.contextPath}/anunciar" id="formAnuncio">
       <input type="hidden" name="csrf" value="${csrf}">
 
-      <div class="filtros__grade">
-
+      <h2 style="font-size:14px;margin:0 0 14px;">Sobre o imóvel</h2>
+      <div class="filtros__grade filtros__grade--2col">
         <div class="filtros__campo filtros__campo--largo">
           <label for="titulo">Título do anúncio</label>
           <input type="text" id="titulo" name="titulo" placeholder="Ex.: Apartamento reformado em Pinheiros" value="${titulo}" required maxlength="200">
@@ -99,32 +99,38 @@
             <option value="aluguel" ${finalidade == 'aluguel' ? 'selected' : ''}>Aluguel</option>
           </select>
         </div>
+      </div>
 
+      <h2 style="font-size:14px;margin:28px 0 14px;">Preço e características</h2>
+      <div class="filtros__grade filtros__grade--2col">
         <div class="filtros__campo">
           <label for="preco">Preço (R$)</label>
-          <input type="number" id="preco" name="preco" min="0" step="0.01" value="${preco}" required>
+          <input type="number" id="preco" name="preco" min="0" step="0.01" placeholder="0,00" value="${preco}" required>
         </div>
 
         <div class="filtros__campo">
           <label for="areaM2">Área (m²)</label>
-          <input type="number" id="areaM2" name="areaM2" min="0" step="0.01" value="${areaM2}">
+          <input type="number" id="areaM2" name="areaM2" min="0" step="0.01" placeholder="0" value="${areaM2}">
         </div>
 
         <div class="filtros__campo">
           <label for="quartos">Quartos</label>
-          <input type="number" id="quartos" name="quartos" min="0" step="1" value="${quartos}">
+          <input type="number" id="quartos" name="quartos" min="0" step="1" placeholder="0" value="${quartos}">
         </div>
 
         <div class="filtros__campo">
           <label for="banheiros">Banheiros</label>
-          <input type="number" id="banheiros" name="banheiros" min="0" step="1" value="${banheiros}">
+          <input type="number" id="banheiros" name="banheiros" min="0" step="1" placeholder="0" value="${banheiros}">
         </div>
 
-        <div class="filtros__campo">
+        <div class="filtros__campo filtros__campo--largo">
           <label for="vagasGaragem">Vagas de garagem</label>
-          <input type="number" id="vagasGaragem" name="vagasGaragem" min="0" step="1" value="${vagasGaragem}">
+          <input type="number" id="vagasGaragem" name="vagasGaragem" min="0" step="1" placeholder="0" value="${vagasGaragem}">
         </div>
+      </div>
 
+      <h2 style="font-size:14px;margin:28px 0 14px;">Localização</h2>
+      <div class="filtros__grade filtros__grade--2col">
         <div class="filtros__campo filtros__campo--largo">
           <label for="endereco">Endereço</label>
           <input type="text" id="endereco" name="endereco" placeholder="Rua, número" value="${endereco}">
@@ -140,26 +146,25 @@
           <input type="text" id="estado" name="estado" placeholder="UF" maxlength="2" value="${estado}">
         </div>
 
-        <div class="filtros__campo">
+        <div class="filtros__campo filtros__campo--largo">
           <label for="cep">CEP</label>
           <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9" value="${cep}">
         </div>
-
-        <div class="filtros__campo filtros__campo--largo">
-          <label for="descricao">Descrição</label>
-          <textarea id="descricao" name="descricao" rows="5" placeholder="Detalhes que ajudam quem está buscando: acabamento, condomínio, proximidade de transporte..." style="width:100%;font-family:var(--font-sans);font-size:15px;color:var(--text-primary);background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px 14px;resize:vertical;">${descricao}</textarea>
-        </div>
-
-        <div class="filtros__campo filtros__campo--largo">
-          <button class="btn btn--primary" type="submit">Publicar anúncio</button>
-        </div>
       </div>
+
+      <h2 style="font-size:14px;margin:28px 0 14px;">Descrição</h2>
+      <div class="filtros__campo">
+        <label for="descricao" class="sr-only">Descrição do imóvel</label>
+        <textarea id="descricao" name="descricao" rows="5" placeholder="Detalhes que ajudam quem está buscando: acabamento, condomínio, proximidade de transporte..." style="width:100%;font-family:var(--font-sans);font-size:15px;color:var(--text-primary);background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px 14px;resize:vertical;">${descricao}</textarea>
+      </div>
+
+      <button class="btn btn--primary" type="submit" style="width:100%;margin-top:24px;">Publicar anúncio</button>
     </form>
 
   <% } %>
 
 </main>
 
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=3"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=7"></script>
 </body>
 </html>

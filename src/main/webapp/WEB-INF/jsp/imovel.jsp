@@ -6,8 +6,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= request.getAttribute("imovel") != null ? util.Html.escapar(((Imovel) request.getAttribute("imovel")).getTitulo()) + " | Habittar" : "Imóvel | Habittar" %></title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=3">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=3">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=7">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=7">
 </head>
 <body>
 
@@ -58,11 +58,15 @@
     if (imovel != null) {
       boolean aluguel = imovel.getFinalidade() == Finalidade.ALUGUEL;
       NumberFormat moeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+      NumberFormat area = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
+      area.setMaximumFractionDigits(1);
   %>
   <nav class="breadcrumb micro" aria-label="Trilha de navegação">
     <a href="${pageContext.request.contextPath}/inicio">Catálogo</a>
-    <span aria-hidden="true">/</span>
-    <a href="${pageContext.request.contextPath}/inicio?cidade=<%= java.net.URLEncoder.encode(imovel.getCidade(), java.nio.charset.StandardCharsets.UTF_8) %>"><%= util.Html.escapar(imovel.getCidade()) %></a>
+    <% if (imovel.getCidade() != null && !imovel.getCidade().isBlank()) { %>
+      <span aria-hidden="true">/</span>
+      <a href="${pageContext.request.contextPath}/inicio?cidade=<%= java.net.URLEncoder.encode(imovel.getCidade(), java.nio.charset.StandardCharsets.UTF_8) %>"><%= util.Html.escapar(imovel.getCidade()) %></a>
+    <% } %>
     <span aria-hidden="true">/</span>
     <span class="breadcrumb__atual"><%= util.Html.escapar(imovel.getTitulo()) %></span>
   </nav>
@@ -90,7 +94,7 @@
 
       <div class="ficha-tecnica">
         <div>
-          <div class="ficha-tecnica__valor"><%= imovel.getAreaM2() %> m²</div>
+          <div class="ficha-tecnica__valor"><%= area.format(imovel.getAreaM2()) %> m²</div>
           <div class="micro">Área</div>
         </div>
         <div>
