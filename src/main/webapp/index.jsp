@@ -361,7 +361,7 @@
     </div>
     <div>
       <h4>Habittar</h4>
-      <ul><li><a href="#diferenciais">Como funciona</a></li><li><a href="${pageContext.request.contextPath}/anunciar">Anunciar imóvel</a></li><li><a href="${pageContext.request.contextPath}/login">Área do cliente</a></li><li><a href="${pageContext.request.contextPath}/login">Painel da imobiliária</a></li><li><a href="#top">Trabalhe conosco</a></li></ul>
+      <ul><li><a href="#diferenciais">Como funciona</a></li><li><a href="${pageContext.request.contextPath}/anunciar">Anunciar imóvel</a></li><li><a href="${pageContext.request.contextPath}/login">Área do cliente</a></li><li><a href="${pageContext.request.contextPath}/login">Painel da imobiliária</a></li><li><a href="${pageContext.request.contextPath}/imobiliarias/nova">Cadastrar imobiliária</a></li><li><a href="#top">Trabalhe conosco</a></li></ul>
     </div>
     <div>
       <h4>Institucional</h4>
