@@ -26,8 +26,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Criar conta | Habittar</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=2">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=2">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=3">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=3">
 </head>
 <body>
 
@@ -35,16 +35,18 @@
 
 	<!-- ===================== FORMULÁRIO ===================== -->
 	<section class="auth__form">
-		<div class="auth__form-inner">
 
-			<a class="voltar auth-anim auth-anim--1" href="${pageContext.request.contextPath}/login">
+		<div class="auth__brand auth-anim auth-anim--1">
+			<a class="auth__logo" href="${pageContext.request.contextPath}/index.jsp">
+				<img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
+			</a>
+			<a class="voltar" href="${pageContext.request.contextPath}/login" style="margin-left:auto;">
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
 				Voltar
 			</a>
+		</div>
 
-			<a class="auth__logo auth-anim auth-anim--1" href="${pageContext.request.contextPath}/index.jsp">
-				<img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
-			</a>
+		<div class="auth__form-inner">
 
 			<h1 class="display auth-anim auth-anim--2">
 				<% if (Boolean.TRUE.equals(request.getAttribute("modoGoogle"))) { %>
@@ -107,7 +109,7 @@
 				<div class="auth__campo auth-anim auth-anim--4">
 					<label for="tipoUsuario">Tipo de conta</label>
 					<div class="glass-input">
-						<select id="tipoUsuario" name="tipoUsuario" style="width:100%;background:transparent;border:0;padding:14px 16px;font-family:var(--font-sans);font-size:15px;color:var(--text-primary);">
+						<select id="tipoUsuario" name="tipoUsuario">
 							<option value="comprador" ${tipoUsuario == 'comprador' ? 'selected' : ''}>Comprador — quero buscar imóveis</option>
 							<option value="vendedor" ${tipoUsuario == 'vendedor' ? 'selected' : ''}>Vendedor / imobiliária — quero anunciar imóveis</option>
 						</select>
@@ -136,7 +138,7 @@
 				</div>
 				<% } %>
 
-				<div class="auth__campo auth-anim auth-anim--5">
+				<div class="auth__campo auth__campo--consentimento auth-anim auth-anim--5">
 					<label class="auth__lembrar" for="aceiteTermos" style="align-items:flex-start;">
 						<input type="checkbox" id="aceiteTermos" name="aceiteTermos" data-validar="aceiteTermos"
 							${aceiteTermos ? 'checked' : ''} required>
@@ -167,7 +169,7 @@
 
 </div>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=2"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=2"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=3"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=3"></script>
 </body>
 </html>

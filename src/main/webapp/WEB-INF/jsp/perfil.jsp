@@ -6,9 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Meu perfil | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=2">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=2">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/perfil.css?v=2">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=3">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=3">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/perfil.css?v=3">
 </head>
 <body>
 
@@ -217,7 +217,7 @@
 
 </main>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=2"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=2"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=3"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=3"></script>
 </body>
 </html>

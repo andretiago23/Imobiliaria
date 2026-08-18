@@ -5,8 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Entrar | Habittar</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=2">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=2">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=3">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=3">
 </head>
 <body>
 
@@ -14,16 +14,18 @@
 
 	<!-- ===================== FORMULÁRIO ===================== -->
 	<section class="auth__form">
-		<div class="auth__form-inner">
 
-			<a class="voltar auth-anim auth-anim--1" href="${pageContext.request.contextPath}/index.jsp">
+		<div class="auth__brand auth-anim auth-anim--1">
+			<a class="auth__logo" href="${pageContext.request.contextPath}/index.jsp">
+				<img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
+			</a>
+			<a class="voltar" href="${pageContext.request.contextPath}/index.jsp" style="margin-left:auto;">
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
 				Voltar
 			</a>
+		</div>
 
-			<a class="auth__logo auth-anim auth-anim--1" href="${pageContext.request.contextPath}/index.jsp">
-				<img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
-			</a>
+		<div class="auth__form-inner">
 
 			<h1 class="display auth-anim auth-anim--2">Entrar</h1>
 
@@ -97,7 +99,7 @@
 
 </div>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=2"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=2"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=3"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=3"></script>
 </body>
 </html>

@@ -10,7 +10,7 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=2">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=3">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -374,6 +374,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=2"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=3"></script>
 </body>
 </html>
