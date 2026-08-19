@@ -25,7 +25,12 @@
       <a href="${pageContext.request.contextPath}/inicio?finalidade=aluguel">Alugar</a>
       <a href="${pageContext.request.contextPath}/inicio">Catálogo</a>
       <a href="#diferenciais">Como funciona</a>
-      <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/login">Entrar</a>
+      <% if (session.getAttribute("usuarioLogado") != null) { %>
+        <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/perfil">Meu perfil</a>
+        <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/logout">Sair</a>
+      <% } else { %>
+        <a class="btn btn--secondary btn--sm" href="${pageContext.request.contextPath}/login">Entrar</a>
+      <% } %>
       <a class="btn btn--primary btn--sm btn--interactive" href="#anunciar">
         <span class="btn__label">
           <span class="btn__pin" aria-hidden="true">
