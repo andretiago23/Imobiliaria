@@ -3,9 +3,11 @@ package model;
 /**
  * Corresponde à coluna ENUM tipo_usuario da tabela usuario.
  *
- * O banco define apenas 'comprador' e 'vendedor' — quem também quer comprar
- * enquanto anuncia imóveis escolhe "vendedor" mesmo, já que essa conta já
- * enxerga o catálogo inteiro normalmente.
+ * O banco define apenas 'comprador' e 'vendedor'. Esse campo é só o "perfil
+ * principal" de cadastro (ex.: rótulo exibido, imobiliárias profissionais
+ * marcadas como vendedor) — desde que qualquer conta pode anunciar imóveis
+ * (ver Usuario.podeAnunciar()), ele não restringe mais quem tem permissão
+ * de publicar um anúncio.
  */
 public enum TipoUsuario implements ValorBanco {
 
@@ -28,12 +30,5 @@ public enum TipoUsuario implements ValorBanco {
 	@Override
 	public String getRotulo() {
 		return rotulo;
-	}
-
-	/**
-	 * @return true se o usuário tem permissão para anunciar imóveis
-	 */
-	public boolean podeAnunciar() {
-		return this == VENDEDOR;
 	}
 }

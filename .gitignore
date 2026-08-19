@@ -9,6 +9,8 @@ src/main/java/db.properties
 
 # Credenciais do login social (use google.properties.example como modelo)
 src/main/java/google.properties
+# Credenciais SMTP (use mail.properties.example como modelo)
+src/main/java/mail.properties
 
 # Distribuicao completa do driver MySQL (apenas o .jar fica em WEB-INF/lib)
 src/main/webapp/WEB-INF/lib/mysql-connector-j-*/

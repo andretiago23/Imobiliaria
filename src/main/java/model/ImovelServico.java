@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import dao.AvaliacaoDAO;
+import dao.BuscaSalvaDAO;
 import dao.ContatoInteresseDAO;
 import dao.DAOException;
 import dao.FavoritoDAO;
 import dao.FotoImovelDAO;
 import dao.ImovelDAO;
+import dao.UsuarioDAO;
+import util.EmailService;
 
 /**
  * Regras de negócio dos anúncios de imóveis.
@@ -19,6 +22,8 @@ import dao.ImovelDAO;
  */
 public class ImovelServico {
 
+	private static final System.Logger LOG = System.getLogger(ImovelServico.class.getName());
+
 	private static final int LIMITE_PADRAO_FEED = 20;
 	private static final int TAMANHO_SIGLA_ESTADO = 2;
 
@@ -27,24 +32,59 @@ public class ImovelServico {
 	private final FavoritoDAO favoritoDAO = new FavoritoDAO();
 	private final AvaliacaoDAO avaliacaoDAO = new AvaliacaoDAO();
 	private final ContatoInteresseDAO contatoInteresseDAO = new ContatoInteresseDAO();
+	private final BuscaSalvaDAO buscaSalvaDAO = new BuscaSalvaDAO();
+	private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+	private final EmailService emailService = new EmailService();
 
 	/**
 	 * Publica um novo anúncio.
 	 *
-	 * @param imovel dados preenchidos no formulário
-	 * @param autor  usuário autenticado que está publicando
+	 * Qualquer usuário autenticado pode anunciar (ver Usuario.podeAnunciar()):
+	 * o autor vira automaticamente o proprietário do imóvel, seja ele um
+	 * cliente comum ou uma conta do tipo "vendedor"/imobiliária.
+	 *
+	 * @param imovel        dados preenchidos no formulário
+	 * @param autor         usuário autenticado que está publicando
+	 * @param linkBaseImovel URL completa até "...&#47;imovel?id=", sem o id —
+	 *                       o id só existe depois do INSERT, então o link final
+	 *                       de cada alerta é montado aqui dentro
 	 */
-	public void publicar(Imovel imovel, Usuario autor) throws RegraNegocioException, DAOException {
-		if (!autor.podeAnunciar()) {
-			throw new RegraNegocioException(
-					"Sua conta é do tipo comprador. Altere o tipo no perfil para publicar imóveis.");
-		}
-
+	public void publicar(Imovel imovel, Usuario autor, String linkBaseImovel) throws RegraNegocioException, DAOException {
 		validarDados(imovel);
 
 		imovel.setIdUsuario(autor.getId());
 		imovel.setStatus(StatusImovel.ATIVO);
 		imovelDAO.inserir(imovel);
+
+		dispararAlertasDeBuscaSalva(imovel, linkBaseImovel + imovel.getId());
+	}
+
+	/**
+	 * Verifica quais buscas salvas com alerta ativo combinam com o imóvel
+	 * recém-publicado e envia um e-mail para cada uma, evitando duplicidade
+	 * via busca_salva_notificacao (BuscaSalvaDAO.jaNotificado).
+	 *
+	 * O imóvel já foi gravado com sucesso quando este método roda: uma falha
+	 * aqui (banco ou SMTP) fica só registrada em log e nunca propaga para
+	 * quebrar a resposta de "anúncio publicado" para quem cadastrou.
+	 */
+	private void dispararAlertasDeBuscaSalva(Imovel imovel, String linkImovel) {
+		try {
+			for (BuscaSalva busca : buscaSalvaDAO.listarComAlertaAtivo()) {
+				if (!busca.combinaCom(imovel) || buscaSalvaDAO.jaNotificado(busca.getId(), imovel.getId())) {
+					continue;
+				}
+				Optional<Usuario> cliente = usuarioDAO.buscarPorId(busca.getIdUsuario());
+				if (cliente.isEmpty()) {
+					continue;
+				}
+				emailService.notificarAlertaBuscaSalva(cliente.get(), busca, imovel, linkImovel);
+				buscaSalvaDAO.registrarNotificacao(busca.getId(), imovel.getId());
+			}
+		} catch (DAOException e) {
+			LOG.log(System.Logger.Level.WARNING,
+					"Falha ao verificar/enviar alertas de busca salva para o imóvel " + imovel.getId() + ".", e);
+		}
 	}
 
 	/**

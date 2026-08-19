@@ -8,6 +8,8 @@ import dao.DAOException;
 import dao.FavoritoDAO;
 import dao.ImovelDAO;
 import dao.SeguidorDAO;
+import dao.UsuarioDAO;
+import util.EmailService;
 
 /**
  * Regras de negócio das interações entre usuários: favoritos, seguidores,
@@ -24,6 +26,8 @@ public class InteracaoServico {
 	private final AvaliacaoDAO avaliacaoDAO = new AvaliacaoDAO();
 	private final ContatoInteresseDAO contatoInteresseDAO = new ContatoInteresseDAO();
 	private final ImovelDAO imovelDAO = new ImovelDAO();
+	private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+	private final EmailService emailService = new EmailService();
 
 	/**
 	 * Marca ou desmarca o imóvel como favorito.
@@ -78,9 +82,15 @@ public class InteracaoServico {
 	}
 
 	/**
-	 * Envia uma mensagem de interesse ao anunciante.
+	 * Envia uma mensagem de interesse ao anunciante: grava o lead no banco e
+	 * dispara os e-mails automáticos (notificação para o proprietário,
+	 * confirmação para quem demonstrou interesse). O e-mail é best-effort —
+	 * uma falha de SMTP é só registrada em log, nunca desfaz o lead já gravado
+	 * nem propaga como erro para quem enviou o formulário.
+	 *
+	 * @param linkPainel URL completa da página do imóvel, para os dois e-mails
 	 */
-	public void registrarInteresse(int idImovel, int idComprador, String mensagem)
+	public void registrarInteresse(int idImovel, Usuario comprador, String mensagem, String linkPainel)
 			throws RegraNegocioException, DAOException {
 
 		if (mensagem == null || mensagem.isBlank()) {
@@ -90,14 +100,18 @@ public class InteracaoServico {
 		Imovel imovel = imovelDAO.buscarPorId(idImovel)
 				.orElseThrow(() -> new RegraNegocioException("Imóvel não encontrado."));
 
-		if (imovel.getIdUsuario() == idComprador) {
+		if (imovel.getIdUsuario() == comprador.getId()) {
 			throw new RegraNegocioException("Você não pode demonstrar interesse no próprio anúncio.");
 		}
 		if (!imovel.estaDisponivel()) {
 			throw new RegraNegocioException("Este anúncio não está mais disponível.");
 		}
 
-		contatoInteresseDAO.inserir(new ContatoInteresse(idImovel, idComprador, mensagem.trim()));
+		ContatoInteresse lead = new ContatoInteresse(idImovel, comprador.getId(), mensagem.trim());
+		contatoInteresseDAO.inserir(lead);
+
+		usuarioDAO.buscarPorId(imovel.getIdUsuario())
+				.ifPresent(proprietario -> emailService.notificarNovoLead(lead, imovel, proprietario, comprador, linkPainel));
 	}
 
 	public List<ContatoInteresse> listarInteressesRecebidos(int idAnunciante) throws DAOException {

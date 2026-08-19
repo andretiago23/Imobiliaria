@@ -23,9 +23,12 @@ import util.TokenCsrf;
 /**
  * Publicação de um novo anúncio de imóvel.
  *
- * Só usuários do tipo "vendedor" podem publicar — quem está autenticado mas é
- * do tipo "comprador" recebe uma tela explicando como liberar o recurso, em
- * vez do formulário.
+ * Qualquer usuário autenticado pode publicar — comprador ou vendedor, cliente
+ * "comum" ou imobiliária. Quem publica se torna automaticamente o
+ * proprietário do anúncio (imovel.id_usuario), sem precisar mudar de tipo de
+ * conta nem passar por um novo cadastro. A permissão para editar ou excluir
+ * um anúncio depois é sempre checada comparando id_usuario com quem está
+ * logado (ImovelServico.garantirPosse), nunca pelo tipo de conta.
  */
 @WebServlet("/anunciar")
 public class AnuncioServlet extends HttpServlet {
@@ -40,13 +43,6 @@ public class AnuncioServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest requisicao, HttpServletResponse resposta)
 			throws ServletException, IOException {
 
-		Usuario usuario = SessaoUsuario.obter(requisicao);
-		if (!usuario.podeAnunciar()) {
-			requisicao.setAttribute("semPermissao", true);
-			requisicao.getRequestDispatcher(PAGINA_ANUNCIO).forward(requisicao, resposta);
-			return;
-		}
-
 		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 		requisicao.getRequestDispatcher(PAGINA_ANUNCIO).forward(requisicao, resposta);
 	}
@@ -56,11 +52,6 @@ public class AnuncioServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		Usuario usuario = SessaoUsuario.obter(requisicao);
-		if (!usuario.podeAnunciar()) {
-			requisicao.setAttribute("semPermissao", true);
-			requisicao.getRequestDispatcher(PAGINA_ANUNCIO).forward(requisicao, resposta);
-			return;
-		}
 
 		if (!TokenCsrf.valido(requisicao)) {
 			reexibirFormulario(requisicao, resposta, "Sua sessão expirou. Preencha o formulário novamente.");
@@ -69,7 +60,8 @@ public class AnuncioServlet extends HttpServlet {
 
 		try {
 			Imovel imovel = montarImovel(requisicao);
-			imovelServico.publicar(imovel, usuario);
+			String linkBaseImovel = linkAbsoluto(requisicao, "/imovel?id=");
+			imovelServico.publicar(imovel, usuario, linkBaseImovel);
 			resposta.sendRedirect(requisicao.getContextPath() + "/imovel?id=" + imovel.getId());
 
 		} catch (RegraNegocioException e) {
@@ -143,5 +135,14 @@ public class AnuncioServlet extends HttpServlet {
 		requisicao.setAttribute("cep", Html.escapar(requisicao.getParameter("cep")));
 		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 		requisicao.getRequestDispatcher(PAGINA_ANUNCIO).forward(requisicao, resposta);
+	}
+
+	/**
+	 * Monta a URL completa (com esquema e host) usada nos e-mails de alerta de
+	 * busca salva — um caminho relativo não abriria corretamente fora do navegador.
+	 */
+	private String linkAbsoluto(HttpServletRequest requisicao, String caminho) {
+		return requisicao.getRequestURL().toString().replace(requisicao.getRequestURI(), "")
+				+ requisicao.getContextPath() + caminho;
 	}
 }

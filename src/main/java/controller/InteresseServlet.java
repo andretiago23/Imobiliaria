@@ -42,7 +42,8 @@ public class InteresseServlet extends HttpServlet {
 
 		Usuario usuario = SessaoUsuario.obter(requisicao);
 		try {
-			interacaoServico.registrarInteresse(idImovel, usuario.getId(), requisicao.getParameter("mensagem"));
+			String linkPainel = linkAbsoluto(requisicao, "/imovel?id=" + idImovel);
+			interacaoServico.registrarInteresse(idImovel, usuario, requisicao.getParameter("mensagem"), linkPainel);
 			resposta.sendRedirect(destino + "&interesseEnviado=1");
 		} catch (RegraNegocioException e) {
 			resposta.sendRedirect(destino + "&erroInteresse=" + codificar(e.getMessage()));
@@ -66,5 +67,14 @@ public class InteresseServlet extends HttpServlet {
 
 	private String codificar(String valor) {
 		return java.net.URLEncoder.encode(valor, java.nio.charset.StandardCharsets.UTF_8);
+	}
+
+	/**
+	 * Monta a URL completa (com esquema e host) do link enviado por e-mail —
+	 * um caminho relativo não abriria corretamente fora do navegador.
+	 */
+	private String linkAbsoluto(HttpServletRequest requisicao, String caminho) {
+		return requisicao.getRequestURL().toString().replace(requisicao.getRequestURI(), "")
+				+ requisicao.getContextPath() + caminho;
 	}
 }

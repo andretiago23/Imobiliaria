@@ -137,63 +137,61 @@
       </form>
     </section>
 
-    <!-- ===================== SEÇÃO ESPECÍFICA DO TIPO DE CONTA ===================== -->
+    <!-- ===================== MEUS IMÓVEIS (se houver algum anunciado) ===================== -->
     <section class="perfil-card">
-      <% if (usuario.podeAnunciar()) { %>
-
-        <h2>Painel de imóveis</h2>
-        <p class="alerta alerta-erro" role="alert">${erroSecao}</p>
-        <%
-          List<Imovel> imoveis = (List<Imovel>) request.getAttribute("imoveis");
-          if (imoveis == null || imoveis.isEmpty()) {
-        %>
-          <div class="estado-vazio">
-            <p>Você ainda não publicou nenhum imóvel.</p>
-            <a class="btn btn--primary btn--sm" style="margin-top:12px;" href="${pageContext.request.contextPath}/anunciar">Anunciar imóvel</a>
+      <h2>Meus imóveis</h2>
+      <p class="alerta alerta-erro" role="alert">${erroSecao}</p>
+      <%
+        List<Imovel> imoveis = (List<Imovel>) request.getAttribute("imoveis");
+        if (imoveis == null || imoveis.isEmpty()) {
+      %>
+        <div class="estado-vazio">
+          <p>Você ainda não publicou nenhum imóvel.</p>
+          <p class="micro" style="margin-top:6px;">Qualquer conta pode anunciar — não precisa mudar de perfil.</p>
+          <a class="btn btn--primary btn--sm" style="margin-top:12px;" href="${pageContext.request.contextPath}/anunciar">Anunciar imóvel</a>
+        </div>
+      <% } else {
+        NumberFormat moeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        for (Imovel imovel : imoveis) {
+      %>
+        <a class="perfil-item" href="${pageContext.request.contextPath}/imovel?id=<%= imovel.getId() %>">
+          <div>
+            <p class="perfil-item__titulo"><%= util.Html.escapar(imovel.getTitulo()) %></p>
+            <p class="micro"><%= moeda.format(imovel.getPreco()) %></p>
           </div>
-        <% } else {
-          NumberFormat moeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-          for (Imovel imovel : imoveis) {
+          <span class="badge <%= imovel.getStatus() == StatusImovel.ATIVO ? "" : "badge--status" %>" style="position:static;">
+            <%= imovel.getStatus().getRotulo() %>
+          </span>
+        </a>
+      <% }
         %>
-          <a class="perfil-item" href="${pageContext.request.contextPath}/imovel?id=<%= imovel.getId() %>">
-            <div>
-              <p class="perfil-item__titulo"><%= util.Html.escapar(imovel.getTitulo()) %></p>
-              <p class="micro"><%= moeda.format(imovel.getPreco()) %></p>
-            </div>
-            <span class="badge <%= imovel.getStatus() == StatusImovel.ATIVO ? "" : "badge--status" %>" style="position:static;">
-              <%= imovel.getStatus().getRotulo() %>
-            </span>
-          </a>
-        <% }
-          } %>
         <a class="btn btn--secondary btn--sm" style="margin-top:16px;width:100%;" href="${pageContext.request.contextPath}/anunciar">+ Novo anúncio</a>
-
-      <% } else { %>
-
-        <h2>Meus interesses</h2>
-        <p class="alerta alerta-erro" role="alert">${erroSecao}</p>
-        <%
-          List<ContatoInteresse> interesses = (List<ContatoInteresse>) request.getAttribute("interesses");
-          if (interesses == null || interesses.isEmpty()) {
-        %>
-          <div class="estado-vazio">
-            <p>Você ainda não demonstrou interesse em nenhum imóvel.</p>
-            <a class="btn btn--primary btn--sm" style="margin-top:12px;" href="${pageContext.request.contextPath}/inicio">Ver catálogo</a>
-          </div>
-        <% } else {
-          for (ContatoInteresse interesse : interesses) {
-        %>
-          <a class="perfil-item" href="${pageContext.request.contextPath}/imovel?id=<%= interesse.getIdImovel() %>">
-            <div>
-              <p class="perfil-item__titulo"><%= util.Html.escapar(interesse.getImovel().getTitulo()) %></p>
-              <p class="micro">Enviado em <%= interesse.getDataContato() != null ? interesse.getDataContato().toLocalDate() : "" %></p>
-            </div>
-            <span class="badge" style="position:static;"><%= interesse.getStatus().getRotulo() %></span>
-          </a>
-        <% }
-          } %>
-
       <% } %>
+    </section>
+
+    <!-- ===================== MEUS INTERESSES ===================== -->
+    <section class="perfil-card">
+      <h2>Meus interesses</h2>
+      <%
+        List<ContatoInteresse> interesses = (List<ContatoInteresse>) request.getAttribute("interesses");
+        if (interesses == null || interesses.isEmpty()) {
+      %>
+        <div class="estado-vazio">
+          <p>Você ainda não demonstrou interesse em nenhum imóvel.</p>
+          <a class="btn btn--primary btn--sm" style="margin-top:12px;" href="${pageContext.request.contextPath}/inicio">Ver catálogo</a>
+        </div>
+      <% } else {
+        for (ContatoInteresse interesse : interesses) {
+      %>
+        <a class="perfil-item" href="${pageContext.request.contextPath}/imovel?id=<%= interesse.getIdImovel() %>">
+          <div>
+            <p class="perfil-item__titulo"><%= util.Html.escapar(interesse.getImovel().getTitulo()) %></p>
+            <p class="micro">Enviado em <%= interesse.getDataContato() != null ? interesse.getDataContato().toLocalDate() : "" %></p>
+          </div>
+          <span class="badge" style="position:static;"><%= interesse.getStatus().getRotulo() %></span>
+        </a>
+      <% }
+        } %>
     </section>
   </div>
 

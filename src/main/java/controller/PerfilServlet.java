@@ -28,9 +28,10 @@ import util.SessaoUsuario;
 import util.TokenCsrf;
 
 /**
- * Página de perfil do usuário autenticado: foto, apelido, telefone, e a
- * seção que muda conforme o tipo de conta — painel de imóveis publicados
- * para quem é vendedor, ou "Meus interesses" para quem é comprador.
+ * Página de perfil do usuário autenticado: foto, apelido, telefone, painel
+ * de imóveis publicados (se houver) e "Meus interesses". Qualquer conta pode
+ * acumular os dois papéis — um comprador que anuncia um imóvel não muda de
+ * tipo de conta, só passa a aparecer também no painel de imóveis.
  */
 @WebServlet("/perfil")
 @MultipartConfig(maxFileSize = 3 * 1024 * 1024, maxRequestSize = 3 * 1024 * 1024 + 1024)
@@ -240,16 +241,19 @@ public class PerfilServlet extends HttpServlet {
 		return PASTA_FOTOS + "/" + nomeArquivo;
 	}
 
+	/**
+	 * Carrega os imóveis publicados pelo usuário (se houver algum — qualquer
+	 * conta pode anunciar) e os interesses que ele enviou como comprador.
+	 * As duas seções aparecem sempre juntas no perfil.
+	 */
 	private void carregarSecaoDoPerfil(HttpServletRequest requisicao) {
 		Usuario usuario = SessaoUsuario.obter(requisicao);
 		try {
-			if (usuario.podeAnunciar()) {
-				List<Imovel> imoveis = imovelServico.listarDoUsuario(usuario.getId());
-				requisicao.setAttribute("imoveis", imoveis);
-			} else {
-				List<ContatoInteresse> interesses = interacaoServico.listarInteressesEnviados(usuario.getId());
-				requisicao.setAttribute("interesses", interesses);
-			}
+			List<Imovel> imoveis = imovelServico.listarDoUsuario(usuario.getId());
+			requisicao.setAttribute("imoveis", imoveis);
+
+			List<ContatoInteresse> interesses = interacaoServico.listarInteressesEnviados(usuario.getId());
+			requisicao.setAttribute("interesses", interesses);
 		} catch (DAOException e) {
 			getServletContext().log("Falha ao carregar a seção do perfil.", e);
 			requisicao.setAttribute("erroSecao", "Não foi possível carregar essa seção agora.");

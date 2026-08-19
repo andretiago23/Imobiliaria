@@ -1,0 +1,27 @@
+# Copie este arquivo para mail.properties (mesma pasta) e preencha com as
+# credenciais reais do servidor SMTP. mail.properties fica fora do Git
+# (veja .gitignore) — nunca commite credenciais reais aqui.
+#
+# Sem esse arquivo a aplicação continua funcionando normalmente: os leads e
+# os anúncios são gravados no banco do mesmo jeito, só os e-mails automáticos
+# ficam desativados (ConfiguracaoEmail.configurado() retorna false e o
+# EmailService só registra um log informativo em vez de tentar enviar).
+
+# Exemplo para Gmail com senha de app (não a senha da conta):
+# mail.smtp.host=smtp.gmail.com
+# mail.smtp.porta=587
+# mail.smtp.auth=true
+# mail.smtp.starttls=true
+# mail.smtp.usuario=seuenderecoo@gmail.com
+# mail.smtp.senha=senha-de-app-de-16-caracteres
+
+mail.smtp.host=smtp.exemplo.com
+mail.smtp.porta=587
+mail.smtp.auth=true
+mail.smtp.starttls=true
+mail.smtp.usuario=
+mail.smtp.senha=
+
+# Opcional: se vazio, usa mail.smtp.usuario como remetente
+mail.remetente=
+mail.remetente.nome=Habittar

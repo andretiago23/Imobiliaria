@@ -57,16 +57,6 @@
     </div>
   </div>
 
-  <% if (Boolean.TRUE.equals(request.getAttribute("semPermissao"))) { %>
-
-    <div class="estado-vazio">
-      <p><strong>Sua conta é do tipo comprador.</strong></p>
-      <p class="texto-apoio">Para publicar imóveis, altere o tipo da sua conta para "Vendedor / imobiliária" no cadastro.</p>
-      <a class="btn btn--primary" style="margin-top:16px;" href="${pageContext.request.contextPath}/inicio">Voltar ao catálogo</a>
-    </div>
-
-  <% } else { %>
-
     <p class="alerta alerta-erro" role="alert">${erro}</p>
 
     <form class="filtros" method="post" action="${pageContext.request.contextPath}/anunciar" id="formAnuncio">
@@ -167,8 +157,6 @@
         <span class="btn__dot" aria-hidden="true"></span>
       </button>
     </form>
-
-  <% } %>
 
 </main>
 

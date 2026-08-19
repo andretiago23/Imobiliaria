@@ -41,9 +41,16 @@ public class Usuario {
 
 	/**
 	 * @return true se o usuário tem permissão para publicar imóveis
+	 *
+	 *         Qualquer conta autenticada pode anunciar — o campo tipoUsuario
+	 *         não restringe mais quem publica, só diferencia como a conta é
+	 *         tratada em outros pontos (ex.: rótulo exibido no perfil). Um
+	 *         cliente comprador que publica um imóvel se torna automaticamente
+	 *         proprietário daquele anúncio (imovel.id_usuario aponta pra ele),
+	 *         sem precisar mudar de tipo de conta.
 	 */
 	public boolean podeAnunciar() {
-		return tipoUsuario != null && tipoUsuario.podeAnunciar();
+		return true;
 	}
 
 	/**
