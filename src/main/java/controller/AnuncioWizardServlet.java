@@ -11,6 +11,7 @@ import dao.AnuncioDAO;
 import dao.DAOException;
 import dao.DisponibilidadeVisitaDAO;
 import dao.PlanoDAO;
+import dao.UsuarioDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -61,6 +62,7 @@ public class AnuncioWizardServlet extends HttpServlet {
 	private final AnuncioDAO anuncioDAO = new AnuncioDAO();
 	private final DisponibilidadeVisitaDAO disponibilidadeVisitaDAO = new DisponibilidadeVisitaDAO();
 	private final ImovelServico imovelServico = new ImovelServico();
+	private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
 	@Override
 	protected void doGet(HttpServletRequest requisicao, HttpServletResponse resposta)
@@ -278,6 +280,20 @@ public class AnuncioWizardServlet extends HttpServlet {
 			throws DAOException, IOException {
 
 		Usuario usuario = SessaoUsuario.obter(requisicao);
+
+		// Confere se o usuário da sessão ainda existe no banco: uma sessão de
+		// login sobrevive mais tempo que o objeto Usuario nela guardado, então
+		// se a conta foi removida nesse meio-tempo (ex.: "Excluir minha
+		// conta" em outra aba, ou uma limpeza manual de teste) o INSERT do
+		// imóvel a seguir quebraria a chave estrangeira com uma mensagem
+		// genérica. Detectando aqui, mandamos a pessoa logar de novo com uma
+		// mensagem clara em vez disso.
+		if (usuario == null || usuarioDAO.buscarPorId(usuario.getId()).isEmpty()) {
+			SessaoUsuario.encerrar(requisicao);
+			requisicao.getSession().setAttribute("erroLogin", "Sua sessão expirou. Entre novamente para continuar.");
+			resposta.sendRedirect(requisicao.getContextPath() + "/login");
+			return;
+		}
 
 		Imovel imovel = new Imovel();
 		imovel.setTitulo(rascunho.getTitulo());

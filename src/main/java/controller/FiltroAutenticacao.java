@@ -12,6 +12,9 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import dao.DAOException;
+import dao.UsuarioDAO;
+import model.Usuario;
 import util.SessaoUsuario;
 
 /**
@@ -39,6 +42,8 @@ public class FiltroAutenticacao implements Filter {
 	/** Pastas de conteúdo estático, liberadas para que o visual carregue na tela de login. */
 	private static final Set<String> PASTAS_LIVRES = Set.of("/css/", "/js/", "/imagens/", "/legal/");
 
+	private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+
 	@Override
 	public void doFilter(ServletRequest requisicao, ServletResponse resposta, FilterChain cadeia)
 			throws IOException, ServletException {
@@ -46,12 +51,44 @@ public class FiltroAutenticacao implements Filter {
 		HttpServletRequest requisicaoHttp = (HttpServletRequest) requisicao;
 		HttpServletResponse respostaHttp = (HttpServletResponse) resposta;
 
-		if (SessaoUsuario.estaAutenticado(requisicaoHttp) || ehCaminhoLivre(requisicaoHttp)) {
+		if (ehCaminhoLivre(requisicaoHttp)) {
 			cadeia.doFilter(requisicao, resposta);
 			return;
 		}
 
+		Usuario usuario = SessaoUsuario.obter(requisicaoHttp);
+		if (usuario != null && contaAindaExiste(usuario)) {
+			cadeia.doFilter(requisicao, resposta);
+			return;
+		}
+
+		if (usuario != null) {
+			// A sessão tinha um login válido, mas a conta não existe mais no
+			// banco (excluída pelo próprio usuário em outra aba, ou removida
+			// manualmente) — sem isso, cada Servlet protegido quebraria com
+			// erro genérico na primeira consulta que dependesse do id.
+			SessaoUsuario.encerrar(requisicaoHttp);
+			requisicaoHttp.getSession().setAttribute("erroLogin", "Sua sessão expirou. Entre novamente para continuar.");
+		}
+
 		respostaHttp.sendRedirect(requisicaoHttp.getContextPath() + "/login?redirecionar=" + destinoOriginal(requisicaoHttp));
+	}
+
+	/**
+	 * Reconfirma no banco que a conta da sessão ainda existe. Uma consulta a
+	 * mais por requisição autenticada é aceitável para o volume desta
+	 * aplicação, e evita todo um tipo de erro genérico (chave estrangeira,
+	 * NullPointerException) espalhado pelos Servlets que assumem que o
+	 * usuário da sessão é sempre válido.
+	 */
+	private boolean contaAindaExiste(Usuario usuario) {
+		try {
+			return usuarioDAO.buscarPorId(usuario.getId()).isPresent();
+		} catch (DAOException e) {
+			// Falha ao consultar o banco: não derruba a sessão por causa de
+			// uma instabilidade passageira, deixa passar normalmente.
+			return true;
+		}
 	}
 
 	/**

@@ -39,6 +39,17 @@ public class LoginServlet extends HttpServlet {
 			resposta.sendRedirect(requisicao.getContextPath() + redirecionar);
 			return;
 		}
+
+		// Mensagem "flash" de sessão expirada: gravada por outro servlet antes
+		// de encerrar a sessão antiga (ex.: AnuncioWizardServlet, quando
+		// detecta que o usuário da sessão não existe mais no banco) e
+		// consumida uma única vez aqui.
+		Object erroSessao = requisicao.getSession().getAttribute("erroLogin");
+		if (erroSessao != null) {
+			requisicao.getSession().removeAttribute("erroLogin");
+			requisicao.setAttribute("erro", erroSessao);
+		}
+
 		requisicao.setAttribute("redirecionar", Html.escapar(redirecionar));
 		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 		requisicao.getRequestDispatcher(PAGINA_LOGIN).forward(requisicao, resposta);
