@@ -118,7 +118,8 @@
     });
   }
 
-  /* "Vender" não é um filtro do catálogo — leva para o bloco de anúncio */
+  /* "Imóvel novo" (data-value continua "vender") não é um filtro do
+     catálogo — leva para o bloco de anúncio */
   var formBusca = document.getElementById("formBuscaHero");
   if (formBusca) {
     formBusca.addEventListener("submit", function (e) {
@@ -136,4 +137,84 @@
   if (hero) window.requestAnimationFrame(function () {
     hero.classList.add("pin-drop");
   });
+
+  /* Autocomplete de rua/bairro/cidade na busca da landing, via Nominatim
+     (OpenStreetMap) — API pública, sem chave. Restrito ao Brasil e com
+     debounce pra não disparar uma requisição a cada tecla. */
+  var campoLocalizacao = document.getElementById("campoLocalizacao");
+  var listaSugestoes = document.getElementById("sugestoesLocalizacao");
+  if (campoLocalizacao && listaSugestoes) {
+    var timeoutBusca = null;
+    var controladorAtual = null;
+
+    var fecharSugestoes = function () {
+      listaSugestoes.hidden = true;
+      listaSugestoes.innerHTML = "";
+    };
+
+    var buscarSugestoes = function (termo) {
+      if (controladorAtual) controladorAtual.abort();
+      controladorAtual = new AbortController();
+
+      var url = "https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6"
+        + "&countrycodes=br&accept-language=pt-BR&q=" + encodeURIComponent(termo);
+
+      fetch(url, { signal: controladorAtual.signal, headers: { "Accept": "application/json" } })
+        .then(function (resposta) { return resposta.ok ? resposta.json() : []; })
+        .then(function (resultados) {
+          listaSugestoes.innerHTML = "";
+          if (!resultados || !resultados.length) {
+            fecharSugestoes();
+            return;
+          }
+          // Nominatim costuma devolver o mesmo logradouro várias vezes (um
+          // ponto por trecho da rua) — mantém só a primeira ocorrência de
+          // cada combinação rua+cidade pra não repetir sugestão idêntica.
+          var vistos = {};
+          resultados.forEach(function (item) {
+            var endereco = item.address || {};
+            var principal = endereco.road || endereco.suburb || endereco.city
+              || endereco.town || endereco.village || item.display_name.split(",")[0];
+            var cidade = endereco.city || endereco.town || endereco.village || endereco.municipality || "";
+            var estado = endereco.state || "";
+
+            var chave = principal + "|" + cidade;
+            if (vistos[chave]) return;
+            vistos[chave] = true;
+
+            var li = document.createElement("li");
+            li.innerHTML = "<span>" + principal + "</span>"
+              + (cidade ? "<span class=\"micro\">" + cidade + (estado ? " — " + estado : "") + "</span>" : "");
+            li.addEventListener("click", function () {
+              campoLocalizacao.value = cidade ? (principal + ", " + cidade) : principal;
+              fecharSugestoes();
+              campoLocalizacao.focus();
+            });
+            listaSugestoes.appendChild(li);
+          });
+          listaSugestoes.hidden = false;
+        })
+        .catch(function () {
+          // Falha de rede ou requisição cancelada (nova busca no meio): a
+          // busca continua funcionando por texto livre, sem autocomplete.
+        });
+    };
+
+    campoLocalizacao.addEventListener("input", function () {
+      var termo = campoLocalizacao.value.trim();
+      window.clearTimeout(timeoutBusca);
+      if (termo.length < 3) {
+        fecharSugestoes();
+        return;
+      }
+      timeoutBusca = window.setTimeout(function () { buscarSugestoes(termo); }, 350);
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".search__field--local")) fecharSugestoes();
+    });
+    campoLocalizacao.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") fecharSugestoes();
+    });
+  }
 })();

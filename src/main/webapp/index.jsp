@@ -10,8 +10,8 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=18">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=21">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=21">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -81,20 +81,32 @@
     <div class="map-grid" aria-hidden="true"></div>
     <div class="wrap hero__grid">
       <div>
-        <p class="eyebrow">Portal imobiliário por localização</p>
         <h1 class="display">O imóvel certo está <span class="hl">mais perto</span> do que você imagina.</h1>
 
-        <form class="search" action="${pageContext.request.contextPath}/inicio" method="get" role="search" id="formBuscaHero">
-          <div class="segment" role="group" aria-label="Tipo de negócio">
-            <button type="button" class="is-active" data-value="venda" aria-pressed="true">Comprar</button>
-            <button type="button" data-value="aluguel" aria-pressed="false">Alugar</button>
-            <button type="button" data-value="vender" aria-pressed="false">Vender</button>
-          </div>
+        <div class="segment" role="group" aria-label="Tipo de negócio">
+          <button type="button" class="is-active" data-value="venda" aria-pressed="true">Comprar</button>
+          <button type="button" data-value="aluguel" aria-pressed="false">Alugar</button>
+          <button type="button" data-value="vender" aria-pressed="false">Imóvel novo</button>
+        </div>
+        <form class="search" action="${pageContext.request.contextPath}/inicio" method="get" role="search" id="formBuscaHero" autocomplete="off">
           <input type="hidden" id="finalidade" name="finalidade" value="venda">
-          <label class="search__field">
+          <label class="search__field search__field--tipo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9.5 21v-6h5v6"/></svg>
+            <span class="sr-only" hidden>Tipo de imóvel</span>
+            <select name="tipo" id="tipoImovel">
+              <option value="">Tipo de imóvel</option>
+              <option value="apartamento">Apartamento</option>
+              <option value="casa">Casa</option>
+              <option value="terreno">Terreno</option>
+              <option value="comercial">Imóvel comercial</option>
+              <option value="rural">Imóvel rural</option>
+            </select>
+          </label>
+          <label class="search__field search__field--local">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
             <span class="sr-only" hidden>Localização</span>
-            <input type="text" name="cidade" placeholder="Digite um bairro, cidade ou rua" autocomplete="off">
+            <input type="text" id="campoLocalizacao" name="cidade" placeholder="Busque por rua, bairro ou cidade" autocomplete="off">
+            <ul id="sugestoesLocalizacao" class="search__sugestoes" hidden></ul>
           </label>
           <button class="btn btn--primary search__submit" type="submit" aria-label="Buscar imóveis">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
@@ -103,42 +115,7 @@
       </div>
 
       <div class="scene" aria-hidden="true">
-        <svg viewBox="0 0 560 340" role="presentation">
-          <defs>
-            <pattern id="miniGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M40 0H0V40" fill="none" stroke="#16151F" stroke-opacity="0.1" stroke-width="1"/>
-            </pattern>
-          </defs>
-          <rect x="8" y="8" width="544" height="324" rx="16" fill="url(#miniGrid)" stroke="#16151F" stroke-opacity="0.08"/>
-          <!-- quarteirões -->
-          <g fill="none" stroke="#5B5967" stroke-opacity="0.2" stroke-width="1.5">
-            <rect x="48" y="48" width="128" height="84" rx="10"/>
-            <rect x="200" y="40" width="96" height="120" rx="10"/>
-            <rect x="324" y="60" width="150" height="72" rx="10"/>
-            <rect x="60" y="164" width="104" height="120" rx="10"/>
-            <rect x="192" y="188" width="132" height="96" rx="10"/>
-            <rect x="352" y="164" width="120" height="120" rx="10"/>
-          </g>
-          <!-- pins secundários pousados -->
-          <g fill="none" stroke="#5B5967" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.75">
-            <path d="M96 96s6-4.6 6-9.6A6 6 0 0 0 90 86.4c0 5 6 9.6 6 9.6Z"/>
-            <path d="M244 118s6-4.6 6-9.6a6 6 0 0 0-12 0c0 5 6 9.6 6 9.6Z"/>
-            <path d="M420 108s6-4.6 6-9.6a6 6 0 0 0-12 0c0 5 6 9.6 6 9.6Z"/>
-            <path d="M108 236s6-4.6 6-9.6a6 6 0 0 0-12 0c0 5 6 9.6 6 9.6Z"/>
-            <path d="M258 258s6-4.6 6-9.6a6 6 0 0 0-12 0c0 5 6 9.6 6 9.6Z"/>
-            <path d="M462 246s6-4.6 6-9.6a6 6 0 0 0-12 0c0 5 6 9.6 6 9.6Z"/>
-          </g>
-          <!-- raio de busca -->
-          <g id="heroRadar">
-            <circle cx="372" cy="168" r="60" fill="#FF6A1A" fill-opacity="0.08" stroke="#FF6A1A" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="5 7"/>
-          </g>
-          <!-- pin principal -->
-          <g id="heroPin">
-            <path d="M372 186s16-12.4 16-25.6A16 16 0 0 0 356 160.4c0 13.2 16 25.6 16 25.6Z" fill="#FF6A1A"/>
-            <circle cx="372" cy="160" r="6" fill="#FFFFFF"/>
-          </g>
-          <text x="392" y="206" font-family="Space Mono, monospace" font-size="11" fill="#5B5967">-23.5614, -46.6929</text>
-        </svg>
+        <img src="https://images.pexels.com/photos/18153132/pexels-photo-18153132.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
       </div>
     </div>
   </section>
@@ -261,26 +238,7 @@
           <p class="lead">Nada de abrir cinco abas. Cada imóvel da Habittar entra no mesmo mapa, com o mesmo padrão de ficha e o mesmo nível de detalhe.</p>
         </div>
         <div class="scene" aria-hidden="true">
-          <svg viewBox="0 0 640 420" role="presentation">
-            <g fill="none" stroke="#FF6A1A" stroke-opacity="0.3" stroke-width="1">
-              <path class="draw" d="M80 70C200 140 240 180 320 210"/>
-              <path class="draw" d="M560 60C440 130 400 180 320 210"/>
-              <path class="draw" d="M60 340C180 300 240 250 320 210"/>
-              <path class="draw" d="M580 350C460 300 400 250 320 210"/>
-              <path class="draw" d="M320 380C320 320 320 260 320 210"/>
-            </g>
-            <g fill="none" stroke="#5B5967" stroke-width="1.6" stroke-linejoin="round" opacity="0.8">
-              <path d="M80 78s7-5.4 7-11.2A7 7 0 0 0 73 66.8C73 72.6 80 78 80 78Z"/>
-              <path d="M560 68s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/>
-              <path d="M60 348s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/>
-              <path d="M580 358s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/>
-              <path d="M320 388s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/>
-            </g>
-            <g>
-              <path d="M320 232s14-11 14-22.4A14 14 0 0 0 306 209.6c0 11.4 14 22.4 14 22.4Z" fill="#FF6A1A"/>
-              <circle cx="320" cy="209" r="5" fill="#fff"/>
-            </g>
-          </svg>
+          <img src="https://images.pexels.com/photos/8730048/pexels-photo-8730048.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
         </div>
       </div>
 
@@ -292,19 +250,7 @@
           <p class="lead">O raio de busca acende exatamente o que existe ao redor do ponto escolhido — com contador ao vivo e filtros de valor, quartos e operação.</p>
         </div>
         <div class="scene" aria-hidden="true">
-          <svg viewBox="0 0 640 420" role="presentation">
-            <g class="radar">
-              <circle cx="320" cy="210" r="170" fill="#FF6A1A" fill-opacity="0.08" stroke="#FF6A1A" stroke-opacity="0.4" stroke-width="1.5" stroke-dasharray="6 8"/>
-            </g>
-            <rect x="180" y="188" width="280" height="48" rx="24" fill="#FFFFFF" stroke="#16151F" stroke-opacity="0.08"/>
-            <path d="M208 222s6-4.8 6-9.8a6 6 0 0 0-12 0c0 5 6 9.8 6 9.8Z" fill="#FF6A1A"/>
-            <rect x="226" y="205" width="150" height="8" rx="4" fill="#16151F" opacity="0.12"/>
-            <text x="392" y="217" font-family="Space Mono, monospace" font-size="12" fill="#5B5967">156</text>
-            <g class="fade-pin" style="transition-delay:.25s" fill="none" stroke="#FF6A1A" stroke-width="1.8"><path d="M240 108s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/></g>
-            <g class="fade-pin" style="transition-delay:.45s" fill="none" stroke="#FF6A1A" stroke-width="1.8"><path d="M420 128s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/></g>
-            <g class="fade-pin" style="transition-delay:.65s" fill="none" stroke="#FF6A1A" stroke-width="1.8"><path d="M250 320s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/></g>
-            <g class="fade-pin" style="transition-delay:.85s" fill="none" stroke="#FF6A1A" stroke-width="1.8"><path d="M430 306s7-5.4 7-11.2a7 7 0 0 0-14 0c0 5.8 7 11.2 7 11.2Z"/></g>
-          </svg>
+          <img src="https://images.pexels.com/photos/29561705/pexels-photo-29561705.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
         </div>
       </div>
 
@@ -316,17 +262,7 @@
           <p class="lead">Simule o financiamento na própria ficha, envie seu interesse com a simulação anexada e fale com um corretor que já sabe o que você procura.</p>
         </div>
         <div class="scene" aria-hidden="true">
-          <svg viewBox="0 0 640 200" role="presentation">
-            <line x1="40" y1="100" x2="600" y2="100" stroke="#5B5967" stroke-opacity="0.2" stroke-width="1.5"/>
-            <path id="timelineProgress" d="M40 100H600" stroke="#FF6A1A" stroke-width="2.5" fill="none" stroke-dashoffset="560"/>
-            <circle cx="40" cy="100" r="14" fill="none" stroke="#5B5967" stroke-width="1.6"/>
-            <g transform="translate(556 68)">
-              <rect x="0" y="16" width="48" height="48" rx="6" fill="none" stroke="#5B5967" stroke-width="1.6"/>
-              <path d="M24 14s9-6.9 9-14.4A9 9 0 0 0 15-.4C15 7.1 24 14 24 14Z" fill="#FF6A1A"/>
-            </g>
-            <text x="34" y="140" font-family="Space Mono, monospace" font-size="11" fill="#5B5967">busca</text>
-            <text x="520" y="150" font-family="Space Mono, monospace" font-size="11" fill="#5B5967">negociação</text>
-          </svg>
+          <img src="https://images.pexels.com/photos/7414935/pexels-photo-7414935.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
         </div>
       </div>
 
@@ -435,6 +371,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=18"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=21"></script>
 </body>
 </html>
