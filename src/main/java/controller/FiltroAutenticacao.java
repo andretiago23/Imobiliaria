@@ -57,7 +57,7 @@ public class FiltroAutenticacao implements Filter {
 		}
 
 		Usuario usuario = SessaoUsuario.obter(requisicaoHttp);
-		if (usuario != null && contaAindaExiste(usuario)) {
+		if (usuario != null && contaAindaExiste(requisicaoHttp, usuario)) {
 			cadeia.doFilter(requisicao, resposta);
 			return;
 		}
@@ -74,16 +74,33 @@ public class FiltroAutenticacao implements Filter {
 		respostaHttp.sendRedirect(requisicaoHttp.getContextPath() + "/login?redirecionar=" + destinoOriginal(requisicaoHttp));
 	}
 
+	/** Atributo de sessão com o instante (epoch millis) da última confirmação. */
+	private static final String ATRIBUTO_VERIFICADO_EM = "contaVerificadaEm";
+
 	/**
-	 * Reconfirma no banco que a conta da sessão ainda existe. Uma consulta a
-	 * mais por requisição autenticada é aceitável para o volume desta
-	 * aplicação, e evita todo um tipo de erro genérico (chave estrangeira,
-	 * NullPointerException) espalhado pelos Servlets que assumem que o
-	 * usuário da sessão é sempre válido.
+	 * Intervalo mínimo entre reconfirmações no banco. O banco é remoto e cada
+	 * conexão nova custa uma rodada de rede inteira (ConnectionFactory não usa
+	 * pool) — confirmar em toda requisição dobrava o tempo de carregamento de
+	 * qualquer página autenticada. Reconfirmando a cada 2 minutos, uma conta
+	 * excluída ainda é detectada rapidamente, mas a navegação normal não paga
+	 * essa consulta extra a cada clique.
 	 */
-	private boolean contaAindaExiste(Usuario usuario) {
+	private static final long INTERVALO_VERIFICACAO_MS = 2 * 60 * 1000;
+
+	private boolean contaAindaExiste(HttpServletRequest requisicao, Usuario usuario) {
+		jakarta.servlet.http.HttpSession sessao = requisicao.getSession();
+		Long verificadoEm = (Long) sessao.getAttribute(ATRIBUTO_VERIFICADO_EM);
+		long agora = System.currentTimeMillis();
+		if (verificadoEm != null && (agora - verificadoEm) < INTERVALO_VERIFICACAO_MS) {
+			return true;
+		}
+
 		try {
-			return usuarioDAO.buscarPorId(usuario.getId()).isPresent();
+			boolean existe = usuarioDAO.buscarPorId(usuario.getId()).isPresent();
+			if (existe) {
+				sessao.setAttribute(ATRIBUTO_VERIFICADO_EM, agora);
+			}
+			return existe;
 		} catch (DAOException e) {
 			// Falha ao consultar o banco: não derruba a sessão por causa de
 			// uma instabilidade passageira, deixa passar normalmente.
