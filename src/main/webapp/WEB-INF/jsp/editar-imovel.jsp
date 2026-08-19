@@ -49,6 +49,17 @@
         horaFimAtual = janela.getHoraFim().toString();
       }
     }
+    // Mesmo cuidado do assistente: se por algum motivo o imóvel ainda não
+    // tem disponibilidade salva (ex.: anúncio antigo, de antes dessa
+    // funcionalidade), não deixa os dias vazios com o horário já
+    // preenchido — pré-marca segunda a sexta como sugestão.
+    if (diasMarcados.isEmpty()) {
+      diasMarcados.add("SEG");
+      diasMarcados.add("TER");
+      diasMarcados.add("QUA");
+      diasMarcados.add("QUI");
+      diasMarcados.add("SEX");
+    }
 
     if (imovel != null) {
   %>

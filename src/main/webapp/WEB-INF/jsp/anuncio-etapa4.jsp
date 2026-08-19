@@ -44,6 +44,17 @@
       horaInicioAtual = janela.getHoraInicio().toString();
       horaFimAtual = janela.getHoraFim().toString();
     }
+    // Na primeira visita a esta etapa (nenhum dia ainda marcado), pré-marca
+    // segunda a sexta: o horário já vem preenchido com um padrão (09h-18h),
+    // e deixar os dias vazios dava a falsa impressão de que a etapa já
+    // estava pronta, resultando no erro "marque ao menos um dia" ao avançar.
+    if (diasMarcados.isEmpty()) {
+      diasMarcados.add("SEG");
+      diasMarcados.add("TER");
+      diasMarcados.add("QUA");
+      diasMarcados.add("QUI");
+      diasMarcados.add("SEX");
+    }
   %>
 
   <form method="post" action="${pageContext.request.contextPath}/anunciar/etapa4">
