@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Escolha seu plano | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=16">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=16">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=16">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=16">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=17">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=17">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=17">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=17">
 </head>
 <body>
 
@@ -43,13 +43,18 @@
     <input type="hidden" name="csrf" value="${csrf}">
 
     <div class="planos-grade">
-      <% if (planos != null) { for (Plano plano : planos) { %>
+      <% if (planos != null) { for (Plano plano : planos) {
+           java.math.BigDecimal meses = new java.math.BigDecimal(plano.getDuracaoDias())
+               .divide(new java.math.BigDecimal(30), 4, java.math.RoundingMode.HALF_UP);
+           java.math.BigDecimal valorMensal = plano.getPreco().divide(meses, 2, java.math.RoundingMode.HALF_UP);
+      %>
         <input type="radio" name="idPlano" value="<%= plano.getId() %>" id="plano<%= plano.getId() %>" class="plano-input"
           <%= rascunho.getIdPlano() != null && rascunho.getIdPlano() == plano.getId() ? "checked" : "" %> required>
         <label for="plano<%= plano.getId() %>" class="plano-card">
           <% if (plano.isDestaque()) { %><span class="plano-card__selo">Mais popular</span><% } %>
           <p class="plano-card__nome"><%= util.Html.escapar(plano.getNome()) %></p>
-          <p class="plano-card__preco"><%= moeda.format(plano.getPreco()) %> <span>/ <%= plano.getDuracaoDias() %> dias</span></p>
+          <p class="plano-card__preco"><%= moeda.format(plano.getPreco()) %> <span>total</span></p>
+          <p class="plano-card__mensal">Equivale a <strong><%= moeda.format(valorMensal) %>/mês</strong> — anúncio ativo por <%= plano.getDuracaoDias() %> dias</p>
           <p class="plano-card__descricao"><%= util.Html.escapar(plano.getDescricao()) %></p>
           <ul class="plano-card__lista">
             <li>

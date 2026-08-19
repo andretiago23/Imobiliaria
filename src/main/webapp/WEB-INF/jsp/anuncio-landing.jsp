@@ -5,9 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Anuncie seu imóvel | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=16">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=16">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=16">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=17">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=17">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=17">
 </head>
 <body>
 
@@ -48,9 +48,9 @@
   <!-- ===================== HERO ===================== -->
   <section class="section hero">
     <div class="map-grid" aria-hidden="true"></div>
-    <div class="wrap" style="text-align:center;max-width:720px;">
+    <div class="wrap" style="text-align:center;">
       <p class="eyebrow">Anuncie com a Habittar</p>
-      <h1 class="display" style="font-size:clamp(32px,5vw,52px);">Seu imóvel visto por quem <span class="hl">está procurando</span>, hoje.</h1>
+      <h1 class="display" style="font-size:clamp(32px,5vw,52px);max-width:800px;margin:0 auto;">Seu imóvel visto por quem <span class="hl">está procurando</span>, hoje.</h1>
       <p class="lead" style="margin:16px auto 0;">Publique em poucos minutos, escolha o plano que faz sentido pra você e só paga quando o anúncio estiver pronto para ir ao ar.</p>
       <div class="cta__actions" style="justify-content:center;margin-top:32px;">
         <a class="btn btn--primary btn--interactive" href="${pageContext.request.contextPath}/anunciar/etapa1">
@@ -89,6 +89,12 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
           </span>
           <div><h3 class="display">Visibilidade real</h3><p>Planos com posição em destaque na busca, para quem quer sair na frente.</p></div>
+        </div>
+        <div class="cat" style="cursor:default;">
+          <span class="cat__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </span>
+          <div><h3 class="display">Contato direto, sem enrolação</h3><p>Quem se interessar cai direto no seu e-mail — converse e já combine a visita, sem intermediário no meio do caminho.</p></div>
         </div>
         <div class="cat" style="cursor:default;">
           <span class="cat__icon">
