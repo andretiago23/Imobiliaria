@@ -355,8 +355,12 @@ body {
   color: var(--text-secondary);
 }
 
-.filtros input,
-.filtros select {
+/* Escopado em .filtros__campo (o wrapper de cada campo), não em .filtros
+   (o <form> em si) — várias páginas (perfil, assistente de anúncio) usam
+   .filtros__campo/.filtros__grade dentro de forms com outra classe ou
+   nenhuma, e precisam do mesmo estilo de input. */
+.filtros__campo input,
+.filtros__campo select {
   font-family: var(--font-sans);
   font-size: 15px;
   color: var(--text-primary);
@@ -367,15 +371,22 @@ body {
   width: 100%;
 }
 
-.filtros input:focus,
-.filtros select:focus {
+.filtros__campo input:focus,
+.filtros__campo select:focus {
   outline: 2px solid var(--accent-primary-soft);
   border-color: var(--accent-primary);
 }
 
+.filtros__campo input:disabled,
+.filtros__campo input:read-only {
+  color: var(--text-secondary);
+  background: var(--border-subtle);
+  cursor: not-allowed;
+}
+
 /* Select com a mesma seta customizada usada nos formulários de login/
    cadastro, no lugar da seta nativa do navegador. */
-.filtros select {
+.filtros__campo select {
   appearance: none;
   -webkit-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235B5967' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");

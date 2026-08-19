@@ -6,9 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Confirmar pagamento | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=14">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=14">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=14">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=15">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=15">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=15">
 </head>
 <body>
 
