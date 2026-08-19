@@ -26,9 +26,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Criar conta | Habittar</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=12">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=12">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=12">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=13">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=13">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=13">
 </head>
 <body>
 
@@ -107,16 +107,6 @@
 					<span class="campo-erro" id="erro-telefone"></span>
 				</div>
 
-				<div class="auth__campo auth-anim auth-anim--4">
-					<label for="tipoUsuario">Tipo de conta</label>
-					<div class="glass-input">
-						<select id="tipoUsuario" name="tipoUsuario">
-							<option value="comprador" ${tipoUsuario == 'comprador' ? 'selected' : ''}>Comprador — quero buscar imóveis</option>
-							<option value="vendedor" ${tipoUsuario == 'vendedor' ? 'selected' : ''}>Vendedor / imobiliária — quero anunciar imóveis</option>
-						</select>
-					</div>
-				</div>
-
 				<% if (!Boolean.TRUE.equals(request.getAttribute("modoGoogle"))) { %>
 				<div class="auth__campo auth-anim auth-anim--5">
 					<label for="senha">Senha</label>
@@ -177,7 +167,7 @@
 
 </div>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=12"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=12"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=13"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=13"></script>
 </body>
 </html>

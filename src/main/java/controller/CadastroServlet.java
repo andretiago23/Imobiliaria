@@ -13,7 +13,6 @@ import model.RegraNegocioException;
 import model.TipoUsuario;
 import model.Usuario;
 import model.UsuarioServico;
-import util.ConversorEnum;
 import util.Html;
 import util.SessaoUsuario;
 import util.TokenCsrf;
@@ -25,8 +24,8 @@ import util.TokenCsrf;
  *
  * Também conclui o cadastro de quem chega pelo login com Google: nesse caso o
  * nome e o e-mail já vêm confirmados pelo Google (guardados na sessão pelo
- * GoogleOAuthServlet) e o formulário pede só o restante — CPF, telefone e
- * tipo de conta —, sem exigir senha.
+ * GoogleOAuthServlet) e o formulário pede só o restante — CPF e telefone —,
+ * sem exigir senha.
  */
 @WebServlet("/cadastro")
 public class CadastroServlet extends HttpServlet {
@@ -119,7 +118,7 @@ public class CadastroServlet extends HttpServlet {
 			usuario.setEmail(emailGoogle);
 			usuario.setCpf(requisicao.getParameter("cpf"));
 			usuario.setTelefone(requisicao.getParameter("telefone"));
-			usuario.setTipoUsuario(ConversorEnum.paraEnum(TipoUsuario.class, requisicao.getParameter("tipoUsuario")));
+			usuario.setTipoUsuario(TipoUsuario.COMPRADOR);
 
 			boolean aceitouTermos = "on".equals(requisicao.getParameter("aceiteTermos"));
 			usuarioServico.cadastrarComLoginSocial(usuario, aceitouTermos);
@@ -134,8 +133,6 @@ public class CadastroServlet extends HttpServlet {
 
 		} catch (RegraNegocioException e) {
 			reexibirFormulario(requisicao, resposta, e.getMessage());
-		} catch (IllegalArgumentException e) {
-			reexibirFormulario(requisicao, resposta, "Selecione um tipo de conta válido.");
 		} catch (DAOException e) {
 			getServletContext().log("Falha ao concluir o cadastro via Google.", e);
 			reexibirFormulario(requisicao, resposta,
@@ -143,13 +140,18 @@ public class CadastroServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Toda conta nova começa como "comprador" — não é mais uma escolha no
+	 * formulário, já que qualquer conta pode anunciar um imóvel quando
+	 * quiser, independentemente desse rótulo (ver Usuario.podeAnunciar()).
+	 */
 	private Usuario montarUsuario(HttpServletRequest requisicao) {
 		Usuario usuario = new Usuario();
 		usuario.setNome(requisicao.getParameter("nome"));
 		usuario.setEmail(requisicao.getParameter("email"));
 		usuario.setCpf(requisicao.getParameter("cpf"));
 		usuario.setTelefone(requisicao.getParameter("telefone"));
-		usuario.setTipoUsuario(ConversorEnum.paraEnum(TipoUsuario.class, requisicao.getParameter("tipoUsuario")));
+		usuario.setTipoUsuario(TipoUsuario.COMPRADOR);
 		return usuario;
 	}
 
@@ -173,7 +175,6 @@ public class CadastroServlet extends HttpServlet {
 		requisicao.setAttribute("erro", mensagemErro);
 		requisicao.setAttribute("cpf", Html.escapar(requisicao.getParameter("cpf")));
 		requisicao.setAttribute("telefone", Html.escapar(requisicao.getParameter("telefone")));
-		requisicao.setAttribute("tipoUsuario", Html.escapar(requisicao.getParameter("tipoUsuario")));
 		requisicao.setAttribute("aceiteTermos", "on".equals(requisicao.getParameter("aceiteTermos")));
 		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 		requisicao.getRequestDispatcher(PAGINA_CADASTRO).forward(requisicao, resposta);

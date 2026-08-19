@@ -16,20 +16,23 @@ body {
 .auth__form {
   flex: 1 1 480px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 48px 32px;
+  padding: 104px 32px 48px;
   position: relative;
 }
 
 .auth__form-inner {
   width: 100%;
   max-width: 400px;
+  margin: auto 0;
 }
 
-/* Logo (e "voltar") fixados no canto superior esquerdo da coluna,
-   fora do bloco que é centralizado verticalmente — assim a marca
-   sempre fica no topo, não flutuando no meio da tela. */
+/* Logo (e "voltar") fixados no canto superior esquerdo da coluna. Ficam
+   fora do fluxo do formulário — o padding-top de .auth__form garante que
+   o conteúdo abaixo nunca sobe até essa faixa, mesmo em formulários longos
+   como o de cadastro (o login, mais curto, fica centralizado no restante
+   do espaço graças à margem automática de .auth__form-inner). */
 .auth__brand {
   position: absolute;
   top: 32px;
@@ -75,7 +78,7 @@ body {
 }
 
 .auth__campo {
-  margin-bottom: 18px;
+  margin-bottom: var(--space-3);
 }
 
 .auth__campo label {
@@ -85,7 +88,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-secondary);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-1);
 }
 
 .glass-input {
@@ -107,10 +110,13 @@ body {
 
 .campo-erro {
   display: block;
-  min-height: 18px;
-  margin-top: 4px;
+  margin-top: 0;
   font-size: 12.5px;
   color: #d64545;
+  transition: margin-top 0.15s ease-out;
+}
+.campo-erro:not(:empty) {
+  margin-top: var(--space-1);
 }
 
 .glass-input input,

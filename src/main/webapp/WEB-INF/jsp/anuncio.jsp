@@ -5,9 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Anunciar imóvel | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=12">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=12">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=12">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=13">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=13">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=13">
 </head>
 <body>
 
@@ -161,6 +161,6 @@
 
 </main>
 
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=12"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=13"></script>
 </body>
 </html>
