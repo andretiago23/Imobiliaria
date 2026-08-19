@@ -73,6 +73,16 @@ public final class ConfiguracaoEmail {
 		return valor("mail.remetente.nome", "Habittar");
 	}
 
+	/**
+	 * URL base da aplicação (sem barra no final), usada para montar links em
+	 * e-mails disparados fora do contexto de uma requisição HTTP — como o
+	 * job agendado de confirmação de status (util.AgendadorStatusImovel), que
+	 * não tem um HttpServletRequest de onde deduzir host/porta.
+	 */
+	public static String urlBase() {
+		return valor("app.urlBase", "http://localhost:8080/imobiliaria");
+	}
+
 	private static String valor(String chave, String padrao) {
 		Properties propriedades = obterPropriedades();
 		String valor = propriedades == null ? null : propriedades.getProperty(chave);

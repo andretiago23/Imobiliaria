@@ -1,6 +1,8 @@
 package model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Guarda os dados do assistente de anúncio (4 etapas) na sessão HTTP entre
@@ -16,6 +18,9 @@ public class RascunhoAnuncio implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static final String SESSAO_CHAVE = "rascunhoAnuncio";
+
+	// Escolhido no dropdown da landing, antes da etapa 1
+	private TipoAnunciante tipoAnunciante;
 
 	// Etapa 1 — o que anunciar + endereço do imóvel
 	private Finalidade finalidade;
@@ -48,6 +53,29 @@ public class RascunhoAnuncio implements java.io.Serializable {
 	private String bairroAnunciante;
 	private String cidadeAnunciante;
 	private String estadoAnunciante;
+
+	// Etapa 4 — disponibilidade de horários para visita
+	private List<DisponibilidadeVisita> disponibilidade = new ArrayList<>();
+
+	public boolean etapa4Completa() {
+		return !disponibilidade.isEmpty();
+	}
+
+	public List<DisponibilidadeVisita> getDisponibilidade() {
+		return disponibilidade;
+	}
+
+	public void setDisponibilidade(List<DisponibilidadeVisita> disponibilidade) {
+		this.disponibilidade = disponibilidade == null ? new ArrayList<>() : disponibilidade;
+	}
+
+	public TipoAnunciante getTipoAnunciante() {
+		return tipoAnunciante;
+	}
+
+	public void setTipoAnunciante(TipoAnunciante tipoAnunciante) {
+		this.tipoAnunciante = tipoAnunciante;
+	}
 
 	public boolean etapa1Completa() {
 		return finalidade != null && titulo != null && !titulo.isBlank() && tipo != null && preco != null

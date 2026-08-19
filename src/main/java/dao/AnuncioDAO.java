@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import model.Anuncio;
 import model.StatusPagamento;
+import model.TipoAnunciante;
 import util.ConversorEnum;
 import util.LeitorResultSet;
 
@@ -19,16 +20,18 @@ import util.LeitorResultSet;
 public class AnuncioDAO {
 
 	private static final String SQL_INSERIR = """
-			INSERT INTO anuncio (id_imovel, id_plano, id_anunciante, status_pagamento)
-			VALUES (?, ?, ?, ?)
+			INSERT INTO anuncio (id_imovel, id_plano, id_anunciante, tipo_anunciante, status_pagamento)
+			VALUES (?, ?, ?, ?, ?)
 			""";
 
 	private static final String SQL_SELECT_BASE = """
-			SELECT id, id_imovel, id_plano, id_anunciante, status_pagamento, data_contratacao, data_pagamento
+			SELECT id, id_imovel, id_plano, id_anunciante, tipo_anunciante, status_pagamento, data_contratacao, data_pagamento
 			FROM anuncio
 			""";
 
 	private static final String SQL_BUSCAR_POR_ID = SQL_SELECT_BASE + " WHERE id = ?";
+
+	private static final String SQL_BUSCAR_POR_IMOVEL = SQL_SELECT_BASE + " WHERE id_imovel = ? ORDER BY id DESC LIMIT 1";
 
 	private static final String SQL_MARCAR_PAGO = """
 			UPDATE anuncio SET status_pagamento = 'pago', data_pagamento = NOW() WHERE id = ? AND id_anunciante = ?
@@ -41,7 +44,8 @@ public class AnuncioDAO {
 			comando.setInt(1, anuncio.getIdImovel());
 			comando.setInt(2, anuncio.getIdPlano());
 			comando.setInt(3, anuncio.getIdAnunciante());
-			comando.setString(4, ConversorEnum.paraBanco(anuncio.getStatusPagamento()));
+			comando.setString(4, ConversorEnum.paraBanco(anuncio.getTipoAnunciante()));
+			comando.setString(5, ConversorEnum.paraBanco(anuncio.getStatusPagamento()));
 			comando.executeUpdate();
 
 			try (ResultSet chaves = comando.getGeneratedKeys()) {
@@ -64,6 +68,19 @@ public class AnuncioDAO {
 			}
 		} catch (SQLException e) {
 			throw new DAOException("Erro ao buscar o anúncio de id " + id + ".", e);
+		}
+	}
+
+	public Optional<Anuncio> buscarPorImovel(int idImovel) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_BUSCAR_POR_IMOVEL)) {
+
+			comando.setInt(1, idImovel);
+			try (ResultSet resultado = comando.executeQuery()) {
+				return resultado.next() ? Optional.of(montarAnuncio(resultado)) : Optional.empty();
+			}
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao buscar o anúncio do imóvel " + idImovel + ".", e);
 		}
 	}
 
@@ -91,6 +108,7 @@ public class AnuncioDAO {
 		anuncio.setIdImovel(resultado.getInt("id_imovel"));
 		anuncio.setIdPlano(resultado.getInt("id_plano"));
 		anuncio.setIdAnunciante(resultado.getInt("id_anunciante"));
+		anuncio.setTipoAnunciante(ConversorEnum.paraEnum(TipoAnunciante.class, resultado.getString("tipo_anunciante")));
 		anuncio.setStatusPagamento(ConversorEnum.paraEnum(StatusPagamento.class, resultado.getString("status_pagamento")));
 		anuncio.setDataContratacao(LeitorResultSet.lerDataHora(resultado, "data_contratacao"));
 		anuncio.setDataPagamento(LeitorResultSet.lerDataHora(resultado, "data_pagamento"));

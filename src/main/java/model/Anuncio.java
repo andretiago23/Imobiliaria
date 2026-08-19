@@ -17,6 +17,7 @@ public class Anuncio {
 	private int idImovel;
 	private int idPlano;
 	private int idAnunciante;
+	private TipoAnunciante tipoAnunciante;
 	private StatusPagamento statusPagamento;
 	private LocalDateTime dataContratacao;
 	private LocalDateTime dataPagamento;
@@ -27,10 +28,11 @@ public class Anuncio {
 	public Anuncio() {
 	}
 
-	public Anuncio(int idImovel, int idPlano, int idAnunciante) {
+	public Anuncio(int idImovel, int idPlano, int idAnunciante, TipoAnunciante tipoAnunciante) {
 		this.idImovel = idImovel;
 		this.idPlano = idPlano;
 		this.idAnunciante = idAnunciante;
+		this.tipoAnunciante = tipoAnunciante;
 		this.statusPagamento = StatusPagamento.PENDENTE;
 	}
 
@@ -64,6 +66,14 @@ public class Anuncio {
 
 	public void setIdAnunciante(int idAnunciante) {
 		this.idAnunciante = idAnunciante;
+	}
+
+	public TipoAnunciante getTipoAnunciante() {
+		return tipoAnunciante;
+	}
+
+	public void setTipoAnunciante(TipoAnunciante tipoAnunciante) {
+		this.tipoAnunciante = tipoAnunciante;
 	}
 
 	public StatusPagamento getStatusPagamento() {

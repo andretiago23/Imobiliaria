@@ -3,8 +3,11 @@ package controller;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import dao.DAOException;
+import dao.FavoritoDAO;
 import dao.ImovelDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,7 +18,10 @@ import model.Finalidade;
 import model.FiltroImovel;
 import model.Imovel;
 import model.TipoImovel;
+import model.Usuario;
 import util.ConversorEnum;
+import util.SessaoUsuario;
+import util.TokenCsrf;
 
 /**
  * Catálogo de imóveis, aberto tanto a visitantes quanto a clientes logados.
@@ -34,12 +40,14 @@ public class InicioServlet extends HttpServlet {
 	private static final int LIMITE_FEED_SEM_FILTRO = 24;
 
 	private final ImovelDAO imovelDAO = new ImovelDAO();
+	private final FavoritoDAO favoritoDAO = new FavoritoDAO();
 
 	@Override
 	protected void doGet(HttpServletRequest requisicao, HttpServletResponse resposta)
 			throws ServletException, IOException {
 
 		carregarCatalogo(requisicao);
+		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 
 		requisicao.getRequestDispatcher(PAGINA_INICIO).forward(requisicao, resposta);
 	}
@@ -57,6 +65,14 @@ public class InicioServlet extends HttpServlet {
 					? imovelDAO.listarAtivos(LIMITE_FEED_SEM_FILTRO)
 					: imovelDAO.buscarComFiltros(filtro);
 			requisicao.setAttribute("imoveis", imoveis);
+
+			Usuario usuarioLogado = SessaoUsuario.obter(requisicao);
+			if (usuarioLogado != null) {
+				Set<Integer> idsFavoritados = favoritoDAO.listarImoveisFavoritos(usuarioLogado.getId()).stream()
+						.map(Imovel::getId)
+						.collect(Collectors.toSet());
+				requisicao.setAttribute("idsFavoritados", idsFavoritados);
+			}
 		} catch (DAOException e) {
 			getServletContext().log("Falha ao carregar o catálogo de imóveis.", e);
 			requisicao.setAttribute("erroCatalogo", "Não foi possível carregar os imóveis agora.");

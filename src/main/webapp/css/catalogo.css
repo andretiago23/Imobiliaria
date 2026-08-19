@@ -561,7 +561,44 @@ body {
   }
 }
 
+.imovel-detalhe__salvar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+.botao-salvar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 0;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: color 0.15s ease-out, transform 0.15s ease-out;
+}
+.botao-salvar:hover {
+  transform: scale(1.06);
+}
+.botao-salvar--ativo {
+  color: var(--accent-primary);
+}
+.card__salvar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+.card__salvar .botao-salvar {
+  width: 34px;
+  height: 34px;
+}
+
 .imovel-detalhe__foto {
+  position: relative;
   aspect-ratio: 16 / 10;
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -639,4 +676,122 @@ body {
 .imovel-painel__aviso {
   margin-top: 16px;
   font-size: 13px;
+}
+
+/* --------------------------------------------------------------------------
+   Imóveis anunciados (painel do anunciante)
+   -------------------------------------------------------------------------- */
+.anunciados-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.anunciado-card {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+@media (max-width: 640px) {
+  .anunciado-card {
+    grid-template-columns: 1fr;
+  }
+}
+.anunciado-card__foto {
+  background: var(--border-subtle);
+}
+.anunciado-card__foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  min-height: 140px;
+}
+.anunciado-card__corpo {
+  padding: 20px 20px 20px 0;
+}
+@media (max-width: 640px) {
+  .anunciado-card__corpo {
+    padding: 0 16px 16px;
+  }
+}
+.anunciado-card__topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.anunciado-card__preco {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+}
+.anunciado-card__badge-atualizacao {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  font-family: var(--font-mono);
+}
+.anunciado-card__badge-atualizacao--verde {
+  background: rgba(28, 107, 63, 0.1);
+  color: #1c6b3f;
+}
+.anunciado-card__badge-atualizacao--amarelo {
+  background: rgba(180, 130, 10, 0.12);
+  color: #8a6200;
+}
+.anunciado-card__badge-atualizacao--vermelho {
+  background: rgba(214, 69, 69, 0.1);
+  color: #d64545;
+}
+.anunciado-card__titulo {
+  font-weight: 600;
+  margin: 10px 0 2px;
+}
+.anunciado-card__metricas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.anunciado-card__metricas div {
+  display: flex;
+  flex-direction: column;
+}
+.anunciado-card__metricas strong {
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+.anunciado-card__metricas span {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+@media (max-width: 480px) {
+  .anunciado-card__metricas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.anunciado-card__acoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.anunciado-card__select-status {
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-page);
+  font-size: 13px;
+  color: var(--text-primary);
 }

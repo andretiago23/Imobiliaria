@@ -12,11 +12,18 @@ public enum StatusImovel implements ValorBanco {
 	 * confirmado (ver controller.PagamentoServlet).
 	 */
 	PENDENTE_PAGAMENTO("pendente_pagamento", "Aguardando pagamento"),
-	ATIVO("ativo", "Ativo"),
+	ATIVO("ativo", "Disponível"),
 	RESERVADO("reservado", "Reservado"),
 	VENDIDO("vendido", "Vendido"),
 	ALUGADO("alugado", "Alugado"),
-	INATIVO("inativo", "Inativo");
+	INATIVO("inativo", "Inativo"),
+	/**
+	 * O anunciante não confirmou "ainda está disponível?" dentro do prazo
+	 * (15 dias sem atualização + 7 dias sem resposta ao e-mail de
+	 * confirmação) — some do catálogo até ele confirmar. Ver
+	 * controller.ConfirmacaoStatusServlet e util.AgendadorStatusImovel.
+	 */
+	PENDENTE_CONFIRMACAO("pendente_confirmacao", "Aguardando confirmação");
 
 	private final String valorBanco;
 	private final String rotulo;

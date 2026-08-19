@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Seus dados | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=17">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=18">
 </head>
 <body>
 
@@ -28,7 +28,7 @@
   <% request.setAttribute("etapaAtual", 3); %>
   <jsp:include page="/WEB-INF/jsp/fragmentos/progressbar.jsp" />
 
-  <p class="eyebrow wizard-etapa__eyebrow">Etapa 3 de 4</p>
+  <p class="eyebrow wizard-etapa__eyebrow">Etapa 3 de 5</p>
   <h1 class="display wizard-etapa__titulo">Dados do anunciante</h1>
 
   <p class="alerta alerta-erro" role="alert">${erro}</p>
@@ -123,7 +123,7 @@
   </form>
 </main>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=17"></script>
-<script src="${pageContext.request.contextPath}/js/anuncio-wizard.js?v=17"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=18"></script>
+<script src="${pageContext.request.contextPath}/js/anuncio-wizard.js?v=18"></script>
 </body>
 </html>

@@ -143,6 +143,65 @@
 }
 
 /* --------------------------------------------------------------------------
+   Landing — dropdown "Anunciar agora" (proprietário/corretor)
+   -------------------------------------------------------------------------- */
+.anunciar-dropdown {
+  position: relative;
+  text-align: left;
+}
+.anunciar-dropdown summary {
+  list-style: none;
+  cursor: pointer;
+  gap: 8px;
+}
+.anunciar-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+.anunciar-dropdown[open] summary svg {
+  transform: rotate(180deg);
+}
+.anunciar-dropdown summary svg {
+  transition: transform 0.15s ease-out;
+}
+.anunciar-dropdown__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 280px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card-hover);
+  padding: 8px;
+  z-index: 10;
+}
+.anunciar-dropdown__menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  transition: background-color 0.15s ease-out;
+}
+.anunciar-dropdown__menu a:hover {
+  background: var(--accent-primary-soft);
+}
+.anunciar-dropdown__menu svg {
+  flex-shrink: 0;
+  color: var(--accent-primary);
+}
+.anunciar-dropdown__menu span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.anunciar-dropdown__menu small {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* --------------------------------------------------------------------------
    Etapa 1 — características do imóvel
    -------------------------------------------------------------------------- */
 .wizard-caracteristicas {
@@ -256,6 +315,96 @@
   flex-shrink: 0;
   color: var(--accent-primary);
   margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Etapa 4 — dias da semana (disponibilidade para visita)
+   -------------------------------------------------------------------------- */
+.wizard-dias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.wizard-dia {
+  position: relative;
+  cursor: pointer;
+}
+.wizard-dia input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.wizard-dia span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: all 0.15s ease-out;
+}
+.wizard-dia input:checked + span {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #fff;
+}
+.wizard-dia input:focus-visible + span {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Agendar visita — dias e horários disponíveis
+   -------------------------------------------------------------------------- */
+.wizard-visita-dias {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: var(--space-4) 0 var(--space-5);
+}
+.wizard-visita-dia h3 {
+  font-family: var(--font-display);
+  font-size: 15px;
+  text-transform: capitalize;
+  margin: 0 0 var(--space-2);
+}
+.wizard-visita-horarios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.wizard-visita-horario {
+  position: relative;
+  cursor: pointer;
+}
+.wizard-visita-horario input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.wizard-visita-horario span {
+  display: block;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: all 0.15s ease-out;
+}
+.wizard-visita-horario input:checked + span {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #fff;
+}
+.wizard-visita-horario input:focus-visible + span {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 /* --------------------------------------------------------------------------

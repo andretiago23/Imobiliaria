@@ -6,9 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catálogo | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=17">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=18">
 </head>
 <body>
 
@@ -22,6 +22,9 @@
       <a class="${filtro.finalidade == 'VENDA' ? 'is-current' : ''}" href="${pageContext.request.contextPath}/inicio?finalidade=venda" ${filtro.finalidade == 'VENDA' ? 'aria-current="page"' : ''}>Comprar</a>
       <a class="${filtro.finalidade == 'ALUGUEL' ? 'is-current' : ''}" href="${pageContext.request.contextPath}/inicio?finalidade=aluguel" ${filtro.finalidade == 'ALUGUEL' ? 'aria-current="page"' : ''}>Alugar</a>
       <a href="${pageContext.request.contextPath}/anunciar">Anunciar</a>
+      <% if (session.getAttribute("usuarioLogado") != null) { %>
+        <a href="${pageContext.request.contextPath}/imoveis-anunciados">Imóveis anunciados</a>
+      <% } %>
       <a href="${pageContext.request.contextPath}/financiamento">Financiamento</a>
       <% if (session.getAttribute("usuarioLogado") != null) { %>
         <div class="avatar-menu">
@@ -257,11 +260,14 @@
           <p>Nenhum imóvel encontrado com esses filtros.</p>
           <p class="micro">Tente ampliar a faixa de preço ou remover algum filtro.</p>
         </div>
-      <% } else { %>
+      <% } else {
+           java.util.Set<Integer> idsFavoritados = (java.util.Set<Integer>) request.getAttribute("idsFavoritados");
+      %>
         <div class="catalogo__grade">
           <% for (Imovel imovel : imoveis) {
             boolean aluguel = imovel.getFinalidade() == Finalidade.ALUGUEL;
             boolean reservado = imovel.getStatus() == StatusImovel.RESERVADO;
+            boolean salvo = idsFavoritados != null && idsFavoritados.contains(imovel.getId());
           %>
           <article class="card">
             <div class="card__photo tem-foto">
@@ -270,6 +276,16 @@
               <span class="badge"><%= aluguel ? "Aluguel" : "Venda" %></span>
               <% if (reservado) { %>
                 <span class="badge badge--reservado">Reservado</span>
+              <% } %>
+              <% if (session.getAttribute("usuarioLogado") != null) { %>
+                <form method="post" action="${pageContext.request.contextPath}/favorito" class="card__salvar">
+                  <input type="hidden" name="csrf" value="${csrf}">
+                  <input type="hidden" name="idImovel" value="<%= imovel.getId() %>">
+                  <input type="hidden" name="destino" value="${pageContext.request.contextPath}/inicio">
+                  <button type="submit" class="botao-salvar <%= salvo ? "botao-salvar--ativo" : "" %>" aria-label="Salvar imóvel">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="<%= salvo ? "currentColor" : "none" %>" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21 12 16l-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                  </button>
+                </form>
               <% } %>
             </div>
             <div class="card__body">

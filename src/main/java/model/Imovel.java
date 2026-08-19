@@ -34,6 +34,9 @@ public class Imovel {
 	private Double longitude;
 	private StatusImovel status;
 	private LocalDateTime dataPublicacao;
+	private LocalDateTime dataUltimaAtualizacaoStatus;
+	private int visualizacoes;
+	private int contatosWhatsapp;
 
 	private Usuario dono;
 	private List<FotoImovel> fotos = new ArrayList<>();
@@ -245,6 +248,56 @@ public class Imovel {
 
 	public void setDataPublicacao(LocalDateTime dataPublicacao) {
 		this.dataPublicacao = dataPublicacao;
+	}
+
+	public LocalDateTime getDataUltimaAtualizacaoStatus() {
+		return dataUltimaAtualizacaoStatus;
+	}
+
+	public void setDataUltimaAtualizacaoStatus(LocalDateTime dataUltimaAtualizacaoStatus) {
+		this.dataUltimaAtualizacaoStatus = dataUltimaAtualizacaoStatus;
+	}
+
+	public int getVisualizacoes() {
+		return visualizacoes;
+	}
+
+	public void setVisualizacoes(int visualizacoes) {
+		this.visualizacoes = visualizacoes;
+	}
+
+	public int getContatosWhatsapp() {
+		return contatosWhatsapp;
+	}
+
+	public void setContatosWhatsapp(int contatosWhatsapp) {
+		this.contatosWhatsapp = contatosWhatsapp;
+	}
+
+	/**
+	 * @return dias corridos desde a última mudança de status (ou da
+	 *         publicação, se o status nunca mudou) — alimenta o badge "Última
+	 *         atualização há X dias" no painel "Imóveis anunciados"
+	 */
+	public long getDiasSemAtualizacao() {
+		LocalDateTime referencia = dataUltimaAtualizacaoStatus != null ? dataUltimaAtualizacaoStatus : dataPublicacao;
+		if (referencia == null) {
+			return 0;
+		}
+		return java.time.temporal.ChronoUnit.DAYS.between(referencia.toLocalDate(), java.time.LocalDate.now());
+	}
+
+	/**
+	 * @return "verde", "amarelo" ou "vermelho", conforme os dias sem
+	 *         atualização (menos de 10 / até 15 / mais que isso) — usado só
+	 *         para a cor do badge, sem regra de negócio real associada.
+	 */
+	public String getCorBadgeAtualizacao() {
+		long dias = getDiasSemAtualizacao();
+		if (dias < 10) {
+			return "verde";
+		}
+		return dias <= 15 ? "amarelo" : "vermelho";
 	}
 
 	public Usuario getDono() {

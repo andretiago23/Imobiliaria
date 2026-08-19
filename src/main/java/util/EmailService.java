@@ -12,6 +12,7 @@ import jakarta.mail.internet.MimeMessage;
 import model.ContatoInteresse;
 import model.Imovel;
 import model.Usuario;
+import model.VisitaAgendada;
 
 /**
  * Ponto único de envio de e-mail da aplicação (JavaMail/jakarta.mail), usado
@@ -146,5 +147,56 @@ public class EmailService {
 				""".formatted(nomeBusca, imovel.getTitulo(), imovel.getEnderecoCompleto(), linkImovel);
 
 		enviar(cliente.getEmail(), "Novo imóvel compatível com " + nomeBusca, corpo);
+	}
+
+	/**
+	 * Avisa o anunciante que um cliente marcou uma visita — disparado por
+	 * model.VisitaServico logo após gravar o agendamento.
+	 */
+	public void notificarVisitaAgendada(VisitaAgendada visita, Imovel imovel, Usuario proprietario, Usuario cliente,
+			String linkPainel) {
+
+		String dataFormatada = visita.getDataVisita().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+		String corpo = """
+				%s agendou uma visita ao imóvel "%s".
+
+				Data: %s
+				Horário: %s às %s
+
+				Contato do cliente: %s (%s)
+
+				Veja os detalhes do anúncio:
+				%s
+
+				— Habittar
+				""".formatted(cliente.getNome(), imovel.getTitulo(), dataFormatada, visita.getHoraInicio(),
+				visita.getHoraFim(), cliente.getEmail(), cliente.getTelefone() == null ? "sem telefone" : cliente.getTelefone(),
+				linkPainel);
+
+		enviar(proprietario.getEmail(), "Nova visita agendada — \"" + imovel.getTitulo() + "\"", corpo);
+	}
+
+	/**
+	 * E-mail periódico "ainda está disponível?", disparado pelo job agendado
+	 * (util.AgendadorStatusImovel) para imóveis sem mudança de status há 15
+	 * dias. O link de confirmação leva ao ConfirmacaoStatusServlet, que
+	 * apenas reseta o contador — sem confirmação em 7 dias, o job seguinte
+	 * muda o status para PENDENTE_CONFIRMACAO.
+	 */
+	public void notificarPedidoConfirmacaoStatus(Usuario proprietario, Imovel imovel, String linkConfirmacao) {
+		String corpo = """
+				O anúncio "%s" está há um tempo sem nenhuma atualização.
+
+				Ele ainda está disponível? Confirme clicando no link abaixo — se não
+				confirmar em até 7 dias, o anúncio sai temporariamente do catálogo
+				até você confirmar.
+
+				%s
+
+				— Habittar
+				""".formatted(imovel.getTitulo(), linkConfirmacao);
+
+		enviar(proprietario.getEmail(), "Seu anúncio \"" + imovel.getTitulo() + "\" ainda está disponível?", corpo);
 	}
 }

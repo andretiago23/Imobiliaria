@@ -3,8 +3,13 @@ package controller;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import dao.AnuncioDAO;
 import dao.DAOException;
+import dao.DisponibilidadeVisitaDAO;
 import dao.PlanoDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,11 +18,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Anuncio;
+import model.DiaSemana;
+import model.DisponibilidadeVisita;
 import model.Finalidade;
 import model.Imovel;
 import model.ImovelServico;
 import model.RascunhoAnuncio;
 import model.RegraNegocioException;
+import model.TipoAnunciante;
 import model.TipoImovel;
 import model.Usuario;
 import util.ConversorEnum;
@@ -27,9 +35,14 @@ import util.ValidadorCNPJ;
 import util.ValidadorCPF;
 
 /**
- * Assistente de anúncio em 4 etapas (Tela 0 fica em AnuncioServlet).
+ * Assistente de anúncio em 5 etapas (Tela 0 fica em AnuncioServlet):
+ * 1. Negócio (alugar/vender) + endereço do imóvel
+ * 2. Plano
+ * 3. Dados do anunciante
+ * 4. Disponibilidade para visitas
+ * 5. Confirmação/resumo → pagamento
  *
- * Nada é gravado no banco até o fim da etapa 4: os dados ficam só na sessão
+ * Nada é gravado no banco até o fim da etapa 5: os dados ficam só na sessão
  * (model.RascunhoAnuncio), evitando imóveis "fantasmas" para quem desiste no
  * meio do caminho. Cada doPost valida a etapa, salva na sessão e redireciona
  * (nunca forward) para a próxima — assim um F5 não reenvia o formulário.
@@ -38,13 +51,15 @@ import util.ValidadorCPF;
  * de volta para a primeira etapa pendente, em vez de mostrar um formulário
  * pela metade.
  */
-@WebServlet(urlPatterns = { "/anunciar/etapa1", "/anunciar/etapa2", "/anunciar/etapa3", "/anunciar/etapa4" })
+@WebServlet(urlPatterns = { "/anunciar/etapa1", "/anunciar/etapa2", "/anunciar/etapa3", "/anunciar/etapa4",
+		"/anunciar/etapa5" })
 public class AnuncioWizardServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	private final PlanoDAO planoDAO = new PlanoDAO();
 	private final AnuncioDAO anuncioDAO = new AnuncioDAO();
+	private final DisponibilidadeVisitaDAO disponibilidadeVisitaDAO = new DisponibilidadeVisitaDAO();
 	private final ImovelServico imovelServico = new ImovelServico();
 
 	@Override
@@ -53,6 +68,11 @@ public class AnuncioWizardServlet extends HttpServlet {
 
 		int etapa = etapaDaUrl(requisicao);
 		RascunhoAnuncio rascunho = obterRascunho(requisicao);
+
+		if (etapa == 1 && rascunho.getTipoAnunciante() == null) {
+			TipoAnunciante tipoDaLanding = ConversorEnum.paraEnum(TipoAnunciante.class, requisicao.getParameter("tipo"));
+			rascunho.setTipoAnunciante(tipoDaLanding != null ? tipoDaLanding : TipoAnunciante.PROPRIETARIO);
+		}
 
 		Integer etapaPendente = primeiraEtapaPendente(rascunho, etapa);
 		if (etapaPendente != null) {
@@ -71,7 +91,7 @@ public class AnuncioWizardServlet extends HttpServlet {
 			if (etapa == 2) {
 				requisicao.setAttribute("planos", planoDAO.listar());
 			}
-			if (etapa == 4) {
+			if (etapa == 5) {
 				requisicao.setAttribute("plano", planoDAO.buscarPorId(rascunho.getIdPlano()).orElse(null));
 			}
 		} catch (DAOException e) {
@@ -102,8 +122,9 @@ public class AnuncioWizardServlet extends HttpServlet {
 				case 1 -> processarEtapa1(requisicao, rascunho);
 				case 2 -> processarEtapa2(requisicao, rascunho);
 				case 3 -> processarEtapa3(requisicao, rascunho);
-				case 4 -> {
-					processarEtapa4(requisicao, resposta, rascunho);
+				case 4 -> processarEtapa4(requisicao, rascunho);
+				case 5 -> {
+					processarEtapa5(requisicao, resposta, rascunho);
 					return;
 				}
 				default -> throw new IllegalStateException("Etapa inválida.");
@@ -210,10 +231,50 @@ public class AnuncioWizardServlet extends HttpServlet {
 	}
 
 	// -------------------------------------------------------------------
-	// Etapa 4 — confirmação: grava o rascunho como imóvel pendente de
-	// pagamento + a contratação do plano, e manda para o pagamento.
+	// Etapa 4 — disponibilidade para visitas: dias da semana marcados +
+	// um intervalo de horário compartilhado por todos eles (ex.: "Seg, Qua
+	// e Sex, das 9h às 18h"). Simples de preencher e cobre o caso comum;
+	// horários diferentes por dia ficam para uma versão futura.
 	// -------------------------------------------------------------------
-	private void processarEtapa4(HttpServletRequest requisicao, HttpServletResponse resposta, RascunhoAnuncio rascunho)
+	private void processarEtapa4(HttpServletRequest requisicao, RascunhoAnuncio rascunho) throws RegraNegocioException {
+		String[] diasMarcados = requisicao.getParameterValues("diaSemana");
+		if (diasMarcados == null || diasMarcados.length == 0) {
+			throw new RegraNegocioException("Marque ao menos um dia em que aceita visitas.");
+		}
+
+		LocalTime horaInicio = parseHora(requisicao.getParameter("horaInicio"), "Informe o horário inicial.");
+		LocalTime horaFim = parseHora(requisicao.getParameter("horaFim"), "Informe o horário final.");
+		if (!horaFim.isAfter(horaInicio)) {
+			throw new RegraNegocioException("O horário final precisa ser depois do inicial.");
+		}
+
+		List<DisponibilidadeVisita> janelas = new ArrayList<>();
+		for (String diaTexto : diasMarcados) {
+			DiaSemana dia = ConversorEnum.paraEnum(DiaSemana.class, diaTexto);
+			if (dia != null) {
+				janelas.add(new DisponibilidadeVisita(0, dia, horaInicio, horaFim));
+			}
+		}
+		rascunho.setDisponibilidade(janelas);
+	}
+
+	private LocalTime parseHora(String valor, String mensagemErro) throws RegraNegocioException {
+		if (valor == null || valor.isBlank()) {
+			throw new RegraNegocioException(mensagemErro);
+		}
+		try {
+			return LocalTime.parse(valor.trim());
+		} catch (java.time.format.DateTimeParseException e) {
+			throw new RegraNegocioException(mensagemErro);
+		}
+	}
+
+	// -------------------------------------------------------------------
+	// Etapa 5 — confirmação: grava o rascunho como imóvel pendente de
+	// pagamento + a disponibilidade de visitas + a contratação do plano, e
+	// manda para o pagamento.
+	// -------------------------------------------------------------------
+	private void processarEtapa5(HttpServletRequest requisicao, HttpServletResponse resposta, RascunhoAnuncio rascunho)
 			throws DAOException, IOException {
 
 		Usuario usuario = SessaoUsuario.obter(requisicao);
@@ -243,7 +304,14 @@ public class AnuncioWizardServlet extends HttpServlet {
 			return;
 		}
 
-		Anuncio anuncio = new Anuncio(imovel.getId(), rascunho.getIdPlano(), usuario.getId());
+		for (DisponibilidadeVisita janela : rascunho.getDisponibilidade()) {
+			janela.setIdImovel(imovel.getId());
+		}
+		disponibilidadeVisitaDAO.salvarTodas(imovel.getId(), rascunho.getDisponibilidade());
+
+		TipoAnunciante tipoAnunciante = rascunho.getTipoAnunciante() != null
+				? rascunho.getTipoAnunciante() : TipoAnunciante.PROPRIETARIO;
+		Anuncio anuncio = new Anuncio(imovel.getId(), rascunho.getIdPlano(), usuario.getId(), tipoAnunciante);
 		anuncioDAO.inserir(anuncio);
 
 		requisicao.getSession().removeAttribute(RascunhoAnuncio.SESSAO_CHAVE);
@@ -282,6 +350,9 @@ public class AnuncioWizardServlet extends HttpServlet {
 		}
 		if (etapaPedida >= 4 && !rascunho.etapa3Completa()) {
 			return 3;
+		}
+		if (etapaPedida >= 5 && !rascunho.etapa4Completa()) {
+			return 4;
 		}
 		return null;
 	}

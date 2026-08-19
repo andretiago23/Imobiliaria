@@ -50,6 +50,7 @@ public class ImovelDAO {
 			i.id, i.id_usuario, i.titulo, i.descricao, i.tipo, i.finalidade, i.preco,
 			i.area_m2, i.quartos, i.banheiros, i.vagas_garagem, i.endereco, i.cidade,
 			i.estado, i.cep, i.latitude, i.longitude, i.status, i.data_publicacao,
+			i.data_ultima_atualizacao_status, i.visualizacoes, i.contatos_whatsapp,
 			u.nome AS dono_nome, u.email AS dono_email, u.telefone AS dono_telefone,
 			u.foto_perfil AS dono_foto
 			""";
@@ -72,6 +73,20 @@ public class ImovelDAO {
 			+ " ORDER BY i.data_publicacao DESC LIMIT ?";
 
 	private static final String SQL_ATUALIZAR_STATUS = "UPDATE imovel SET status = ? WHERE id = ?";
+
+	private static final String SQL_INCREMENTAR_VISUALIZACAO = "UPDATE imovel SET visualizacoes = visualizacoes + 1 WHERE id = ?";
+
+	private static final String SQL_INCREMENTAR_WHATSAPP = "UPDATE imovel SET contatos_whatsapp = contatos_whatsapp + 1 WHERE id = ?";
+
+	/**
+	 * Imóveis visíveis no catálogo (ativo/reservado) sem nenhuma mudança de
+	 * status há :dias dias — candidatos ao e-mail periódico "ainda está
+	 * disponível?" disparado pelo job agendado.
+	 */
+	private static final String SQL_LISTAR_SEM_ATUALIZACAO = SQL_SELECT_BASE + """
+			 WHERE i.status IN ('ativo', 'reservado')
+			   AND i.data_ultima_atualizacao_status <= (NOW() - INTERVAL ? DAY)
+			""";
 
 	private static final String SQL_REMOVER = "DELETE FROM imovel WHERE id = ?";
 
@@ -253,6 +268,40 @@ public class ImovelDAO {
 		}
 	}
 
+	public void incrementarVisualizacao(int idImovel) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_INCREMENTAR_VISUALIZACAO)) {
+			comando.setInt(1, idImovel);
+			comando.executeUpdate();
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao registrar visualização do imóvel " + idImovel + ".", e);
+		}
+	}
+
+	public void incrementarContatoWhatsapp(int idImovel) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_INCREMENTAR_WHATSAPP)) {
+			comando.setInt(1, idImovel);
+			comando.executeUpdate();
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao registrar contato via WhatsApp do imóvel " + idImovel + ".", e);
+		}
+	}
+
+	/**
+	 * Usado pelo job agendado (util.AgendadorStatusImovel) para descobrir
+	 * quais imóveis precisam do e-mail periódico de confirmação de status.
+	 */
+	public List<Imovel> listarSemAtualizacaoHa(int dias) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_LISTAR_SEM_ATUALIZACAO)) {
+			comando.setInt(1, dias);
+			return executarConsulta(comando);
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao listar imóveis sem atualização recente.", e);
+		}
+	}
+
 	public void remover(int id) throws DAOException {
 		try (Connection conexao = ConnectionFactory.obterConexao();
 				PreparedStatement comando = conexao.prepareStatement(SQL_REMOVER)) {
@@ -340,6 +389,9 @@ public class ImovelDAO {
 		imovel.setLongitude(LeitorResultSet.lerDouble(resultado, "longitude"));
 		imovel.setStatus(ConversorEnum.paraEnum(StatusImovel.class, resultado.getString("status")));
 		imovel.setDataPublicacao(LeitorResultSet.lerDataHora(resultado, "data_publicacao"));
+		imovel.setDataUltimaAtualizacaoStatus(LeitorResultSet.lerDataHora(resultado, "data_ultima_atualizacao_status"));
+		imovel.setVisualizacoes(resultado.getInt("visualizacoes"));
+		imovel.setContatosWhatsapp(resultado.getInt("contatos_whatsapp"));
 		imovel.setDono(montarDono(resultado));
 		return imovel;
 	}

@@ -5,9 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Anuncie seu imóvel | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=17">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=18">
 </head>
 <body>
 
@@ -53,14 +53,22 @@
       <h1 class="display" style="font-size:clamp(32px,5vw,52px);max-width:800px;margin:0 auto;">Seu imóvel visto por quem <span class="hl">está procurando</span>, hoje.</h1>
       <p class="lead" style="margin:16px auto 0;">Publique em poucos minutos, escolha o plano que faz sentido pra você e só paga quando o anúncio estiver pronto para ir ao ar.</p>
       <div class="cta__actions" style="justify-content:center;margin-top:32px;">
-        <a class="btn btn--primary btn--interactive" href="${pageContext.request.contextPath}/anunciar/etapa1">
-          <span class="btn__label">Anunciar agora</span>
-          <span class="btn__reveal" aria-hidden="true">
+        <details class="anunciar-dropdown">
+          <summary class="btn btn--primary">
             Anunciar agora
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </span>
-          <span class="btn__dot" aria-hidden="true"></span>
-        </a>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <div class="anunciar-dropdown__menu">
+            <a href="${pageContext.request.contextPath}/anunciar/etapa1?tipo=proprietario">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>
+              <span><strong>Sou proprietário</strong><small>Quero anunciar meu próprio imóvel</small></span>
+            </a>
+            <a href="${pageContext.request.contextPath}/anunciar/etapa1?tipo=corretor">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3"/></svg>
+              <span><strong>Sou corretor / imobiliária</strong><small>Anuncio em nome de terceiros</small></span>
+            </a>
+          </div>
+        </details>
         <a class="btn btn--secondary btn--interactive" href="${pageContext.request.contextPath}/planos">
           <span class="btn__label">Veja nossos planos</span>
           <span class="btn__reveal" aria-hidden="true">

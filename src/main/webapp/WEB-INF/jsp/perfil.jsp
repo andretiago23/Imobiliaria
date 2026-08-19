@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Meu perfil | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/perfil.css?v=17">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/perfil.css?v=18">
 </head>
 <body>
 
@@ -25,6 +25,7 @@
     </a>
     <nav class="nav__links">
       <a href="${pageContext.request.contextPath}/inicio">Catálogo</a>
+      <a href="${pageContext.request.contextPath}/imoveis-anunciados">Imóveis anunciados</a>
       <div class="avatar-menu">
         <a class="avatar" href="${pageContext.request.contextPath}/perfil" title="Meu perfil" aria-label="Meu perfil">
           <% if (temFoto) { %>
@@ -194,6 +195,33 @@
       <% }
         } %>
     </section>
+
+    <!-- ===================== IMÓVEIS SALVOS ===================== -->
+    <section class="perfil-card">
+      <h2>Imóveis salvos</h2>
+      <%
+        List<Imovel> salvos = (List<Imovel>) request.getAttribute("salvos");
+        if (salvos == null || salvos.isEmpty()) {
+      %>
+        <div class="estado-vazio">
+          <p>Você ainda não salvou nenhum imóvel.</p>
+          <a class="btn btn--primary btn--sm" style="margin-top:12px;" href="${pageContext.request.contextPath}/inicio">Ver catálogo</a>
+        </div>
+      <% } else {
+        for (Imovel salvo : salvos) {
+      %>
+        <a class="perfil-item" href="${pageContext.request.contextPath}/imovel?id=<%= salvo.getId() %>">
+          <div>
+            <p class="perfil-item__titulo"><%= util.Html.escapar(salvo.getTitulo()) %></p>
+            <p class="micro"><%= util.Html.escapar(salvo.getEnderecoCompleto()) %></p>
+          </div>
+          <span class="badge <%= salvo.getStatus() == model.StatusImovel.ATIVO ? "" : "badge--status" %>" style="position:static;">
+            <%= salvo.getStatus().getRotulo() %>
+          </span>
+        </a>
+      <% }
+        } %>
+    </section>
   </div>
 
   <!-- ===================== PRIVACIDADE E DADOS (LGPD) ===================== -->
@@ -236,7 +264,7 @@
 
 </main>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=17"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=17"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=18"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=18"></script>
 </body>
 </html>

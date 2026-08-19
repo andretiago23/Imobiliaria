@@ -1,17 +1,17 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%-- Barra de progresso do assistente de anúncio. Espera o atributo de
-     requisição "etapaAtual" (1 a 4), setado pelo AnuncioWizardServlet antes
-     do forward. Reaproveitada nas 4 telas via <jsp:include>. --%>
+     requisição "etapaAtual" (1 a 5), setado pelo AnuncioWizardServlet antes
+     do forward. Reaproveitada nas 5 telas via <jsp:include>. --%>
 <%
   int etapaAtual = (Integer) request.getAttribute("etapaAtual");
-  String[] rotulos = { "O que anunciar", "Plano", "Seus dados", "Pagamento" };
+  String[] rotulos = { "O que anunciar", "Plano", "Seus dados", "Disponibilidade", "Pagamento" };
 %>
 <div class="wizard-progress" role="group" aria-label="Progresso do anúncio">
   <div class="wizard-progress__trilha">
-    <div class="wizard-progress__preenchida" style="width:<%= (etapaAtual - 1) * 100 / 3 %>%;"></div>
+    <div class="wizard-progress__preenchida" style="width:<%= (etapaAtual - 1) * 100 / 4 %>%;"></div>
   </div>
   <div class="wizard-progress__passos">
-    <% for (int passo = 1; passo <= 4; passo++) {
+    <% for (int passo = 1; passo <= 5; passo++) {
       String estado = passo < etapaAtual ? "concluido" : (passo == etapaAtual ? "atual" : "pendente");
     %>
       <div class="wizard-progress__passo wizard-progress__passo--<%= estado %>">
@@ -26,5 +26,5 @@
       </div>
     <% } %>
   </div>
-  <p class="micro wizard-progress__contador">Etapa <%= etapaAtual %> de 4</p>
+  <p class="micro wizard-progress__contador">Etapa <%= etapaAtual %> de 5</p>
 </div>

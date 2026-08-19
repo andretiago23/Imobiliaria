@@ -1,15 +1,15 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.Locale, java.text.NumberFormat, model.Plano, model.RascunhoAnuncio" %>
+<%@ page import="model.RascunhoAnuncio, model.DisponibilidadeVisita, model.DiaSemana, java.util.Set, java.util.HashSet" %>
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Confirme seu anúncio | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=17">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=17">
+  <title>Disponibilidade para visitas | Habittar</title>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=18">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=18">
 </head>
 <body>
 
@@ -28,51 +28,55 @@
   <% request.setAttribute("etapaAtual", 4); %>
   <jsp:include page="/WEB-INF/jsp/fragmentos/progressbar.jsp" />
 
-  <p class="eyebrow wizard-etapa__eyebrow">Etapa 4 de 4</p>
-  <h1 class="display wizard-etapa__titulo">Confira antes de pagar</h1>
+  <p class="eyebrow wizard-etapa__eyebrow">Etapa 4 de 5</p>
+  <h1 class="display wizard-etapa__titulo">Quando você aceita visitas?</h1>
+  <p class="lead" style="max-width:none;margin:0 0 24px;">Marque os dias da semana e o intervalo de horário em que costuma estar disponível. O comprador só vai conseguir agendar dentro dessa janela.</p>
 
   <p class="alerta alerta-erro" role="alert">${erro}</p>
 
   <%
     RascunhoAnuncio rascunho = (RascunhoAnuncio) request.getAttribute("rascunho");
-    Plano plano = (Plano) request.getAttribute("plano");
-    NumberFormat moeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-    boolean aluguel = rascunho.getFinalidade() == model.Finalidade.ALUGUEL;
+    Set<String> diasMarcados = new HashSet<>();
+    String horaInicioAtual = "09:00";
+    String horaFimAtual = "18:00";
+    for (DisponibilidadeVisita janela : rascunho.getDisponibilidade()) {
+      diasMarcados.add(janela.getDiaSemana().name());
+      horaInicioAtual = janela.getHoraInicio().toString();
+      horaFimAtual = janela.getHoraFim().toString();
+    }
   %>
-
-  <div class="wizard-resumo">
-    <div class="wizard-resumo__secao">
-      <p class="wizard-resumo__rotulo">Tipo de anúncio</p>
-      <p class="wizard-resumo__valor"><%= aluguel ? "Aluguel" : "Venda" %> — <%= util.Html.escapar(rascunho.getTitulo()) %></p>
-    </div>
-    <div class="wizard-resumo__secao">
-      <p class="wizard-resumo__rotulo">Endereço do imóvel</p>
-      <p class="wizard-resumo__valor"><%= util.Html.escapar(rascunho.enderecoImovelResumido()) %></p>
-    </div>
-    <div class="wizard-resumo__secao">
-      <p class="wizard-resumo__rotulo">Plano escolhido</p>
-      <% if (plano != null) { %>
-        <p class="wizard-resumo__valor"><%= util.Html.escapar(plano.getNome()) %> — <%= plano.getDuracaoDias() %> dias no ar</p>
-        <p class="wizard-resumo__preco"><%= moeda.format(plano.getPreco()) %></p>
-      <% } %>
-    </div>
-    <div class="wizard-resumo__secao">
-      <p class="wizard-resumo__rotulo">Dados do anunciante</p>
-      <p class="wizard-resumo__valor"><%= util.Html.escapar(rascunho.getNomeAnunciante()) %></p>
-      <p class="micro" style="margin-top:4px;color:var(--text-secondary);">
-        <%= util.Html.escapar(rascunho.getCpfCnpjAnunciante()) %> · <%= util.Html.escapar(rascunho.getCelularAnunciante()) %>
-      </p>
-    </div>
-  </div>
 
   <form method="post" action="${pageContext.request.contextPath}/anunciar/etapa4">
     <input type="hidden" name="csrf" value="${csrf}">
+
+    <h2 style="font-size:14px;margin:0 0 14px;">Dias da semana</h2>
+    <div class="wizard-dias">
+      <% for (DiaSemana dia : DiaSemana.values()) { %>
+        <label class="wizard-dia">
+          <input type="checkbox" name="diaSemana" value="<%= dia.name() %>" <%= diasMarcados.contains(dia.name()) ? "checked" : "" %>>
+          <span><%= dia.getRotulo().substring(0, 3) %></span>
+        </label>
+      <% } %>
+    </div>
+
+    <h2 style="font-size:14px;margin:28px 0 14px;">Horário</h2>
+    <div class="filtros__grade filtros__grade--2col">
+      <div class="filtros__campo">
+        <label for="horaInicio">Das</label>
+        <input type="time" id="horaInicio" name="horaInicio" value="<%= horaInicioAtual %>" required>
+      </div>
+      <div class="filtros__campo">
+        <label for="horaFim">Até</label>
+        <input type="time" id="horaFim" name="horaFim" value="<%= horaFimAtual %>" required>
+      </div>
+    </div>
+
     <div class="wizard-acoes">
       <a class="btn btn--secondary" href="${pageContext.request.contextPath}/anunciar/etapa3">Voltar</a>
       <button class="btn btn--primary btn--interactive" type="submit">
-        <span class="btn__label">Ir para pagamento</span>
+        <span class="btn__label">Próximo</span>
         <span class="btn__reveal" aria-hidden="true">
-          Ir para pagamento
+          Próximo
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </span>
         <span class="btn__dot" aria-hidden="true"></span>

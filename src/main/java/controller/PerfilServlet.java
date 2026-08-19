@@ -254,6 +254,9 @@ public class PerfilServlet extends HttpServlet {
 
 			List<ContatoInteresse> interesses = interacaoServico.listarInteressesEnviados(usuario.getId());
 			requisicao.setAttribute("interesses", interesses);
+
+			List<Imovel> salvos = interacaoServico.listarFavoritos(usuario.getId());
+			requisicao.setAttribute("salvos", salvos);
 		} catch (DAOException e) {
 			getServletContext().log("Falha ao carregar a seção do perfil.", e);
 			requisicao.setAttribute("erroSecao", "Não foi possível carregar essa seção agora.");
