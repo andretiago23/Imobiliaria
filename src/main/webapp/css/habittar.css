@@ -544,16 +544,15 @@ input[type="number"]::-webkit-inner-spin-button {
 
 /* Busca */
 .search {
-  margin-top: 32px;
+  margin-top: 16px;
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
-  padding: 8px 8px 8px 20px;
+  padding: 10px;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 64px;
+  align-items: stretch;
+  gap: 10px;
   flex-wrap: wrap;
   max-width: 620px;
 }
@@ -573,6 +572,9 @@ input[type="number"]::-webkit-inner-spin-button {
   align-items: center;
   gap: 10px;
   flex: 1 1 220px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 14px;
 }
 
 .search input {
@@ -580,47 +582,54 @@ input[type="number"]::-webkit-inner-spin-button {
   outline: 0;
   background: transparent;
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text-primary);
   width: 100%;
-  padding: 12px 0;
+  padding: 13px 0;
 }
 .search input::placeholder {
   color: var(--text-secondary);
 }
 
+/* Abas Alugar/Comprar/Imóvel novo — texto simples com sublinhado na ativa,
+   sem fundo nem pílula, ficando acima da barra de busca. */
 .segment {
   display: flex;
-  gap: 4px;
-  background: var(--surface-page);
-  border-radius: var(--radius-full);
-  padding: 4px;
+  gap: 24px;
+  border-bottom: 1px solid var(--border-subtle);
 }
 .segment button {
   border: 0;
+  border-bottom: 2px solid transparent;
   background: transparent;
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--text-secondary);
-  padding: 10px 16px;
-  border-radius: var(--radius-full);
+  padding: 0 2px 12px;
+  margin-bottom: -1px;
   cursor: pointer;
   transition:
-    background-color 0.2s ease-out,
-    color 0.2s ease-out;
+    color 0.2s ease-out,
+    border-color 0.2s ease-out;
 }
 .segment button.is-active {
-  background: var(--surface-raised);
   color: var(--text-primary);
-  box-shadow: var(--shadow-card);
+  font-weight: 600;
+  border-bottom-color: var(--brand-primary, #FF6A1A);
 }
 
 .search__submit {
-  height: 48px;
-  width: 48px;
-  padding: 0;
+  height: auto;
+  min-height: 46px;
+  width: auto;
+  padding: 0 22px;
+  border-radius: var(--radius-sm);
   flex: 0 0 auto;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  gap: 8px;
 }
 
 /* Segmento (Comprar/Alugar/Imóvel novo) agora fica acima da barra de busca */
@@ -628,23 +637,26 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-top: 24px;
 }
 
-/* Campo "Tipo de imóvel" — select transparente igual ao input de localização,
-   com um divisor sutil separando dos demais campos da barra. */
+/* Campo "Tipo de imóvel" — select com seta própria (sem a seta feia padrão
+   do navegador), largura fixa e a mesma moldura dos demais campos. */
 .search__field--tipo {
   flex: 0 0 auto;
-  padding-right: 12px;
-  border-right: 1px solid var(--border-subtle);
+  min-width: 168px;
 }
 .search__field--tipo select {
+  appearance: none;
+  -webkit-appearance: none;
   border: 0;
   outline: 0;
-  background: transparent;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235B5967' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+    no-repeat right center;
   font-family: var(--font-sans);
   font-size: 15px;
   color: var(--text-primary);
-  padding: 12px 0;
+  padding: 13px 22px 13px 0;
   cursor: pointer;
-  max-width: 150px;
+  width: 100%;
 }
 
 .search__field--local {
@@ -655,8 +667,8 @@ input[type="number"]::-webkit-inner-spin-button {
 .search__sugestoes {
   position: absolute;
   top: calc(100% + 10px);
-  left: -20px;
-  right: -8px;
+  left: -1px;
+  right: -1px;
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -688,14 +700,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 @media (max-width: 640px) {
   .search__field--tipo {
-    border-right: 0;
-    border-bottom: 1px solid var(--border-subtle);
-    padding-right: 0;
-    padding-bottom: 4px;
-  }
-  .search__field--tipo select {
-    max-width: none;
-    width: 100%;
+    min-width: 0;
   }
   .search__sugestoes {
     left: 0;
@@ -713,11 +718,12 @@ input[type="number"]::-webkit-inner-spin-button {
   .segment {
     width: 100%;
     justify-content: space-between;
+    gap: 12px;
   }
   .segment button {
     flex: 1;
     text-align: center;
-    padding: 10px 8px;
+    padding: 0 4px 12px;
   }
   .search__field {
     width: 100%;
