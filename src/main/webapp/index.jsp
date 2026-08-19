@@ -10,8 +10,8 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=22">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=22">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=23">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=23">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -116,7 +116,7 @@
       </div>
 
       <div class="scene" aria-hidden="true">
-        <img src="https://images.pexels.com/photos/18153132/pexels-photo-18153132.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
+        <img src="${pageContext.request.contextPath}/imagens/familiaHeroSection.jpg" alt="" loading="lazy">
       </div>
     </div>
   </section>
@@ -239,7 +239,7 @@
           <p class="lead">Nada de abrir cinco abas. Cada imóvel da Habittar entra no mesmo mapa, com o mesmo padrão de ficha e o mesmo nível de detalhe.</p>
         </div>
         <div class="scene" aria-hidden="true">
-          <img src="https://images.pexels.com/photos/8730048/pexels-photo-8730048.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
+          <img src="${pageContext.request.contextPath}/imagens/imagem-01.jpg" alt="" loading="lazy">
         </div>
       </div>
 
@@ -251,7 +251,7 @@
           <p class="lead">O raio de busca acende exatamente o que existe ao redor do ponto escolhido — com contador ao vivo e filtros de valor, quartos e operação.</p>
         </div>
         <div class="scene" aria-hidden="true">
-          <img src="https://images.pexels.com/photos/29561705/pexels-photo-29561705.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
+          <img src="${pageContext.request.contextPath}/imagens/imagem-02.png" alt="" loading="lazy" style="object-fit:contain;background:var(--surface-page);">
         </div>
       </div>
 
@@ -263,7 +263,7 @@
           <p class="lead">Simule o financiamento na própria ficha, envie seu interesse com a simulação anexada e fale com um corretor que já sabe o que você procura.</p>
         </div>
         <div class="scene" aria-hidden="true">
-          <img src="https://images.pexels.com/photos/7414935/pexels-photo-7414935.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
+          <img src="${pageContext.request.contextPath}/imagens/imagem-03.jpg" alt="" loading="lazy">
         </div>
       </div>
 
@@ -372,6 +372,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=22"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=23"></script>
 </body>
 </html>
