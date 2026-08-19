@@ -1,0 +1,87 @@
+/* ==========================================================================
+   Habittar — Tokens de design
+   Única fonte de verdade para cor, tipografia, espaçamento e raio. Nenhum
+   componente (habittar.css, catalogo.css, auth.css) declara uma cor ou
+   medida "solta" — tudo referencia uma variável definida aqui.
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Mono:wght@400&display=swap");
+@import url("https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap");
+
+:root {
+  /* --------------------------------------------------------------------
+     Cor
+     Direção: luz natural batendo em concreto e madeira clara, não
+     "dashboard escuro" nem "editorial creme com serifa". O acento
+     terracota é usado com moderação — nunca como cor de fundo grande.
+     -------------------------------------------------------------------- */
+  --surface-page: #faf7f2;
+  --surface-raised: #ffffff;
+  --surface-inverse: #1c1a22;
+
+  --text-primary: #16151f;
+  --text-secondary: #5b5967;
+  --text-inverse: #ffffff;
+  --text-secondary-inverse: #a6a3b0;
+
+  --accent-primary: #ff6a1a;
+  --accent-primary-hover: #e85a0a;
+  --accent-primary-soft: rgba(255, 106, 26, 0.08);
+
+  /* Segunda cor de marca — um azul-ardósia frio, usado em detalhes que
+     precisam se distinguir do laranja (status "reservado", links visitados,
+     gráficos) sem competir com o CTA principal. */
+  --accent-secondary: #35506b;
+  --accent-secondary-soft: rgba(53, 80, 107, 0.08);
+
+  --border-subtle: rgba(22, 21, 31, 0.08);
+  --grid-line: rgba(22, 21, 31, 0.04);
+  --grid-line-inverse: rgba(255, 255, 255, 0.06);
+
+  /* --------------------------------------------------------------------
+     Tipografia
+     Clash Display para títulos (uso moderado: h1/h2 e preços em
+     destaque) + Inter para texto corrido/UI + Space Mono para dados
+     tabulares e metadados (código do anúncio, coordenadas, timestamps).
+     -------------------------------------------------------------------- */
+  --font-display: "Clash Display", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+
+  /* --------------------------------------------------------------------
+     Espaçamento
+     Escala única em base 4/8 — todo padding, margin e gap do projeto
+     deve vir de uma dessas variáveis, não de um valor solto em px.
+     -------------------------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+  --space-8: 96px;
+
+  /* --------------------------------------------------------------------
+     Raio e sombra
+     -------------------------------------------------------------------- */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-full: 999px;
+
+  --shadow-card: 0 4px 16px rgba(22, 21, 31, 0.06);
+  --shadow-card-hover: 0 8px 24px rgba(22, 21, 31, 0.1);
+
+  /* --------------------------------------------------------------------
+     Layout
+     -------------------------------------------------------------------- */
+  --space-section-y: var(--space-8);
+  --maxw: 1120px;
+  --nav-h: 72px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --space-section-y: var(--space-6);
+  }
+}

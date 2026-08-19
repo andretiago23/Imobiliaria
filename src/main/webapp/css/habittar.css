@@ -1,53 +1,11 @@
 /* ==========================================================================
-   Habittar — Design System (tokens)
+   Habittar — Componentes de base (nav, botões, cards, seções)
    Uso: JSP + CSS + JS puros (projeto Java MVC). Sem frameworks.
+
+   Tokens (cor, tipografia, espaçamento, raio) vivem em tokens.css, que
+   precisa ser carregado antes deste arquivo em toda página. Nada aqui
+   declara uma cor ou medida solta — tudo referencia uma variável de lá.
    ========================================================================== */
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Mono:wght@400&display=swap");
-@import url("https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap");
-
-:root {
-  /* Superfícies */
-  --surface-page: #fdf9f5;
-  --surface-raised: #ffffff;
-  --surface-inverse: #15141c;
-
-  /* Texto */
-  --text-primary: #16151f;
-  --text-secondary: #5b5967;
-  --text-inverse: #ffffff;
-  --text-secondary-inverse: #a6a3b0;
-
-  /* Accent único */
-  --accent-primary: #ff6a1a;
-  --accent-primary-hover: #e85a0a;
-  --accent-primary-soft: rgba(255, 106, 26, 0.08);
-
-  --border-subtle: rgba(22, 21, 31, 0.08);
-  --grid-line: rgba(22, 21, 31, 0.04);
-  --grid-line-inverse: rgba(255, 255, 255, 0.06);
-
-  --font-display: "Clash Display", "Inter", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-mono: "Space Mono", ui-monospace, monospace;
-
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-full: 999px;
-
-  --shadow-card: 0 4px 16px rgba(22, 21, 31, 0.06);
-  --shadow-card-hover: 0 8px 24px rgba(22, 21, 31, 0.1);
-
-  --space-section-y: 128px;
-  --maxw: 1120px;
-  --nav-h: 72px;
-}
-
-@media (max-width: 768px) {
-  :root {
-    --space-section-y: 72px;
-  }
-}
 
 *,
 *::before,
