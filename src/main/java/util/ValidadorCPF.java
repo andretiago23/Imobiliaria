@@ -39,8 +39,8 @@ public final class ValidadorCPF {
 	/**
 	 * Remove pontos, traços e espaços, deixando apenas os números.
 	 *
-	 * É este formato que deve ser gravado no banco, já que a coluna cpf é
-	 * VARCHAR(11).
+	 * É este formato que deve ser gravado no banco, na coluna cpf (que também
+	 * aceita CNPJ — ver util.ValidadorCNPJ).
 	 */
 	public static String apenasDigitos(String cpf) {
 		return cpf == null ? "" : cpf.replaceAll("\\D", "");

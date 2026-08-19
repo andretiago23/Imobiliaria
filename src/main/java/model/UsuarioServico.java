@@ -8,6 +8,7 @@ import java.util.Optional;
 import dao.DAOException;
 import dao.UsuarioDAO;
 import util.HashSenha;
+import util.ValidadorCNPJ;
 import util.ValidadorCPF;
 import util.ValidadorEmail;
 
@@ -22,6 +23,7 @@ public class UsuarioServico {
 
 	private static final int TAMANHO_MINIMO_SENHA = 8;
 	private static final int TAMANHO_CPF = 11;
+	private static final int TAMANHO_CNPJ = 14;
 
 	private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 	private final SecureRandom geradorAleatorio = new SecureRandom();
@@ -30,9 +32,11 @@ public class UsuarioServico {
 	 * Cadastra um novo usuário.
 	 *
 	 * A senha recebida em texto puro é convertida em hash antes de chegar ao
-	 * banco. O CPF passa pela validação matemática dos dígitos verificadores e
-	 * o cadastro é recusado quando ela falha, de modo que a coluna cpf_valido
-	 * só recebe registros aprovados.
+	 * banco. O campo aceita CPF (pessoa física) ou CNPJ (pessoa jurídica,
+	 * ex.: imobiliária) — o comprimento em dígitos decide qual dos dois
+	 * validadores é aplicado. Passa pela validação matemática dos dígitos
+	 * verificadores e o cadastro é recusado quando ela falha, de modo que a
+	 * coluna cpf_valido só recebe registros aprovados.
 	 *
 	 * @param usuario       dados preenchidos no formulário
 	 * @param senhaPura     senha digitada, ainda sem hash
@@ -60,15 +64,24 @@ public class UsuarioServico {
 		}
 
 		String cpf = ValidadorCPF.apenasDigitos(usuario.getCpf());
-		if (cpf.length() != TAMANHO_CPF) {
-			throw new RegraNegocioException("O CPF deve conter 11 dígitos.");
+		if (cpf.length() != TAMANHO_CPF && cpf.length() != TAMANHO_CNPJ) {
+			throw new RegraNegocioException("Informe um CPF (11 dígitos) ou CNPJ (14 dígitos) completo.");
 		}
-		if (!ValidadorCPF.isValido(cpf)) {
-			throw new RegraNegocioException("O CPF informado é inválido. Confira os números digitados.");
+		boolean ehCnpj = cpf.length() == TAMANHO_CNPJ;
+		if (ehCnpj ? !ValidadorCNPJ.isValido(cpf) : !ValidadorCPF.isValido(cpf)) {
+			throw new RegraNegocioException(
+					ehCnpj ? "O CNPJ informado é inválido. Confira os números digitados."
+							: "O CPF informado é inválido. Confira os números digitados.");
 		}
 		if (usuarioDAO.cpfJaCadastrado(cpf)) {
-			throw new RegraNegocioException("Este CPF já está cadastrado.");
+			throw new RegraNegocioException(ehCnpj ? "Este CNPJ já está cadastrado." : "Este CPF já está cadastrado.");
 		}
+
+		String celular = usuario.getTelefone() == null ? "" : usuario.getTelefone().replaceAll("\\D", "");
+		if (celular.isBlank()) {
+			throw new RegraNegocioException("Informe seu celular.");
+		}
+		usuario.setTelefone(celular);
 
 		usuario.setEmail(email);
 		usuario.setCpf(cpf);

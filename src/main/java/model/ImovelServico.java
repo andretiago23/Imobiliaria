@@ -60,6 +60,31 @@ public class ImovelServico {
 	}
 
 	/**
+	 * Grava o imóvel como PENDENTE_PAGAMENTO, ao final da etapa 4 do
+	 * assistente de anúncio — usado junto com a contratação de um plano
+	 * (model.Anuncio). Não aparece no catálogo nem dispara alerta de busca
+	 * salva; isso só acontece em ativarAposPagamento, quando o pagamento é
+	 * confirmado.
+	 */
+	public void publicarComoPendente(Imovel imovel, Usuario autor) throws RegraNegocioException, DAOException {
+		validarDados(imovel);
+
+		imovel.setIdUsuario(autor.getId());
+		imovel.setStatus(StatusImovel.PENDENTE_PAGAMENTO);
+		imovelDAO.inserir(imovel);
+	}
+
+	/**
+	 * Ativa um imóvel criado como PENDENTE_PAGAMENTO assim que o pagamento do
+	 * anúncio é confirmado (ver controller.PagamentoServlet) — só a partir
+	 * daqui ele passa a aparecer no catálogo e dispara alertas de busca salva.
+	 */
+	public void ativarAposPagamento(int idImovel, String linkImovel) throws DAOException {
+		imovelDAO.atualizarStatus(idImovel, StatusImovel.ATIVO);
+		imovelDAO.buscarPorId(idImovel).ifPresent(imovel -> dispararAlertasDeBuscaSalva(imovel, linkImovel));
+	}
+
+	/**
 	 * Verifica quais buscas salvas com alerta ativo combinam com o imóvel
 	 * recém-publicado e envia um e-mail para cada uma, evitando duplicidade
 	 * via busca_salva_notificacao (BuscaSalvaDAO.jaNotificado).

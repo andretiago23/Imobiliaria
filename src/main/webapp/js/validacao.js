@@ -25,6 +25,21 @@
 			.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 	}
 
+	// Pontua como CPF enquanto a pessoa digita até 11 dígitos; a partir do
+	// 12º dígito, reformata automaticamente como CNPJ — a mesma caixa serve
+	// para pessoa física ou jurídica sem precisar de um seletor à parte.
+	function mascararCpfCnpj(valor) {
+		var digitos = apenasDigitos(valor).slice(0, 14);
+		if (digitos.length <= 11) {
+			return mascararCPF(digitos);
+		}
+		return digitos
+			.replace(/(\d{2})(\d)/, "$1.$2")
+			.replace(/(\d{3})(\d)/, "$1.$2")
+			.replace(/(\d{3})(\d)/, "$1/$2")
+			.replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+	}
+
 	function mascararTelefone(valor) {
 		var digitos = apenasDigitos(valor).slice(0, 11);
 		if (digitos.length <= 10) {
@@ -37,7 +52,12 @@
 			.replace(/(\d{5})(\d{1,4})$/, "$1-$2");
 	}
 
-	var MASCARAS = { cpf: mascararCPF, telefone: mascararTelefone };
+	function mascararCEP(valor) {
+		var digitos = apenasDigitos(valor).slice(0, 8);
+		return digitos.replace(/(\d{5})(\d{1,3})$/, "$1-$2");
+	}
+
+	var MASCARAS = { cpf: mascararCPF, cpfCnpj: mascararCpfCnpj, telefone: mascararTelefone, cep: mascararCEP };
 
 	document.querySelectorAll("[data-mascara]").forEach(function (campo) {
 		var aplicar = MASCARAS[campo.dataset.mascara];
@@ -78,6 +98,30 @@
 		return digitoVerificador(9) === Number(d[9]) && digitoVerificador(10) === Number(d[10]);
 	}
 
+	// Mesmo algoritmo de util.ValidadorCNPJ no back-end.
+	function cnpjValido(valorComMascara) {
+		var d = apenasDigitos(valorComMascara);
+		if (d.length !== 14 || /^(\d)\1{13}$/.test(d)) {
+			return false;
+		}
+		function digitoVerificador(pesos) {
+			var soma = 0;
+			for (var i = 0; i < pesos.length; i++) {
+				soma += Number(d[i]) * pesos[i];
+			}
+			var resto = soma % 11;
+			return resto < 2 ? 0 : 11 - resto;
+		}
+		var d1 = digitoVerificador([5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+		var d2 = digitoVerificador([6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+		return d1 === Number(d[12]) && d2 === Number(d[13]);
+	}
+
+	function cpfCnpjValido(valorComMascara) {
+		var d = apenasDigitos(valorComMascara);
+		return d.length === 11 ? cpfValido(valorComMascara) : cnpjValido(valorComMascara);
+	}
+
 	var PADRAO_EMAIL = /^[\w.+-]+@[\w-]+(\.[\w-]+)+$/;
 
 	// -------------------------------------------------------------------
@@ -104,10 +148,26 @@
 			if (!cpfValido(valor)) return "Este CPF não é válido. Confira os números.";
 			return "";
 		},
+		cpfCnpj: function (campo) {
+			var valor = campo.value.trim();
+			var tamanho = apenasDigitos(valor).length;
+			if (!valor) return "Informe seu CPF ou CNPJ.";
+			if (tamanho !== 11 && tamanho !== 14) return "Informe um CPF (11 dígitos) ou CNPJ (14 dígitos) completo.";
+			if (!cpfCnpjValido(valor)) {
+				return tamanho === 11 ? "Este CPF não é válido. Confira os números." : "Este CNPJ não é válido. Confira os números.";
+			}
+			return "";
+		},
 		telefone: function (campo) {
 			var valor = apenasDigitos(campo.value);
 			if (!valor) return ""; // campo opcional
 			if (valor.length < 10 || valor.length > 11) return "Informe um telefone com DDD.";
+			return "";
+		},
+		telefoneObrigatorio: function (campo) {
+			var valor = apenasDigitos(campo.value);
+			if (!valor) return "Informe seu celular.";
+			if (valor.length < 10 || valor.length > 11) return "Informe um celular com DDD.";
 			return "";
 		},
 		senha: function (campo) {

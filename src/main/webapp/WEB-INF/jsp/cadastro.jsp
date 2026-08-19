@@ -8,7 +8,7 @@
 	String erroCampo = null;
 	if (erroGeral != null) {
 		String minusculo = erroGeral.toLowerCase();
-		if (minusculo.contains("cpf")) {
+		if (minusculo.contains("cpf") || minusculo.contains("cnpj")) {
 			erroCampo = "cpf";
 		} else if (minusculo.contains("e-mail") || minusculo.contains("email")) {
 			erroCampo = "email";
@@ -16,6 +16,8 @@
 			erroCampo = "senha";
 		} else if (minusculo.contains("nome")) {
 			erroCampo = "nome";
+		} else if (minusculo.contains("celular")) {
+			erroCampo = "telefone";
 		}
 	}
 	request.setAttribute("erroCampo", erroCampo);
@@ -26,9 +28,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Criar conta | Habittar</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=13">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=13">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=13">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=14">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=14">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=14">
 </head>
 <body>
 
@@ -90,21 +92,21 @@
 				</div>
 
 				<div class="auth__campo auth-anim auth-anim--4">
-					<label for="cpf">CPF</label>
+					<label for="cpf">CPF ou CNPJ</label>
 					<div class="glass-input">
-						<input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14"
-							value="${cpf}" data-mascara="cpf" data-validar="cpf" required>
+						<input type="text" id="cpf" name="cpf" placeholder="Insira seu CPF/CNPJ" inputmode="numeric" maxlength="18"
+							value="${cpf}" data-mascara="cpfCnpj" data-validar="cpfCnpj" required>
 					</div>
 					<span class="campo-erro" id="erro-cpf">${erroCampo == 'cpf' ? erro : ''}</span>
 				</div>
 
 				<div class="auth__campo auth-anim auth-anim--4">
-					<label for="telefone">Telefone <span class="micro">(opcional)</span></label>
+					<label for="telefone">Celular</label>
 					<div class="glass-input">
 						<input type="text" id="telefone" name="telefone" placeholder="(11) 90000-0000" inputmode="numeric" maxlength="15"
-							value="${telefone}" data-mascara="telefone" data-validar="telefone">
+							value="${telefone}" data-mascara="telefone" data-validar="telefoneObrigatorio" required>
 					</div>
-					<span class="campo-erro" id="erro-telefone"></span>
+					<span class="campo-erro" id="erro-telefone">${erroCampo == 'telefone' ? erro : ''}</span>
 				</div>
 
 				<% if (!Boolean.TRUE.equals(request.getAttribute("modoGoogle"))) { %>
@@ -167,7 +169,7 @@
 
 </div>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=13"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=13"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=14"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=14"></script>
 </body>
 </html>

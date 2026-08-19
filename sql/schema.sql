@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `email` varchar(150) NOT NULL,
   `email_confirmado` tinyint(1) DEFAULT '0',
   `senha` varchar(255) NOT NULL,
-  `cpf` varchar(11) NOT NULL,
+  `cpf` varchar(14) NOT NULL, -- guarda só dígitos: 11 para CPF, 14 para CNPJ
   `cpf_valido` tinyint(1) DEFAULT '0',
   `telefone` varchar(20) DEFAULT NULL,
   `telefone_confirmado` tinyint(1) DEFAULT '0',
@@ -80,7 +80,11 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 -- imovel — id_usuario é o proprietário/anunciante, seja ele um cliente
 -- comum ou uma imobiliária. status controla a visibilidade no catálogo
 -- público: 'ativo' e 'reservado' aparecem na busca; 'vendido', 'alugado' e
--- 'inativo' somem do catálogo mas continuam no histórico (ImovelDAO.listarPorUsuario).
+-- 'inativo' somem do catálogo mas continuam no histórico
+-- (ImovelDAO.listarPorUsuario). 'pendente_pagamento' é o estado transitório
+-- criado pelo assistente de anúncio (4 etapas) ao final da etapa 4 — nunca
+-- aparece em lugar nenhum até o pagamento ser confirmado, quando vira
+-- 'ativo' (ver model.ImovelServico.ativarAposPagamento).
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `imovel` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -101,11 +105,57 @@ CREATE TABLE IF NOT EXISTS `imovel` (
   `cep` varchar(9) DEFAULT NULL,
   `latitude` decimal(10,8) DEFAULT NULL,
   `longitude` decimal(11,8) DEFAULT NULL,
-  `status` enum('ativo','reservado','vendido','alugado','inativo') DEFAULT 'ativo',
+  `status` enum('pendente_pagamento','ativo','reservado','vendido','alugado','inativo') DEFAULT 'ativo',
   `data_publicacao` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `imovel_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------------------------------------------------------
+-- plano — as opções pagas do assistente de anúncio (etapa 2). Cadastrados
+-- direto no banco; não há tela de administração para isso no escopo deste
+-- projeto.
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `plano` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(60) NOT NULL,
+  `preco` decimal(10,2) NOT NULL,
+  `duracao_dias` int NOT NULL,
+  `limite_fotos` int NOT NULL,
+  `descricao` varchar(255) DEFAULT NULL,
+  `destaque` tinyint(1) NOT NULL DEFAULT '0',
+  `ordem` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `plano` (`nome`, `preco`, `duracao_dias`, `limite_fotos`, `descricao`, `destaque`, `ordem`) VALUES
+('Básico', 49.90, 30, 5, 'Anúncio padrão no catálogo por 30 dias.', 0, 1),
+('Destaque', 99.90, 60, 12, 'Selo de destaque, posição prioritária na busca e 60 dias no ar.', 1, 2),
+('Premium', 179.90, 90, 25, 'Topo do catálogo, mais fotos e 90 dias de exposição contínua.', 0, 3);
+
+-- ----------------------------------------------------------------------------
+-- anuncio — a contratação de um plano para publicar um imóvel, criada ao
+-- final da etapa 4 do assistente, junto com o imóvel em
+-- status='pendente_pagamento'. status_pagamento vira 'pago' quando a tela
+-- fictícia de pagamento é confirmada (controller.PagamentoServlet), momento
+-- em que o imóvel também passa a 'ativo'.
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `anuncio` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_imovel` int NOT NULL,
+  `id_plano` int NOT NULL,
+  `id_anunciante` int NOT NULL,
+  `status_pagamento` enum('pendente','pago','cancelado') NOT NULL DEFAULT 'pendente',
+  `data_contratacao` datetime DEFAULT CURRENT_TIMESTAMP,
+  `data_pagamento` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_imovel` (`id_imovel`),
+  KEY `id_plano` (`id_plano`),
+  KEY `id_anunciante` (`id_anunciante`),
+  CONSTRAINT `anuncio_ibfk_1` FOREIGN KEY (`id_imovel`) REFERENCES `imovel` (`id`),
+  CONSTRAINT `anuncio_ibfk_2` FOREIGN KEY (`id_plano`) REFERENCES `plano` (`id`),
+  CONSTRAINT `anuncio_ibfk_3` FOREIGN KEY (`id_anunciante`) REFERENCES `usuario` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------------------------------------------------------

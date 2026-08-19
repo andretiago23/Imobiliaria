@@ -1,0 +1,361 @@
+/* ==========================================================================
+   Assistente de anúncio (Tela 0 + 4 etapas + pagamento)
+   Usa os tokens e componentes de habittar.css/catalogo.css como base — este
+   arquivo cobre só o que é específico do fluxo de anúncio.
+   ========================================================================== */
+
+.wizard-main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) var(--space-8);
+}
+
+/* --------------------------------------------------------------------------
+   Barra de progresso
+   -------------------------------------------------------------------------- */
+.wizard-progress {
+  margin-bottom: var(--space-6);
+}
+.wizard-progress__trilha {
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--border-subtle);
+  overflow: hidden;
+  margin-bottom: var(--space-3);
+}
+.wizard-progress__preenchida {
+  height: 100%;
+  background: var(--accent-primary);
+  transition: width 0.3s ease-out;
+}
+.wizard-progress__passos {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.wizard-progress__passo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 1;
+  text-align: center;
+}
+.wizard-progress__bolha {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border: 1.5px solid var(--border-subtle);
+  color: var(--text-secondary);
+  background: var(--surface-raised);
+  transition: all 0.2s ease-out;
+}
+.wizard-progress__passo--atual .wizard-progress__bolha {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-soft);
+}
+.wizard-progress__passo--concluido .wizard-progress__bolha {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #fff;
+}
+.wizard-progress__rotulo {
+  color: var(--text-secondary);
+}
+.wizard-progress__passo--atual .wizard-progress__rotulo {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.wizard-progress__contador {
+  display: none;
+  text-align: center;
+  margin-top: var(--space-2);
+}
+@media (max-width: 640px) {
+  .wizard-progress__rotulo {
+    display: none;
+  }
+  .wizard-progress__contador {
+    display: block;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Cabeçalho de etapa
+   -------------------------------------------------------------------------- */
+.wizard-etapa__eyebrow {
+  margin-bottom: var(--space-1);
+}
+.wizard-etapa__titulo {
+  margin: 0 0 var(--space-5);
+}
+
+/* --------------------------------------------------------------------------
+   Etapa 1 — seleção alugar/vender
+   -------------------------------------------------------------------------- */
+.wizard-opcoes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+.wizard-opcao-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.wizard-opcao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 0.2s ease-out, background-color 0.2s ease-out;
+}
+.wizard-opcao svg {
+  color: var(--accent-primary);
+  margin-bottom: var(--space-1);
+}
+.wizard-opcao strong {
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+.wizard-opcao span {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.wizard-opcao-input:checked + .wizard-opcao {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary-soft);
+  box-shadow: 0 0 0 1px var(--accent-primary);
+}
+.wizard-opcao-input:focus-visible + .wizard-opcao {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Etapa 2 — planos
+   -------------------------------------------------------------------------- */
+.planos-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+.plano-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.plano-card {
+  position: relative;
+  display: block;
+  height: 100%;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: var(--surface-raised);
+  cursor: pointer;
+  transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out, transform 0.2s ease-out;
+}
+.plano-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+.plano-input:checked + .plano-card {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-primary-soft);
+}
+.plano-input:focus-visible + .plano-card {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+.plano-card__selo {
+  position: absolute;
+  top: -12px;
+  left: var(--space-4);
+  background: var(--accent-primary);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+.plano-card__nome {
+  font-family: var(--font-display);
+  font-size: 19px;
+  margin: var(--space-1) 0 0;
+}
+.plano-card__preco {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  margin: var(--space-2) 0 0;
+}
+.plano-card__preco span {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.plano-card__descricao {
+  margin: var(--space-1) 0 0;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+}
+.plano-card__lista {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3) 0 0;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 13.5px;
+}
+.plano-card__lista li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+.plano-card__lista svg {
+  flex-shrink: 0;
+  color: var(--accent-primary);
+  margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Etapa 3 — checkbox "mesmo endereço"
+   -------------------------------------------------------------------------- */
+.wizard-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+  margin: var(--space-2) 0 var(--space-4);
+}
+.wizard-checkbox input {
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  accent-color: var(--accent-primary);
+  flex-shrink: 0;
+}
+.wizard-bloco--desabilitado {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Etapa 4 — resumo
+   -------------------------------------------------------------------------- */
+.wizard-resumo {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: var(--space-5);
+}
+.wizard-resumo__secao {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.wizard-resumo__secao:last-child {
+  border-bottom: 0;
+}
+.wizard-resumo__rotulo {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-1);
+}
+.wizard-resumo__valor {
+  font-size: 15.5px;
+  font-weight: 600;
+}
+.wizard-resumo__preco {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-primary-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Navegação entre etapas
+   -------------------------------------------------------------------------- */
+.wizard-acoes {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+.wizard-acoes .btn {
+  flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Grupo de CEP com botão de busca inline
+   -------------------------------------------------------------------------- */
+.wizard-cep {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-end;
+}
+.wizard-cep .filtros__campo {
+  flex: 1;
+}
+.wizard-cep__status {
+  font-size: 12.5px;
+  margin-top: var(--space-1);
+  min-height: 16px;
+}
+.wizard-cep__status--ok {
+  color: #1c6b3f;
+}
+.wizard-cep__status--erro {
+  color: #d64545;
+}
+
+/* --------------------------------------------------------------------------
+   Pagamento (tela fictícia)
+   -------------------------------------------------------------------------- */
+.pagamento-card {
+  max-width: 480px;
+  margin: var(--space-7) auto;
+  padding: var(--space-6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+.pagamento-card__icone {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: var(--accent-primary-soft);
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-4);
+}
+.pagamento-card__aviso {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-top: var(--space-3);
+}
