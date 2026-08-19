@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>O que anunciar | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=15">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=15">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=15">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=15">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=16">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=16">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=16">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=16">
 </head>
 <body>
 
@@ -77,36 +77,76 @@
         </select>
       </div>
       <div class="filtros__campo">
-        <label for="preco">Preço (R$)</label>
-        <input type="number" id="preco" name="preco" min="0" step="0.01" placeholder="0,00"
-          value="<%= rascunho.getPreco() == null ? "" : rascunho.getPreco() %>" required>
+        <label for="preco">Preço</label>
+        <input type="text" id="preco" name="preco" inputmode="decimal" placeholder="R$ 0,00" maxlength="18"
+          data-mascara="moeda" value="<%= rascunho.getPreco() == null ? "" : rascunho.getPreco() %>" required>
       </div>
       <div class="filtros__campo">
-        <label for="areaM2">Área (m²)</label>
-        <input type="number" id="areaM2" name="areaM2" min="0" step="0.01" placeholder="0"
-          value="<%= rascunho.getAreaM2() == 0 ? "" : rascunho.getAreaM2() %>">
+        <label for="areaM2">Área</label>
+        <input type="text" id="areaM2" name="areaM2" inputmode="decimal" placeholder="0 m²" maxlength="12"
+          data-mascara="area" value="<%= rascunho.getAreaM2() == 0 ? "" : rascunho.getAreaM2() %>">
       </div>
       <div class="filtros__campo">
         <label for="quartos">Quartos</label>
-        <input type="number" id="quartos" name="quartos" min="0" step="1" placeholder="0"
+        <input type="number" id="quartos" name="quartos" min="0" step="1" placeholder="0" maxlength="2"
           value="<%= rascunho.getQuartos() == 0 ? "" : rascunho.getQuartos() %>">
       </div>
-      <div class="filtros__campo">
-        <label for="banheiros">Banheiros</label>
-        <input type="number" id="banheiros" name="banheiros" min="0" step="1" placeholder="0"
-          value="<%= rascunho.getBanheiros() == 0 ? "" : rascunho.getBanheiros() %>">
-      </div>
       <div class="filtros__campo filtros__campo--largo">
-        <label for="vagasGaragem">Vagas de garagem</label>
-        <input type="number" id="vagasGaragem" name="vagasGaragem" min="0" step="1" placeholder="0"
-          value="<%= rascunho.getVagasGaragem() == 0 ? "" : rascunho.getVagasGaragem() %>">
+        <label for="banheiros">Banheiros</label>
+        <input type="number" id="banheiros" name="banheiros" min="0" step="1" placeholder="0" maxlength="2"
+          value="<%= rascunho.getBanheiros() == 0 ? "" : rascunho.getBanheiros() %>">
       </div>
     </div>
 
     <div class="filtros__campo" style="margin-top:16px;">
       <label for="descricao">Descrição</label>
-      <textarea id="descricao" name="descricao" rows="4" placeholder="Detalhes que ajudam quem está buscando: acabamento, condomínio, proximidade de transporte..."
+      <textarea id="descricao" name="descricao" rows="4" maxlength="1000" placeholder="Detalhes que ajudam quem está buscando: acabamento, condomínio, proximidade de transporte..."
         style="width:100%;font-family:var(--font-sans);font-size:15px;color:var(--text-primary);background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px 14px;resize:vertical;"><%= rascunho.getDescricao() == null ? "" : util.Html.escapar(rascunho.getDescricao()) %></textarea>
+    </div>
+
+    <h2 style="font-size:14px;margin:28px 0 4px;">Características do imóvel</h2>
+    <p class="micro" style="margin:0 0 12px;color:var(--text-secondary);">Selecione as que se aplicam — elas entram automaticamente na descrição.</p>
+    <div class="wizard-caracteristicas" id="caracteristicas">
+      <label class="filtro-checkbox">
+        <input type="checkbox" data-emoji="🐕" data-texto="Aceita animais">
+        <span class="filtro-checkbox__caixa"></span> Aceita animais
+      </label>
+      <label class="filtro-checkbox">
+        <input type="checkbox" data-emoji="🛋️" data-texto="Mobiliado">
+        <span class="filtro-checkbox__caixa"></span> Mobiliado
+      </label>
+      <label class="filtro-checkbox">
+        <input type="checkbox" data-emoji="❄️" data-texto="Ar-condicionado">
+        <span class="filtro-checkbox__caixa"></span> Ar-condicionado
+      </label>
+      <label class="filtro-checkbox">
+        <input type="checkbox" data-emoji="🚪" data-texto="Armário embutido">
+        <span class="filtro-checkbox__caixa"></span> Armário embutido
+      </label>
+      <label class="filtro-checkbox">
+        <input type="checkbox" data-emoji="🌇" data-texto="Varanda">
+        <span class="filtro-checkbox__caixa"></span> Varanda
+      </label>
+      <label class="filtro-checkbox">
+        <input type="checkbox" data-emoji="🏊" data-texto="Piscina">
+        <span class="filtro-checkbox__caixa"></span> Piscina
+      </label>
+      <label class="filtro-checkbox">
+        <input type="checkbox" data-emoji="🔥" data-texto="Churrasqueira">
+        <span class="filtro-checkbox__caixa"></span> Churrasqueira
+      </label>
+      <label class="filtro-checkbox">
+        <input type="checkbox" data-emoji="🔐" data-texto="Portaria 24h">
+        <span class="filtro-checkbox__caixa"></span> Portaria 24h
+      </label>
+      <label class="filtro-checkbox">
+        <input type="checkbox" data-emoji="🛗" data-texto="Elevador">
+        <span class="filtro-checkbox__caixa"></span> Elevador
+      </label>
+      <label class="filtro-checkbox">
+        <input type="checkbox" data-emoji="🏋️" data-texto="Academia">
+        <span class="filtro-checkbox__caixa"></span> Academia
+      </label>
     </div>
 
     <h2 style="font-size:14px;margin:28px 0 14px;">Endereço do imóvel</h2>
@@ -121,22 +161,22 @@
     <div class="filtros__grade filtros__grade--2col">
       <div class="filtros__campo filtros__campo--largo">
         <label for="endereco">Rua</label>
-        <input type="text" id="endereco" name="endereco" placeholder="Preenchido automaticamente pelo CEP"
+        <input type="text" id="endereco" name="endereco" placeholder="Preenchido automaticamente pelo CEP" maxlength="200"
           value="<%= rascunho.getEndereco() == null ? "" : util.Html.escapar(rascunho.getEndereco()) %>" required>
       </div>
       <div class="filtros__campo">
         <label for="numero">Número</label>
-        <input type="text" id="numero" name="numero" placeholder="Ex.: 120"
+        <input type="text" id="numero" name="numero" placeholder="Ex.: 120" maxlength="10"
           value="<%= rascunho.getNumero() == null ? "" : util.Html.escapar(rascunho.getNumero()) %>" required>
       </div>
       <div class="filtros__campo">
         <label for="bairro">Bairro</label>
-        <input type="text" id="bairro" name="bairro" placeholder="Preenchido automaticamente pelo CEP"
+        <input type="text" id="bairro" name="bairro" placeholder="Preenchido automaticamente pelo CEP" maxlength="100"
           value="<%= rascunho.getBairro() == null ? "" : util.Html.escapar(rascunho.getBairro()) %>" required>
       </div>
       <div class="filtros__campo">
         <label for="cidade">Cidade</label>
-        <input type="text" id="cidade" name="cidade" readonly
+        <input type="text" id="cidade" name="cidade" readonly maxlength="100"
           value="<%= rascunho.getCidade() == null ? "" : util.Html.escapar(rascunho.getCidade()) %>">
       </div>
       <div class="filtros__campo">
@@ -159,7 +199,8 @@
   </form>
 </main>
 
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=15"></script>
-<script src="${pageContext.request.contextPath}/js/anuncio-wizard.js?v=15"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=16"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=16"></script>
+<script src="${pageContext.request.contextPath}/js/anuncio-wizard.js?v=16"></script>
 </body>
 </html>

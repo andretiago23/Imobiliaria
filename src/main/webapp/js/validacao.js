@@ -57,7 +57,35 @@
 		return digitos.replace(/(\d{5})(\d{1,3})$/, "$1-$2");
 	}
 
-	var MASCARAS = { cpf: mascararCPF, cpfCnpj: mascararCpfCnpj, telefone: mascararTelefone, cep: mascararCEP };
+	// Trata "R$" na frente e pontuação de milhar/decimal enquanto a pessoa
+	// digita (os dígitos digitados viram centavos, de trás para frente —
+	// mesmo comportamento de app de banco).
+	function mascararMoeda(valor) {
+		var digitos = apenasDigitos(valor).slice(0, 12);
+		if (!digitos) return "";
+		var numero = parseInt(digitos, 10) / 100;
+		return "R$ " + numero.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+	}
+
+	// Aceita um valor já digitado com ponto (ex.: vindo do servidor como
+	// "70.5") ou vírgula, mantém só um separador decimal e acrescenta "m²".
+	function mascararArea(valor) {
+		var limpo = (valor || "").replace(/m²/gi, "").replace(/\./g, ",").replace(/[^\d,]/g, "");
+		var partes = limpo.split(",");
+		if (partes.length > 1) {
+			limpo = partes[0] + "," + partes.slice(1).join("").slice(0, 2);
+		}
+		return limpo ? limpo + " m²" : "";
+	}
+
+	var MASCARAS = {
+		cpf: mascararCPF,
+		cpfCnpj: mascararCpfCnpj,
+		telefone: mascararTelefone,
+		cep: mascararCEP,
+		moeda: mascararMoeda,
+		area: mascararArea,
+	};
 
 	document.querySelectorAll("[data-mascara]").forEach(function (campo) {
 		var aplicar = MASCARAS[campo.dataset.mascara];

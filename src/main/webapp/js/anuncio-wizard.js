@@ -65,6 +65,36 @@
 	ligarAutopreenchimentoCep("Anunciante");
 
 	// -------------------------------------------------------------------
+	// Etapa 1 — características do imóvel somadas à descrição
+	//
+	// Cada checkbox marcada acrescenta uma linha "emoji Texto" na descrição;
+	// desmarcar remove só aquela linha, sem mexer no resto do que a pessoa
+	// já escreveu.
+	// -------------------------------------------------------------------
+	var listaCaracteristicas = document.getElementById("caracteristicas");
+	if (listaCaracteristicas) {
+		var campoDescricao = document.getElementById("descricao");
+
+		listaCaracteristicas.querySelectorAll("input[type=checkbox]").forEach(function (caixa) {
+			var linha = caixa.dataset.emoji + " " + caixa.dataset.texto;
+
+			caixa.addEventListener("change", function () {
+				var linhas = campoDescricao.value.split("\n").filter(function (l) { return l.trim() !== ""; });
+
+				if (caixa.checked) {
+					if (linhas.indexOf(linha) === -1) {
+						linhas.push(linha);
+					}
+				} else {
+					linhas = linhas.filter(function (l) { return l !== linha; });
+				}
+
+				campoDescricao.value = linhas.join("\n");
+			});
+		});
+	}
+
+	// -------------------------------------------------------------------
 	// Etapa 3 — "Utilizar mesmo endereço do imóvel"
 	// -------------------------------------------------------------------
 	var checkboxMesmoEndereco = document.getElementById("enderecoIgualImovel");

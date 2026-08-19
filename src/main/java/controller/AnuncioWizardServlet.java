@@ -155,7 +155,6 @@ public class AnuncioWizardServlet extends HttpServlet {
 		rascunho.setAreaM2(parseDouble(requisicao.getParameter("areaM2")));
 		rascunho.setQuartos(parseInteiro(requisicao.getParameter("quartos")));
 		rascunho.setBanheiros(parseInteiro(requisicao.getParameter("banheiros")));
-		rascunho.setVagasGaragem(parseInteiro(requisicao.getParameter("vagasGaragem")));
 		rascunho.setDescricao(requisicao.getParameter("descricao"));
 		rascunho.setCep(cep);
 		rascunho.setEndereco(endereco);
@@ -315,18 +314,36 @@ public class AnuncioWizardServlet extends HttpServlet {
 		return valor == null ? "" : valor.replaceAll("\\D", "");
 	}
 
+	/**
+	 * Interpreta um valor em reais digitado com a máscara de moeda
+	 * ("R$ 450.000,00"): mantém só dígitos e vírgula (descarta "R$", espaços
+	 * e os pontos de milhar) e trata a vírgula como separador decimal.
+	 */
 	private BigDecimal parseDecimal(String valor) {
+		String limpo = valorMonetarioLimpo(valor);
+		if (limpo == null) {
+			return null;
+		}
+		return new BigDecimal(limpo);
+	}
+
+	/**
+	 * Mesma lógica de parseDecimal, para o campo de área ("70,5 m²").
+	 */
+	private double parseDouble(String valor) {
+		String limpo = valorMonetarioLimpo(valor);
+		return limpo == null ? 0 : Double.parseDouble(limpo);
+	}
+
+	private String valorMonetarioLimpo(String valor) {
 		if (valor == null || valor.isBlank()) {
 			return null;
 		}
-		return new BigDecimal(valor.trim().replace(",", "."));
-	}
-
-	private double parseDouble(String valor) {
-		if (valor == null || valor.isBlank()) {
-			return 0;
+		String semSeparadorDecimal = valor.replaceAll("[^0-9,]", "");
+		if (semSeparadorDecimal.isBlank()) {
+			return null;
 		}
-		return Double.parseDouble(valor.trim().replace(",", "."));
+		return semSeparadorDecimal.replace(",", ".");
 	}
 
 	private int parseInteiro(String valor) {
