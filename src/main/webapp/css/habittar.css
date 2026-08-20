@@ -632,10 +632,12 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 /* Campo "Tipo de imóvel" — select com seta própria (sem a seta feia padrão
-   do navegador), largura fixa e a mesma moldura dos demais campos. */
+   do navegador), largura fixa e a mesma moldura dos demais campos. Sem
+   ícone à esquerda (só o texto): sobra mais espaço pro campo de
+   localização, que precisa do placeholder inteiro visível. */
 .search__field--tipo {
-  flex: 0 0 178px;
-  width: 178px;
+  flex: 0 0 148px;
+  width: 148px;
   min-width: 0;
 }
 .search__field--tipo select {
@@ -656,8 +658,8 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .search__field--local {
   position: relative;
-  flex: 1 1 240px;
-  min-width: 240px;
+  flex: 1 1 260px;
+  min-width: 260px;
 }
 
 /* Sugestões de endereço (autocomplete de rua/bairro/cidade) */
