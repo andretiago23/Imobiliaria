@@ -557,16 +557,11 @@ input[type="number"]::-webkit-inner-spin-button {
   max-width: 720px;
 }
 
-@media (min-width: 861px) {
-  .search {
-    flex-wrap: nowrap;
-  }
-  .search__field {
-    flex: 1 1 120px;
-    min-width: 0;
-  }
-}
-
+/* Sem forçar nowrap por breakpoint de viewport: o hero fica em grid de
+   duas colunas antes do celular, então a largura real da barra depende
+   da coluna, não da tela inteira — deixando o flex-wrap natural decidir,
+   os campos quebram de linha sozinhos sempre que não couberem, em vez de
+   ficar espremidos com o texto cortado. */
 .search__field {
   display: flex;
   align-items: center;
@@ -641,8 +636,9 @@ input[type="number"]::-webkit-inner-spin-button {
 /* Campo "Tipo de imóvel" — select com seta própria (sem a seta feia padrão
    do navegador), largura fixa e a mesma moldura dos demais campos. */
 .search__field--tipo {
-  flex: 0 0 auto;
-  min-width: 168px;
+  flex: 0 0 178px;
+  width: 178px;
+  min-width: 0;
 }
 .search__field--tipo select {
   appearance: none;
@@ -662,6 +658,8 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .search__field--local {
   position: relative;
+  flex: 1 1 240px;
+  min-width: 240px;
 }
 
 /* Sugestões de endereço (autocomplete de rua/bairro/cidade) */
@@ -699,7 +697,7 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-top: 2px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 720px) {
   .search__field--tipo {
     min-width: 0;
   }
@@ -709,7 +707,10 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 }
 
-@media (max-width: 640px) {
+/* Abaixo de 720px o campo de localização não sobra espaço suficiente pro
+   texto do placeholder inteiro ("Busque por rua, bairro ou cidade") — em
+   vez de deixar cortar, empilha os campos em coluna cheia. */
+@media (max-width: 720px) {
   .search {
     flex-direction: column;
     align-items: stretch;
@@ -726,7 +727,9 @@ input[type="number"]::-webkit-inner-spin-button {
     text-align: center;
     padding: 0 4px 12px;
   }
-  .search__field {
+  .search__field,
+  .search__field--tipo,
+  .search__field--local {
     width: 100%;
     flex-basis: auto;
     padding: 4px 8px;

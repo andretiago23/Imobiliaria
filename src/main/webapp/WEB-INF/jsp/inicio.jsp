@@ -6,9 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catálogo | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=24">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=24">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=24">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=26">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=26">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=26">
 </head>
 <body>
 
