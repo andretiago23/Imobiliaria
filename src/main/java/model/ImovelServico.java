@@ -4,14 +4,18 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import dao.AnuncioDAO;
 import dao.AvaliacaoDAO;
 import dao.BuscaSalvaDAO;
+import dao.ConfirmacaoStatusDAO;
 import dao.ContatoInteresseDAO;
 import dao.DAOException;
+import dao.DisponibilidadeVisitaDAO;
 import dao.FavoritoDAO;
 import dao.FotoImovelDAO;
 import dao.ImovelDAO;
 import dao.UsuarioDAO;
+import dao.VisitaAgendadaDAO;
 import util.EmailService;
 
 /**
@@ -35,6 +39,10 @@ public class ImovelServico {
 	private final BuscaSalvaDAO buscaSalvaDAO = new BuscaSalvaDAO();
 	private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 	private final EmailService emailService = new EmailService();
+	private final AnuncioDAO anuncioDAO = new AnuncioDAO();
+	private final DisponibilidadeVisitaDAO disponibilidadeVisitaDAO = new DisponibilidadeVisitaDAO();
+	private final VisitaAgendadaDAO visitaAgendadaDAO = new VisitaAgendadaDAO();
+	private final ConfirmacaoStatusDAO confirmacaoStatusDAO = new ConfirmacaoStatusDAO();
 
 	/**
 	 * Publica um novo anúncio.
@@ -212,6 +220,11 @@ public class ImovelServico {
 		avaliacaoDAO.removerPorImovel(idImovel);
 		favoritoDAO.removerPorImovel(idImovel);
 		fotoImovelDAO.removerPorImovel(idImovel);
+		buscaSalvaDAO.removerPorImovel(idImovel);
+		confirmacaoStatusDAO.removerPorImovel(idImovel);
+		visitaAgendadaDAO.removerPorImovel(idImovel);
+		disponibilidadeVisitaDAO.removerPorImovel(idImovel);
+		anuncioDAO.removerPorImovel(idImovel);
 		imovelDAO.remover(idImovel);
 	}
 

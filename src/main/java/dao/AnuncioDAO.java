@@ -37,6 +37,20 @@ public class AnuncioDAO {
 			UPDATE anuncio SET status_pagamento = 'pago', data_pagamento = NOW() WHERE id = ? AND id_anunciante = ?
 			""";
 
+	private static final String SQL_REMOVER_POR_IMOVEL = "DELETE FROM anuncio WHERE id_imovel = ?";
+
+	/** Usado ao excluir um imóvel por completo (ImovelServico.excluir). */
+	public void removerPorImovel(int idImovel) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_REMOVER_POR_IMOVEL)) {
+
+			comando.setInt(1, idImovel);
+			comando.executeUpdate();
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao remover os anúncios do imóvel " + idImovel + ".", e);
+		}
+	}
+
 	public void inserir(Anuncio anuncio) throws DAOException {
 		try (Connection conexao = ConnectionFactory.obterConexao();
 				PreparedStatement comando = conexao.prepareStatement(SQL_INSERIR, Statement.RETURN_GENERATED_KEYS)) {

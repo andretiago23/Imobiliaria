@@ -612,6 +612,15 @@ input[type="number"]::-webkit-inner-spin-button {
   .nav__links .btn {
     display: inline-flex;
   }
+  /* Item 6.2: o avatar (com o menu "Meu perfil"/"Meus imóveis"/"Sair") é a
+     única forma de quem já está logado navegar por essas opções — a regra
+     acima escondia o link do avatar (.avatar-com-seta é um <a>) junto com
+     os demais links do menu, deixando a conta sem esse acesso em telas
+     estreitas. */
+  .nav__links .avatar-menu,
+  .nav__links .avatar-menu a.avatar-com-seta {
+    display: flex;
+  }
 }
 
 /* --------------------------------------------------------------------------

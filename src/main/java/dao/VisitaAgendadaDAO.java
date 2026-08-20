@@ -52,6 +52,20 @@ public class VisitaAgendadaDAO {
 			WHERE id_imovel = ? AND data_visita = ? AND hora_inicio = ? AND status = 'agendada'
 			""";
 
+	private static final String SQL_REMOVER_POR_IMOVEL = "DELETE FROM visita_agendada WHERE id_imovel = ?";
+
+	/** Usado ao excluir um imóvel por completo (ImovelServico.excluir). */
+	public void removerPorImovel(int idImovel) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_REMOVER_POR_IMOVEL)) {
+
+			comando.setInt(1, idImovel);
+			comando.executeUpdate();
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao remover as visitas agendadas do imóvel " + idImovel + ".", e);
+		}
+	}
+
 	public void inserir(VisitaAgendada visita) throws DAOException {
 		try (Connection conexao = ConnectionFactory.obterConexao();
 				PreparedStatement comando = conexao.prepareStatement(SQL_INSERIR, Statement.RETURN_GENERATED_KEYS)) {

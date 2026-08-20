@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Imóveis anunciados | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=36">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=36">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=36">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=36">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=38">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=38">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=38">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=38">
 </head>
 <body>
 
@@ -88,6 +88,13 @@
                 <option value="inativo" <%= imovel.getStatus() == StatusImovel.INATIVO ? "selected" : "" %>>Pausado</option>
               </select>
             </form>
+
+            <!-- Item 6.1: excluir imóvel, com confirmação -->
+            <button type="button" class="btn-icone btn-icone--perigo" title="Excluir imóvel"
+              aria-label="Excluir imóvel"
+              data-excluir-imovel="<%= imovel.getId() %>">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+            </button>
           </div>
         </div>
       </article>
@@ -95,6 +102,45 @@
     </div>
   <% } %>
 </main>
+
+<!-- Item 6.1: modal de confirmação de exclusão -->
+<dialog id="modalExcluirImovel" class="modal-confirmacao">
+  <form method="dialog" class="modal-confirmacao__corpo">
+    <h2>Excluir imóvel</h2>
+    <p>Tem certeza que deseja excluir esse imóvel? Essa ação não pode ser desfeita.</p>
+    <div class="modal-confirmacao__acoes">
+      <button type="submit" value="cancelar" class="btn btn--secondary btn--sm">Cancelar</button>
+      <button type="submit" value="confirmar" class="btn btn--perigo btn--sm">Excluir</button>
+    </div>
+  </form>
+</dialog>
+
+<form method="post" action="${pageContext.request.contextPath}/imoveis-anunciados" id="formExcluirImovel" hidden>
+  <input type="hidden" name="csrf" value="${csrf}">
+  <input type="hidden" name="acao" value="excluir">
+  <input type="hidden" name="idImovel" id="idImovelExcluir" value="">
+</form>
+
+<script>
+  (function () {
+    var modal = document.getElementById("modalExcluirImovel");
+    var formExcluir = document.getElementById("formExcluirImovel");
+    var campoId = document.getElementById("idImovelExcluir");
+
+    document.querySelectorAll("[data-excluir-imovel]").forEach(function (botao) {
+      botao.addEventListener("click", function () {
+        campoId.value = botao.getAttribute("data-excluir-imovel");
+        modal.showModal();
+      });
+    });
+
+    modal.addEventListener("close", function () {
+      if (modal.returnValue === "confirmar") {
+        formExcluir.requestSubmit();
+      }
+    });
+  })();
+</script>
 
 </body>
 </html>
