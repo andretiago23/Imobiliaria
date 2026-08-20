@@ -196,6 +196,20 @@ public class UsuarioServico {
 	}
 
 	/**
+	 * Atualiza só o telefone, sem mexer no apelido — o campo de apelido saiu
+	 * da tela de perfil (revisão de UX), mas o valor já salvo de quem
+	 * preencheu antes continua intacto no banco, só não fica mais editável
+	 * por aqui.
+	 */
+	public void atualizarTelefone(int idUsuario, String telefone) throws RegraNegocioException, DAOException {
+		Usuario atual = usuarioDAO.buscarPorId(idUsuario)
+				.orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+		atual.setTelefone(telefone == null || telefone.isBlank() ? null : telefone.trim());
+		usuarioDAO.atualizar(atual);
+	}
+
+	/**
 	 * Troca a foto de perfil pelo arquivo recém-enviado.
 	 *
 	 * @param caminhoFoto caminho relativo já salvo em disco (ver PerfilServlet)
