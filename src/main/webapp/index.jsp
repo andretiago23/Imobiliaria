@@ -10,8 +10,8 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=26">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=26">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=27">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=27">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -109,8 +109,7 @@
             <ul id="sugestoesLocalizacao" class="search__sugestoes" hidden></ul>
           </label>
           <button class="btn btn--primary search__submit" type="submit" aria-label="Buscar imóveis">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-            Buscar
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
           </button>
         </form>
       </div>
@@ -372,6 +371,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=26"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=27"></script>
 </body>
 </html>

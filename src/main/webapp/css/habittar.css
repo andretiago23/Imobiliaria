@@ -615,17 +615,15 @@ input[type="number"]::-webkit-inner-spin-button {
   border-bottom-color: var(--brand-primary, #FF6A1A);
 }
 
+/* Só o ícone (sem o texto "Buscar"): fica quadrado e compacto, o que
+   ajuda o botão a continuar alinhado na mesma linha dos outros campos
+   em vez de forçar quebra por causa do texto. */
 .search__submit {
-  height: auto;
-  min-height: 46px;
-  width: auto;
-  padding: 0 22px;
+  height: 46px;
+  width: 46px;
+  padding: 0;
   border-radius: var(--radius-sm);
   flex: 0 0 auto;
-  font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 600;
-  gap: 8px;
 }
 
 /* Segmento (Comprar/Alugar/Imóvel novo) agora fica acima da barra de busca */
