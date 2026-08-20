@@ -28,9 +28,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Criar conta | Habittar</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=23">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=23">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=23">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=24">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=24">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=24">
 </head>
 <body>
 
@@ -169,7 +169,7 @@
 
 </div>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=23"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=23"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=24"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=24"></script>
 </body>
 </html>

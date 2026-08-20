@@ -554,7 +554,7 @@ input[type="number"]::-webkit-inner-spin-button {
   align-items: stretch;
   gap: 10px;
   flex-wrap: wrap;
-  max-width: 620px;
+  max-width: 720px;
 }
 
 @media (min-width: 861px) {
@@ -571,7 +571,8 @@ input[type="number"]::-webkit-inner-spin-button {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1 1 220px;
+  flex: 1 1 260px;
+  min-width: 0;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 0 14px;
