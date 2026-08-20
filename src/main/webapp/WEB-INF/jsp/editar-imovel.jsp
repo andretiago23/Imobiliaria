@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Editar imóvel | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=28">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=28">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=28">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=28">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=31">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=31">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=31">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=31">
 </head>
 <body>
 
@@ -166,6 +166,6 @@
   <% } %>
 </main>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=28"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=31"></script>
 </body>
 </html>

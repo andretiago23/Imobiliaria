@@ -525,15 +525,19 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .hero__grid {
   display: grid;
-  grid-template-columns: 6fr 6fr;
+  /* 7fr/5fr em vez de 6fr/6fr: a coluna de texto+busca precisa de mais
+     espaço que a da foto pra caber a barra de busca inteira numa linha
+     só sem cortar texto — com .wrap limitado a 1120px, 6fr/6fr deixava
+     essa coluna sempre abaixo do mínimo necessário. */
+  grid-template-columns: 7fr 5fr;
   gap: 56px;
   align-items: center;
 }
 
 @media (max-width: 1024px) {
   .hero__grid {
-    grid-template-columns: 55fr 45fr;
-    gap: 32px;
+    grid-template-columns: 68fr 32fr;
+    gap: 24px;
   }
 }
 @media (max-width: 860px) {
@@ -542,7 +546,16 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 }
 
-/* Busca */
+/* Busca — a coluna do hero onde ela mora vira um container query context:
+   a barra reage à largura REAL da coluna (que na maioria das telas é bem
+   menor que a tela inteira, por causa do grid de duas colunas do hero),
+   não à largura da janela. É isso que garante nunca ter linha de texto
+   cortada nem um jeito de "quase cabe, quase não cabe" que uma media
+   query comum (baseada em viewport) não consegue prever. */
+.hero__busca {
+  container-type: inline-size;
+}
+
 .search {
   margin-top: 16px;
   background: var(--surface-raised);
@@ -553,20 +566,13 @@ input[type="number"]::-webkit-inner-spin-button {
   display: flex;
   align-items: stretch;
   gap: 10px;
-  flex-wrap: wrap;
-  max-width: 720px;
+  max-width: 100%;
 }
 
-/* Sem forçar nowrap por breakpoint de viewport: o hero fica em grid de
-   duas colunas antes do celular, então a largura real da barra depende
-   da coluna, não da tela inteira — deixando o flex-wrap natural decidir,
-   os campos quebram de linha sozinhos sempre que não couberem, em vez de
-   ficar espremidos com o texto cortado. */
 .search__field {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1 1 260px;
   min-width: 0;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
@@ -634,10 +640,13 @@ input[type="number"]::-webkit-inner-spin-button {
 /* Campo "Tipo de imóvel" — select com seta própria (sem a seta feia padrão
    do navegador), largura fixa e a mesma moldura dos demais campos. Sem
    ícone à esquerda (só o texto): sobra mais espaço pro campo de
-   localização, que precisa do placeholder inteiro visível. */
+   localização, que precisa do placeholder inteiro visível.
+   Largura calculada pra caber a maior opção ("Imóvel comercial", a
+   ~120px de texto em 15px/Inter) + os 28px de padding do campo + os
+   22px reservados pra seta — com folga. */
 .search__field--tipo {
-  flex: 0 0 148px;
-  width: 148px;
+  flex: 0 0 190px;
+  width: 190px;
   min-width: 0;
 }
 .search__field--tipo select {
@@ -656,10 +665,14 @@ input[type="number"]::-webkit-inner-spin-button {
   width: 100%;
 }
 
+/* Campo de localização — largura mínima calculada pro placeholder inteiro
+   ("Busque por rua, bairro ou cidade", ~233px de texto em 15px/Inter) +
+   28px de padding do campo + 16px do ícone + 10px do gap até o texto —
+   com folga. */
 .search__field--local {
   position: relative;
-  flex: 1 1 260px;
-  min-width: 260px;
+  flex: 1 1 300px;
+  min-width: 300px;
 }
 
 /* Sugestões de endereço (autocomplete de rua/bairro/cidade) */
@@ -697,24 +710,19 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-top: 2px;
 }
 
-@media (max-width: 720px) {
-  .search__field--tipo {
-    min-width: 0;
-  }
-  .search__sugestoes {
-    left: 0;
-    right: 0;
-  }
-}
-
-/* Abaixo de 720px o campo de localização não sobra espaço suficiente pro
-   texto do placeholder inteiro ("Busque por rua, bairro ou cidade") — em
-   vez de deixar cortar, empilha os campos em coluna cheia. */
-@media (max-width: 720px) {
+/* A barra de busca só cabe numa linha só, sem cortar nenhum texto, com
+   pelo menos ~596px de largura real (190 do tipo + 300 da localização +
+   46 do botão + gaps + padding). Abaixo disso — o que na prática só
+   acontece quando a coluna do hero fica espremida pelo grid de duas
+   colunas, ou em celular — empilha tudo em coluna cheia, cada campo
+   ocupando 100% da largura, garantindo que o texto sempre caiba.
+   @container reage à largura real da coluna (.hero__busca), não à da
+   janela — por isso resolve o caso em que o hero divide a tela em duas
+   colunas e a barra de busca fica mais estreita que o viewport inteiro. */
+@container (max-width: 596px) {
   .search {
     flex-direction: column;
     align-items: stretch;
-    max-width: 100%;
     padding: 12px;
   }
   .segment {
@@ -732,11 +740,18 @@ input[type="number"]::-webkit-inner-spin-button {
   .search__field--local {
     width: 100%;
     flex-basis: auto;
+    min-width: 0;
     padding: 4px 8px;
   }
   .search__submit {
     width: 100%;
+    height: auto;
+    min-height: 46px;
     border-radius: var(--radius-md);
+  }
+  .search__sugestoes {
+    left: 0;
+    right: 0;
   }
 }
 
