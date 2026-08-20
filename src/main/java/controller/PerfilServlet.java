@@ -19,7 +19,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import model.ContatoInteresse;
 import model.Imovel;
-import model.ImovelServico;
 import model.InteracaoServico;
 import model.RegraNegocioException;
 import model.Usuario;
@@ -48,7 +47,6 @@ public class PerfilServlet extends HttpServlet {
 			"image/webp", ".webp");
 
 	private final UsuarioServico usuarioServico = new UsuarioServico();
-	private final ImovelServico imovelServico = new ImovelServico();
 	private final InteracaoServico interacaoServico = new InteracaoServico();
 
 	@Override
@@ -60,7 +58,6 @@ public class PerfilServlet extends HttpServlet {
 			return;
 		}
 
-		carregarResumoConta(requisicao);
 		carregarSecaoDoPerfil(requisicao);
 		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 		requisicao.getRequestDispatcher(PAGINA_PERFIL).forward(requisicao, resposta);
@@ -82,22 +79,6 @@ public class PerfilServlet extends HttpServlet {
 		} catch (RegraNegocioException | DAOException e) {
 			getServletContext().log("Falha ao exportar os dados do usuário.", e);
 			resposta.sendRedirect(requisicao.getContextPath() + "/perfil");
-		}
-	}
-
-	/**
-	 * A nota é formatada aqui para que o JSP cuide apenas da apresentação,
-	 * sem precisar de biblioteca de tags para arredondar o número.
-	 */
-	private void carregarResumoConta(HttpServletRequest requisicao) {
-		Usuario usuario = SessaoUsuario.obter(requisicao);
-		try {
-			double reputacao = interacaoServico.calcularReputacao(usuario.getId());
-			requisicao.setAttribute("reputacao", String.format("%.1f", reputacao));
-			requisicao.setAttribute("totalAvaliacoes", interacaoServico.contarAvaliacoes(usuario.getId()));
-			requisicao.setAttribute("interessesPendentes", interacaoServico.contarInteressesPendentes(usuario.getId()));
-		} catch (DAOException e) {
-			getServletContext().log("Falha ao carregar o resumo da conta.", e);
 		}
 	}
 
@@ -133,7 +114,6 @@ public class PerfilServlet extends HttpServlet {
 
 		if (!"EXCLUIR".equals(requisicao.getParameter("confirmacao"))) {
 			requisicao.setAttribute("erro", "Digite EXCLUIR, em maiúsculas, para confirmar a exclusão da conta.");
-			carregarResumoConta(requisicao);
 			carregarSecaoDoPerfil(requisicao);
 			requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 			requisicao.getRequestDispatcher(PAGINA_PERFIL).forward(requisicao, resposta);
@@ -148,7 +128,6 @@ public class PerfilServlet extends HttpServlet {
 		} catch (DAOException e) {
 			getServletContext().log("Falha ao excluir a conta do usuário " + usuario.getId() + ".", e);
 			requisicao.setAttribute("erro", "Não foi possível excluir a conta agora. Tente novamente em instantes.");
-			carregarResumoConta(requisicao);
 			carregarSecaoDoPerfil(requisicao);
 			requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 			requisicao.getRequestDispatcher(PAGINA_PERFIL).forward(requisicao, resposta);
@@ -160,12 +139,10 @@ public class PerfilServlet extends HttpServlet {
 
 		Usuario usuario = SessaoUsuario.obter(requisicao);
 		try {
-			usuarioServico.atualizarApelidoETelefone(usuario.getId(),
-					requisicao.getParameter("apelido"), requisicao.getParameter("telefone"));
+			usuarioServico.atualizarTelefone(usuario.getId(), requisicao.getParameter("telefone"));
 
 			// A sessão guarda uma cópia do usuário — sem recarregar, a página
-			// continuaria mostrando o apelido antigo até um novo login.
-			usuario.setApelido(requisicao.getParameter("apelido"));
+			// continuaria mostrando o telefone antigo até um novo login.
 			usuario.setTelefone(requisicao.getParameter("telefone"));
 
 			resposta.sendRedirect(requisicao.getContextPath() + "/perfil");
@@ -249,9 +226,11 @@ public class PerfilServlet extends HttpServlet {
 	private void carregarSecaoDoPerfil(HttpServletRequest requisicao) {
 		Usuario usuario = SessaoUsuario.obter(requisicao);
 		try {
-			List<Imovel> imoveis = imovelServico.listarDoUsuario(usuario.getId());
-			requisicao.setAttribute("imoveis", imoveis);
-
+			// "Meus imóveis" saiu da página de perfil (revisão de UX, item 5.4) —
+			// esse painel agora só existe em /imoveis-anunciados. "Meus
+			// interesses" também saiu da tela (item 5.6), mas os dados
+			// continuam sendo carregados aqui pra ficarem disponíveis pro
+			// backend (ex.: lógica de e-mail por histórico de interesse).
 			List<ContatoInteresse> interesses = interacaoServico.listarInteressesEnviados(usuario.getId());
 			requisicao.setAttribute("interesses", interesses);
 

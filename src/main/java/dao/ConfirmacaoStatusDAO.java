@@ -23,6 +23,20 @@ public class ConfirmacaoStatusDAO {
 
 	private static final String SQL_MARCAR_RESPONDIDO = "UPDATE confirmacao_status SET respondido = 1 WHERE id = ?";
 
+	private static final String SQL_REMOVER_POR_IMOVEL = "DELETE FROM confirmacao_status WHERE id_imovel = ?";
+
+	/** Usado ao excluir um imóvel por completo (ImovelServico.excluir). */
+	public void removerPorImovel(int idImovel) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_REMOVER_POR_IMOVEL)) {
+
+			comando.setInt(1, idImovel);
+			comando.executeUpdate();
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao remover as confirmações de status do imóvel " + idImovel + ".", e);
+		}
+	}
+
 	/**
 	 * Já existe uma confirmação pendente (ainda sem resposta) para este
 	 * imóvel — evita mandar um segundo e-mail de confirmação por dia

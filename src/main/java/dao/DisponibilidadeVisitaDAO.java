@@ -61,6 +61,18 @@ public class DisponibilidadeVisitaDAO {
 		}
 	}
 
+	/** Usado ao excluir um imóvel por completo (ImovelServico.excluir). */
+	public void removerPorImovel(int idImovel) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_REMOVER_POR_IMOVEL)) {
+
+			comando.setInt(1, idImovel);
+			comando.executeUpdate();
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao remover a disponibilidade de visitas do imóvel " + idImovel + ".", e);
+		}
+	}
+
 	public List<DisponibilidadeVisita> listarPorImovel(int idImovel) throws DAOException {
 		try (Connection conexao = ConnectionFactory.obterConexao();
 				PreparedStatement comando = conexao.prepareStatement(SQL_LISTAR_POR_IMOVEL)) {

@@ -7,6 +7,7 @@ import dao.DAOException;
 import dao.DisponibilidadeVisitaDAO;
 import dao.FavoritoDAO;
 import dao.ImovelDAO;
+import dao.VisualizacaoImovelDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -32,6 +33,7 @@ public class ImovelServlet extends HttpServlet {
 	private final ImovelDAO imovelDAO = new ImovelDAO();
 	private final FavoritoDAO favoritoDAO = new FavoritoDAO();
 	private final DisponibilidadeVisitaDAO disponibilidadeVisitaDAO = new DisponibilidadeVisitaDAO();
+	private final VisualizacaoImovelDAO visualizacaoImovelDAO = new VisualizacaoImovelDAO();
 
 	@Override
 	protected void doGet(HttpServletRequest requisicao, HttpServletResponse resposta)
@@ -59,12 +61,16 @@ public class ImovelServlet extends HttpServlet {
 				requisicao.setAttribute("salvo", favoritoDAO.existe(usuarioLogado.getId(), id));
 			}
 
-			// Uma contagem simples de views, sem deduplicar por sessão/IP —
-			// o suficiente para o painel "Imóveis anunciados" ter um número
-			// de referência, não uma métrica de analytics de verdade. Não
-			// conta a visualização do próprio dono, pra não inflar o número
-			// toda vez que ele confere o próprio anúncio.
-			if (!donoDoAnuncio) {
+			// Item 6.3: cada usuário conta no máximo 1 visualização por
+			// imóvel, não uma por acesso — visualizacao_imovel (chave
+			// composta id_usuario+id_imovel) impede duplicata, e só
+			// incrementamos o contador quando é mesmo a primeira vez. A rota
+			// exige login (FiltroAutenticacao), então sempre há um
+			// usuarioLogado aqui. Não conta a visualização do próprio dono,
+			// pra não inflar o número toda vez que ele confere o próprio
+			// anúncio.
+			if (usuarioLogado != null && !donoDoAnuncio
+					&& visualizacaoImovelDAO.registrarSePrimeiraVez(usuarioLogado.getId(), id)) {
 				imovelDAO.incrementarVisualizacao(id);
 			}
 		} catch (DAOException e) {

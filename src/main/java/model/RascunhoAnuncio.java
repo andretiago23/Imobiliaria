@@ -39,6 +39,34 @@ public class RascunhoAnuncio implements java.io.Serializable {
 	private String cidade;
 	private String estado;
 
+	/**
+	 * Fotos e vídeo já enviados para o disco (arquivo físico gravado a cada
+	 * POST da etapa 1 — ver AnuncioWizardServlet) mas ainda não vinculados a
+	 * um imóvel no banco: a URL relativa fica guardada aqui até o fim da
+	 * etapa 5, quando os registros de FOTO_IMOVEL/VIDEO_IMOVEL são criados
+	 * de fato. Mínimo de 3 fotos + 1 vídeo (item 1.1 da revisão de UX).
+	 */
+	public static final int MINIMO_FOTOS = 3;
+
+	private List<String> fotos = new ArrayList<>();
+	private String video;
+
+	public List<String> getFotos() {
+		return fotos;
+	}
+
+	public void setFotos(List<String> fotos) {
+		this.fotos = fotos == null ? new ArrayList<>() : fotos;
+	}
+
+	public String getVideo() {
+		return video;
+	}
+
+	public void setVideo(String video) {
+		this.video = video;
+	}
+
 	// Etapa 2 — plano escolhido
 	private Integer idPlano;
 
@@ -80,7 +108,8 @@ public class RascunhoAnuncio implements java.io.Serializable {
 	public boolean etapa1Completa() {
 		return finalidade != null && titulo != null && !titulo.isBlank() && tipo != null && preco != null
 				&& cep != null && !cep.isBlank() && endereco != null && !endereco.isBlank()
-				&& numero != null && !numero.isBlank() && bairro != null && !bairro.isBlank();
+				&& numero != null && !numero.isBlank() && bairro != null && !bairro.isBlank()
+				&& fotos.size() >= MINIMO_FOTOS && video != null && !video.isBlank();
 	}
 
 	public boolean etapa2Completa() {

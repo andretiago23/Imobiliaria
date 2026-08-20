@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Imovel;
+import model.ImovelServico;
 import model.RegraNegocioException;
 import model.StatusImovel;
 import model.Usuario;
@@ -40,12 +41,19 @@ public class ImoveisAnunciadosServlet extends HttpServlet {
 	private final AnuncioDAO anuncioDAO = new AnuncioDAO();
 	private final ContatoInteresseDAO contatoInteresseDAO = new ContatoInteresseDAO();
 	private final VisitaAgendadaDAO visitaAgendadaDAO = new VisitaAgendadaDAO();
+	private final ImovelServico imovelServico = new ImovelServico();
 
 	@Override
 	protected void doGet(HttpServletRequest requisicao, HttpServletResponse resposta)
 			throws ServletException, IOException {
 
 		Usuario usuario = SessaoUsuario.obter(requisicao);
+
+		Object erroSessao = requisicao.getSession().getAttribute("erro");
+		if (erroSessao != null) {
+			requisicao.setAttribute("erro", erroSessao);
+			requisicao.getSession().removeAttribute("erro");
+		}
 
 		try {
 			List<Imovel> imoveis = imovelDAO.listarPorUsuario(usuario.getId());
@@ -72,11 +80,17 @@ public class ImoveisAnunciadosServlet extends HttpServlet {
 
 	/**
 	 * Troca o status de um imóvel (disponível/reservado/vendido/alugado) a
-	 * partir da própria lista, sem precisar abrir a edição completa.
+	 * partir da própria lista, ou exclui o imóvel por completo (item 6.1),
+	 * conforme o parâmetro "acao".
 	 */
 	@Override
 	protected void doPost(HttpServletRequest requisicao, HttpServletResponse resposta)
 			throws ServletException, IOException {
+
+		if ("excluir".equals(requisicao.getParameter("acao"))) {
+			excluirImovel(requisicao, resposta);
+			return;
+		}
 
 		Usuario usuario = SessaoUsuario.obter(requisicao);
 		Integer idImovel = idValido(requisicao.getParameter("idImovel"));
@@ -96,6 +110,25 @@ public class ImoveisAnunciadosServlet extends HttpServlet {
 			imovelDAO.atualizarStatus(idImovel, novoStatus);
 		} catch (RegraNegocioException | DAOException e) {
 			getServletContext().log("Falha ao alterar status do imóvel " + idImovel + ".", e);
+		}
+
+		resposta.sendRedirect(requisicao.getContextPath() + "/imoveis-anunciados");
+	}
+
+	private void excluirImovel(HttpServletRequest requisicao, HttpServletResponse resposta) throws IOException {
+		Usuario usuario = SessaoUsuario.obter(requisicao);
+		Integer idImovel = idValido(requisicao.getParameter("idImovel"));
+
+		if (idImovel == null || !TokenCsrf.valido(requisicao)) {
+			resposta.sendRedirect(requisicao.getContextPath() + "/imoveis-anunciados");
+			return;
+		}
+
+		try {
+			imovelServico.excluir(idImovel, usuario.getId());
+		} catch (RegraNegocioException | DAOException e) {
+			getServletContext().log("Falha ao excluir o imóvel " + idImovel + ".", e);
+			requisicao.getSession().setAttribute("erro", "Não foi possível excluir este imóvel agora.");
 		}
 
 		resposta.sendRedirect(requisicao.getContextPath() + "/imoveis-anunciados");

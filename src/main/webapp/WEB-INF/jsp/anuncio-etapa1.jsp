@@ -1,15 +1,15 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="model.RascunhoAnuncio" %>
+<%@ page import="model.RascunhoAnuncio, java.net.URLEncoder, java.nio.charset.StandardCharsets" %>
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>O que anunciar | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=36">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=36">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=36">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=36">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=39">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=39">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=39">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=39">
 </head>
 <body>
 
@@ -29,7 +29,8 @@
     RascunhoAnuncio rascunho = (RascunhoAnuncio) request.getAttribute("rascunho");
   %>
 
-  <form method="post" action="${pageContext.request.contextPath}/anunciar/etapa1" id="formEtapa1">
+  <form method="post" action="${pageContext.request.contextPath}/anunciar/etapa1" id="formEtapa1"
+    enctype="multipart/form-data">
     <input type="hidden" name="csrf" value="${csrf}">
 
     <div class="wizard-opcoes" role="radiogroup" aria-label="Tipo de negócio">
@@ -141,6 +142,54 @@
       </label>
     </div>
 
+    <h2 style="font-size:14px;margin:28px 0 4px;">Fotos e vídeo do imóvel</h2>
+    <p class="micro" style="margin:0 0 12px;color:var(--text-secondary);">
+      Obrigatório: pelo menos <%= RascunhoAnuncio.MINIMO_FOTOS %> fotos e 1 vídeo, para dar mais confiança a quem está buscando.
+    </p>
+
+    <div class="wizard-midia">
+      <p class="micro" style="margin:0 0 8px;font-weight:600;">
+        Fotos (<%= rascunho.getFotos().size() %>/<%= RascunhoAnuncio.MINIMO_FOTOS %> no mínimo)
+      </p>
+      <% if (!rascunho.getFotos().isEmpty()) { %>
+        <div class="wizard-midia__grade">
+          <% for (String urlFoto : rascunho.getFotos()) { %>
+            <div class="wizard-midia__item">
+              <img src="<%= urlFoto %>" alt="">
+              <a class="wizard-midia__remover"
+                href="${pageContext.request.contextPath}/anunciar/etapa1?removerFoto=<%= URLEncoder.encode(urlFoto, StandardCharsets.UTF_8) %>"
+                title="Remover foto" aria-label="Remover foto">×</a>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+      <label class="btn btn--secondary btn--sm" style="display:inline-flex;margin-top:4px;cursor:pointer;">
+        + Adicionar fotos
+        <input type="file" name="fotos" accept="image/jpeg,image/png,image/webp" multiple class="sr-only"
+          onchange="this.form.requestSubmit()">
+      </label>
+    </div>
+
+    <div class="wizard-midia" style="margin-top:20px;">
+      <p class="micro" style="margin:0 0 8px;font-weight:600;">Vídeo (1 obrigatório)</p>
+      <% if (rascunho.getVideo() != null && !rascunho.getVideo().isBlank()) { %>
+        <div class="wizard-midia__grade">
+          <div class="wizard-midia__item">
+            <video src="<%= rascunho.getVideo() %>" muted></video>
+            <a class="wizard-midia__remover"
+              href="${pageContext.request.contextPath}/anunciar/etapa1?removerVideo=1"
+              title="Remover vídeo" aria-label="Remover vídeo">×</a>
+          </div>
+        </div>
+      <% } else { %>
+        <label class="btn btn--secondary btn--sm" style="display:inline-flex;cursor:pointer;">
+          + Adicionar vídeo
+          <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime" class="sr-only"
+            onchange="this.form.requestSubmit()">
+        </label>
+      <% } %>
+    </div>
+
     <h2 style="font-size:14px;margin:28px 0 14px;">Endereço do imóvel</h2>
     <div class="wizard-cep">
       <div class="filtros__campo">
@@ -191,8 +240,8 @@
   </form>
 </main>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=36"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=36"></script>
-<script src="${pageContext.request.contextPath}/js/anuncio-wizard.js?v=36"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=39"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=39"></script>
+<script src="${pageContext.request.contextPath}/js/anuncio-wizard.js?v=39"></script>
 </body>
 </html>

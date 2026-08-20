@@ -52,6 +52,21 @@ public class BuscaSalvaDAO {
 	private static final String SQL_REGISTRAR_NOTIFICACAO =
 			"INSERT INTO busca_salva_notificacao (id_busca_salva, id_imovel) VALUES (?, ?)";
 
+	private static final String SQL_REMOVER_NOTIFICACOES_POR_IMOVEL =
+			"DELETE FROM busca_salva_notificacao WHERE id_imovel = ?";
+
+	/** Usado ao excluir um imóvel por completo (ImovelServico.excluir). */
+	public void removerPorImovel(int idImovel) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_REMOVER_NOTIFICACOES_POR_IMOVEL)) {
+
+			comando.setInt(1, idImovel);
+			comando.executeUpdate();
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao remover as notificações de busca salva do imóvel " + idImovel + ".", e);
+		}
+	}
+
 	public void inserir(BuscaSalva busca) throws DAOException {
 		try (Connection conexao = ConnectionFactory.obterConexao();
 				PreparedStatement comando = conexao.prepareStatement(SQL_INSERIR, Statement.RETURN_GENERATED_KEYS)) {
