@@ -950,6 +950,9 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-top: 48px;
 }
 .card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -1253,7 +1256,7 @@ input[type="number"]::-webkit-inner-spin-button {
   max-width: var(--maxw);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 40px;
 }
 @media (max-width: 780px) {

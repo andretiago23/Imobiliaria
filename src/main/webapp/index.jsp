@@ -10,8 +10,8 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=33">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=33">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=34">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=34">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -196,7 +196,7 @@
       </div>
 
       <div class="props">
-        <article class="card card--feature">
+        <a class="card card--feature" href="${pageContext.request.contextPath}/imovel?id=1">
           <div class="card__photo tem-foto">
             <img src="https://images.pexels.com/photos/21284473/pexels-photo-21284473.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
             <span class="badge">Venda</span><span class="micro">Cód. HB-1042</span>
@@ -206,8 +206,8 @@
             <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Pinheiros, São Paulo — SP</div>
             <div class="card__specs"><span>92 m²</span><span>3 quartos</span><span>2 banh.</span><span>2 vagas</span></div>
           </div>
-        </article>
-        <article class="card">
+        </a>
+        <a class="card" href="${pageContext.request.contextPath}/imovel?id=2">
           <div class="card__photo tem-foto">
             <img src="https://images.pexels.com/photos/19239905/pexels-photo-19239905.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
             <span class="badge">Aluguel</span>
@@ -217,8 +217,8 @@
             <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Vila Madalena — SP</div>
             <div class="card__specs"><span>58 m²</span><span>2 qtos</span><span>1 vaga</span></div>
           </div>
-        </article>
-        <article class="card">
+        </a>
+        <a class="card" href="${pageContext.request.contextPath}/imovel?id=3">
           <div class="card__photo tem-foto">
             <img src="https://images.pexels.com/photos/2128329/pexels-photo-2128329.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
             <span class="badge">Reservado</span>
@@ -228,8 +228,8 @@
             <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Perdizes — SP</div>
             <div class="card__specs"><span>74 m²</span><span>2 qtos</span><span>1 vaga</span></div>
           </div>
-        </article>
-        <article class="card">
+        </a>
+        <a class="card" href="${pageContext.request.contextPath}/imovel?id=4">
           <div class="card__photo tem-foto">
             <img src="https://images.pexels.com/photos/18078684/pexels-photo-18078684.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
             <span class="badge">Venda</span>
@@ -239,8 +239,8 @@
             <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Alto de Pinheiros — SP</div>
             <div class="card__specs"><span>148 m²</span><span>4 qtos</span><span>3 vagas</span></div>
           </div>
-        </article>
-        <article class="card">
+        </a>
+        <a class="card" href="${pageContext.request.contextPath}/imovel?id=5">
           <div class="card__photo tem-foto">
             <img src="https://images.pexels.com/photos/2030037/pexels-photo-2030037.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
             <span class="badge">Aluguel</span>
@@ -250,7 +250,7 @@
             <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Butantã — SP</div>
             <div class="card__specs"><span>44 m²</span><span>1 qto</span><span>1 vaga</span></div>
           </div>
-        </article>
+        </a>
       </div>
     </div>
   </section>
@@ -321,10 +321,11 @@
           <div class="stat__label">Negócios fechados</div>
         </div>
       </div>
+      <p class="micro" style="text-align:center;opacity:.6;margin-top:8px;">Números ilustrativos</p>
 
       <blockquote class="quote">
         <p>Achei o apartamento em três dias buscando pela rua onde eu já queria morar. A simulação foi junto com o contato e o corretor ligou sabendo do meu orçamento.</p>
-        <span>Depoimento ilustrativo — substituir por texto real aprovado</span>
+        <span>Depoimento ilustrativo</span>
       </blockquote>
     </div>
   </section>
@@ -363,7 +364,6 @@
             <span class="btn__dot" aria-hidden="true"></span>
           </a>
         </div>
-        <p class="micro" style="margin-top:24px">Tempo médio de publicação: 6 minutos</p>
       </div>
     </div>
   </section>
@@ -379,30 +379,16 @@
       <p style="font-size:14px;line-height:1.6;margin-top:16px;max-width:26ch">Encontrar onde morar é uma questão de precisão.</p>
     </div>
     <div>
-      <h4>Buscar</h4>
-      <ul>
-        <li><a href="${pageContext.request.contextPath}/inicio?tipo=apartamento&finalidade=venda">Apartamentos à venda</a></li>
-        <li><a href="${pageContext.request.contextPath}/inicio?tipo=casa&finalidade=venda">Casas à venda</a></li>
-        <li><a href="${pageContext.request.contextPath}/inicio?tipo=apartamento&finalidade=aluguel">Apartamentos para alugar</a></li>
-        <li><a href="${pageContext.request.contextPath}/inicio?tipo=terreno">Terrenos</a></li>
-        <li><a href="${pageContext.request.contextPath}/inicio?tipo=comercial">Imóveis comerciais</a></li>
-      </ul>
-    </div>
-    <div>
       <h4>Habittar</h4>
-      <ul><li><a href="#diferenciais">Como funciona</a></li><li><a href="${pageContext.request.contextPath}/anunciar">Anunciar imóvel</a></li><li><a href="${pageContext.request.contextPath}/login">Área do cliente</a></li><li><a href="${pageContext.request.contextPath}/login">Painel da imobiliária</a></li><li><a href="#top">Trabalhe conosco</a></li></ul>
+      <ul><li><a href="${pageContext.request.contextPath}/anunciar">Anunciar imóvel</a></li><li><a href="${pageContext.request.contextPath}/inicio">Catálogo</a></li></ul>
     </div>
     <div>
       <h4>Institucional</h4>
-      <ul><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Termos de uso</a></li><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Política de privacidade (LGPD)</a></li><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Segurança da informação</a></li><li><a href="#top">Contato</a></li><li><a href="#top">CRECI 00000-J</a></li></ul>
+      <ul><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Termos de uso</a></li><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Política de privacidade</a></li><li><a href="https://wa.me/5569992450697" target="_blank" rel="noopener">Contato</a></li></ul>
     </div>
-  </div>
-  <div class="footer__base">
-    <span>© 2026 Habittar. Todos os direitos reservados.</span>
-    <span>-23.5614, -46.6929</span>
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=33"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=34"></script>
 </body>
 </html>

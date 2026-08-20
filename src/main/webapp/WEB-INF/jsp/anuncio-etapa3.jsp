@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Seus dados | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=33">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=33">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=33">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=33">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=34">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=34">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=34">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=34">
 </head>
 <body>
 
@@ -123,7 +123,7 @@
   </form>
 </main>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=33"></script>
-<script src="${pageContext.request.contextPath}/js/anuncio-wizard.js?v=33"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=34"></script>
+<script src="${pageContext.request.contextPath}/js/anuncio-wizard.js?v=34"></script>
 </body>
 </html>
