@@ -6,41 +6,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Imóveis anunciados | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=35">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=35">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=35">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=35">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=36">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=36">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=36">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=36">
 </head>
 <body>
 
-<header class="nav is-scrolled">
-  <div class="nav__inner">
-    <a class="logo" href="${pageContext.request.contextPath}/inicio" aria-label="Habittar — catálogo">
-      <img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
-    </a>
-    <nav class="nav__links">
-      <a href="${pageContext.request.contextPath}/inicio">Catálogo</a>
-      <a href="${pageContext.request.contextPath}/anunciar">Anunciar</a>
-      <a class="is-current" href="${pageContext.request.contextPath}/imoveis-anunciados" aria-current="page">Imóveis anunciados</a>
-      <div class="avatar-menu">
-        <a class="avatar" href="${pageContext.request.contextPath}/perfil" title="Meu perfil" aria-label="Meu perfil">
-          <% if (((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil() != null
-                && !((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil().isBlank()) { %>
-            <img src="${pageContext.request.contextPath}${sessionScope.usuarioLogado.fotoPerfil}" alt="">
-          <% } else { %>
-            ${sessionScope.usuarioLogado.inicial}
-          <% } %>
-        </a>
-        <div class="avatar-menu__dropdown">
-          <div class="avatar-menu__dropdown-inner">
-            <a href="${pageContext.request.contextPath}/perfil">Ver meu perfil</a>
-            <a href="${pageContext.request.contextPath}/logout">Sair</a>
-          </div>
-        </div>
-      </div>
-    </nav>
-  </div>
-</header>
+<% pageContext.setAttribute("navFixa", true); %>
+<jsp:include page="/WEB-INF/jsp/fragmentos/navbar.jsp" />
 
 <main class="app-main" style="max-width:960px;">
   <div class="app-header">

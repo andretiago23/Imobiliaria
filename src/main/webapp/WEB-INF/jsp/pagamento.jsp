@@ -6,19 +6,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Confirmar pagamento | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=35">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=35">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=35">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=36">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=36">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=36">
 </head>
 <body>
 
-<header class="nav is-scrolled">
-  <div class="nav__inner">
-    <a class="logo" href="${pageContext.request.contextPath}/index.jsp" aria-label="Habittar — página principal">
-      <img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
-    </a>
-  </div>
-</header>
+<% pageContext.setAttribute("navFixa", true); %>
+<jsp:include page="/WEB-INF/jsp/fragmentos/navbar.jsp" />
 
 <main class="wizard-main" style="max-width:560px;">
   <%

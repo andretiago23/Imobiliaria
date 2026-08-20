@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Entrar | Habittar</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=35">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=35">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=35">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=36">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=36">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=36">
 </head>
 <body>
 
@@ -107,7 +107,7 @@
 
 </div>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=35"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=35"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=36"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=36"></script>
 </body>
 </html>
