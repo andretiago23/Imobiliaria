@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List, java.util.Locale, java.text.NumberFormat, model.Imovel, model.Finalidade, model.StatusImovel" %>
 <!doctype html>
 <html lang="pt-BR">
@@ -6,71 +6,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catálogo | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=34">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=34">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=34">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=35">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=35">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=35">
 </head>
 <body>
 
 <!-- ===================== HEADER ===================== -->
-<header class="nav is-scrolled">
-  <div class="nav__inner">
-    <a class="logo" href="${pageContext.request.contextPath}/index.jsp" aria-label="Habittar — página principal">
-      <img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
-    </a>
-    <nav class="nav__links">
-      <a class="${filtro.finalidade == 'VENDA' ? 'is-current' : ''}" href="${pageContext.request.contextPath}/inicio?finalidade=venda" ${filtro.finalidade == 'VENDA' ? 'aria-current="page"' : ''}>Comprar</a>
-      <a class="${filtro.finalidade == 'ALUGUEL' ? 'is-current' : ''}" href="${pageContext.request.contextPath}/inicio?finalidade=aluguel" ${filtro.finalidade == 'ALUGUEL' ? 'aria-current="page"' : ''}>Alugar</a>
-      <a href="${pageContext.request.contextPath}/anunciar">Anunciar</a>
-      <% if (session.getAttribute("usuarioLogado") != null) { %>
-        <a href="${pageContext.request.contextPath}/imoveis-anunciados">Imóveis anunciados</a>
-      <% } %>
-      <a href="${pageContext.request.contextPath}/financiamento">Financiamento</a>
-      <% if (session.getAttribute("usuarioLogado") != null) { %>
-        <div class="avatar-menu">
-          <a class="avatar" href="${pageContext.request.contextPath}/perfil" title="Meu perfil" aria-label="Meu perfil">
-            <% if (((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil() != null
-                  && !((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil().isBlank()) { %>
-              <img src="${pageContext.request.contextPath}${sessionScope.usuarioLogado.fotoPerfil}" alt="">
-            <% } else { %>
-              ${sessionScope.usuarioLogado.inicial}
-            <% } %>
-          </a>
-          <div class="avatar-menu__dropdown">
-            <div class="avatar-menu__dropdown-inner">
-              <a href="${pageContext.request.contextPath}/perfil">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="8" r="5"/></svg>
-                Ver meu perfil
-              </a>
-              <a href="${pageContext.request.contextPath}/logout">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
-                Sair
-              </a>
-            </div>
-          </div>
-        </div>
-      <% } else { %>
-        <a class="btn btn--primary btn--sm btn--interactive" href="${pageContext.request.contextPath}/login">
-          <span class="btn__label">Entrar</span>
-          <span class="btn__reveal" aria-hidden="true">
-            Entrar
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </span>
-          <span class="btn__dot" aria-hidden="true"></span>
-        </a>
-      <% } %>
-    </nav>
-  </div>
-</header>
+<% pageContext.setAttribute("navFixa", true); %>
+<jsp:include page="/WEB-INF/jsp/fragmentos/navbar.jsp" />
 
 <main class="app-main app-main--catalogo">
   <div class="map-grid" aria-hidden="true"></div>
 
   <p class="alerta alerta-erro" role="alert">${erro}</p>
 
-  <form method="get" action="${pageContext.request.contextPath}/inicio" class="catalogo-layout">
+  <form method="get" action="${pageContext.request.contextPath}/inicio" class="catalogo-layout" id="formFiltros">
 
-    <!-- ===================== SIDEBAR DE FILTROS ===================== -->
+    <!-- ===================== SIDEBAR DE FILTROS (local único, item 2.3) ===================== -->
     <aside class="filtro-sidebar">
 
       <div class="filtro-tabs" role="group" aria-label="Tipo de negócio">
@@ -80,6 +33,14 @@
         <label for="fVenda" class="filtro-tab">Comprar</label>
         <input type="radio" name="finalidade" value="aluguel" id="fAluguel" class="filtro-tab-input" ${filtro.finalidade == 'ALUGUEL' ? 'checked' : ''}>
         <label for="fAluguel" class="filtro-tab">Alugar</label>
+      </div>
+
+      <div class="filtro-secao">
+        <h3>Localização</h3>
+        <div class="filtro-localizacao">
+          <input type="text" name="cidade" placeholder="Cidade ou bairro — ex.: Pinheiros" value="${filtro.cidade}">
+          <input type="text" name="estado" placeholder="UF" maxlength="2" class="filtro-localizacao__uf" value="${filtro.estado}">
+        </div>
       </div>
 
       <div class="filtro-secao">
@@ -156,32 +117,34 @@
         </div>
       </div>
 
+      <!-- Item 2.5: área vira campo numérico com "m²" dinâmico ao lado -->
       <div class="filtro-secao">
-        <h3>Área do imóvel</h3>
-        <div class="pills">
-          <input type="radio" name="areaMinima" value="" id="a0" class="pill-input" ${empty filtro.areaMinima ? 'checked' : ''}>
-          <label for="a0" class="pill">Qualquer</label>
-          <input type="radio" name="areaMinima" value="40" id="a1" class="pill-input" ${filtro.areaMinima == 40.0 ? 'checked' : ''}>
-          <label for="a1" class="pill">40m²+</label>
-          <input type="radio" name="areaMinima" value="70" id="a2" class="pill-input" ${filtro.areaMinima == 70.0 ? 'checked' : ''}>
-          <label for="a2" class="pill">70m²+</label>
-          <input type="radio" name="areaMinima" value="100" id="a3" class="pill-input" ${filtro.areaMinima == 100.0 ? 'checked' : ''}>
-          <label for="a3" class="pill">100m²+</label>
-          <input type="radio" name="areaMinima" value="150" id="a4" class="pill-input" ${filtro.areaMinima == 150.0 ? 'checked' : ''}>
-          <label for="a4" class="pill">150m²+</label>
+        <h3>Área mínima</h3>
+        <div class="filtro-area">
+          <input type="text" inputmode="numeric" maxlength="5" id="campoArea" name="areaMinima" placeholder="Qualquer" value="${filtro.areaMinima}">
+          <span class="filtro-area__sufixo" id="sufixoArea" hidden>m²</span>
         </div>
       </div>
 
+      <!-- Item 2.6: "R$" fixo + formatação de milhar -->
       <div class="filtro-secao">
         <h3>Preço</h3>
         <div class="filtro-preco">
           <label>
             <span class="micro">Mínimo</span>
-            <input type="number" name="precoMinimo" min="0" step="1" inputmode="numeric" placeholder="R$ 0" value="${filtro.precoMinimo}">
+            <span class="filtro-preco__campo">
+              <span class="filtro-preco__prefixo">R$</span>
+              <input type="text" inputmode="numeric" class="campo-preco" id="precoMinimoExibido" placeholder="0" autocomplete="off">
+              <input type="hidden" name="precoMinimo" id="precoMinimo" value="${filtro.precoMinimo}">
+            </span>
           </label>
           <label>
             <span class="micro">Máximo</span>
-            <input type="number" name="precoMaximo" min="0" step="1" inputmode="numeric" placeholder="R$ 0" value="${filtro.precoMaximo}">
+            <span class="filtro-preco__campo">
+              <span class="filtro-preco__prefixo">R$</span>
+              <input type="text" inputmode="numeric" class="campo-preco" id="precoMaximoExibido" placeholder="0" autocomplete="off">
+              <input type="hidden" name="precoMaximo" id="precoMaximo" value="${filtro.precoMaximo}">
+            </span>
           </label>
         </div>
       </div>
@@ -194,13 +157,6 @@
 
     <!-- ===================== CONTEÚDO ===================== -->
     <div class="catalogo-main">
-
-      <div class="busca-topo">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-        <input type="text" name="cidade" placeholder="Cidade ou bairro — ex.: Pinheiros, São Paulo" value="${filtro.cidade}">
-        <input type="text" name="estado" placeholder="UF" maxlength="2" class="busca-topo__uf" value="${filtro.estado}">
-        <button class="btn btn--primary btn--sm" type="submit">Buscar</button>
-      </div>
 
       <%
         java.util.Map<String, String> rotulosFiltro = new java.util.LinkedHashMap<>();
@@ -269,7 +225,9 @@
             boolean reservado = imovel.getStatus() == StatusImovel.RESERVADO;
             boolean salvo = idsFavoritados != null && idsFavoritados.contains(imovel.getId());
           %>
-          <article class="card">
+          <!-- Item 2.1: card inteiro é clicável (article com data-href + JS),
+               o botão "salvar" continua funcionando à parte via stopPropagation -->
+          <article class="card card--clicavel" data-href="${pageContext.request.contextPath}/imovel?id=<%= imovel.getId() %>" tabindex="0" role="link">
             <div class="card__photo tem-foto">
               <img src="<%= util.ImagemImovel.urlIlustrativa(imovel.getTipo(), imovel.getId()) %>"
                 alt="Foto ilustrativa de <%= util.Html.escapar(imovel.getTitulo()) %>" loading="lazy">
@@ -325,13 +283,8 @@
                   <svg class="ficha-icone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.7 17.66 8.4A8 8 0 1 1 6.34 8.4Z"/></svg>
                   <%= imovel.getBanheiros() %> banh.
                 </span>
-                <span title="Vagas de garagem">
-                  <svg class="ficha-icone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>
-                  <%= imovel.getVagasGaragem() %> vaga(s)
-                </span>
               </div>
             </div>
-            <a class="btn btn--secondary btn--sm card__link" href="${pageContext.request.contextPath}/imovel?id=<%= imovel.getId() %>">Ver detalhes</a>
           </article>
           <% } %>
         </div>
@@ -345,5 +298,6 @@
   <span class="micro">© 2026 Habittar. Todos os direitos reservados.</span>
 </footer>
 
+<script src="${pageContext.request.contextPath}/js/catalogo.js?v=35"></script>
 </body>
 </html>

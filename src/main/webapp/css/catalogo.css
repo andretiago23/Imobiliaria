@@ -243,6 +243,88 @@ body {
   width: 100%;
 }
 
+/* Item 2.6 — "R$" fixo antes do campo de preço */
+.filtro-preco__campo {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  gap: 4px;
+}
+.filtro-preco__campo:focus-within {
+  border-color: var(--accent-primary);
+}
+.filtro-preco__prefixo {
+  font-size: 14px;
+  color: var(--text-secondary);
+  flex: 0 0 auto;
+}
+.filtro-preco__campo input {
+  border: 0;
+  padding: 10px 0;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Item 2.5 — campo de área numérico com "m²" dinâmico ao lado */
+.filtro-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+}
+.filtro-area:focus-within {
+  border-color: var(--accent-primary);
+}
+.filtro-area input {
+  border: 0;
+  padding: 10px 0;
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.filtro-area__sufixo {
+  font-size: 14px;
+  color: var(--text-secondary);
+  flex: 0 0 auto;
+}
+
+/* Item 2.3 — campo de localização (cidade/UF), consolidado dentro da
+   barra de filtros em vez de uma barra de busca separada */
+.filtro-localizacao {
+  display: flex;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.filtro-localizacao input {
+  border: 0;
+  padding: 10px 12px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.filtro-localizacao input[name="cidade"] {
+  flex: 1;
+  min-width: 0;
+}
+.filtro-localizacao__uf {
+  width: 52px;
+  flex: 0 0 auto;
+  border-left: 1px solid var(--border-subtle) !important;
+  text-transform: uppercase;
+  text-align: center;
+}
+.filtro-localizacao input:focus {
+  outline: none;
+  background: var(--surface-page);
+}
+
 .filtro-sidebar__acoes {
   display: flex;
   gap: 8px;
@@ -509,10 +591,9 @@ body {
   color: #8a5a12;
 }
 
-.card__link {
-  display: block;
-  padding: 0 20px 20px;
-  margin-top: -6px;
+/* Item 2.1 — card inteiro clicável (JS em catalogo.js) */
+.card--clicavel {
+  cursor: pointer;
 }
 
 .estado-vazio {
