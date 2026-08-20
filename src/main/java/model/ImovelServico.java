@@ -15,6 +15,7 @@ import dao.FavoritoDAO;
 import dao.FotoImovelDAO;
 import dao.ImovelDAO;
 import dao.UsuarioDAO;
+import dao.VideoImovelDAO;
 import dao.VisitaAgendadaDAO;
 import util.EmailService;
 
@@ -43,6 +44,7 @@ public class ImovelServico {
 	private final DisponibilidadeVisitaDAO disponibilidadeVisitaDAO = new DisponibilidadeVisitaDAO();
 	private final VisitaAgendadaDAO visitaAgendadaDAO = new VisitaAgendadaDAO();
 	private final ConfirmacaoStatusDAO confirmacaoStatusDAO = new ConfirmacaoStatusDAO();
+	private final VideoImovelDAO videoImovelDAO = new VideoImovelDAO();
 
 	/**
 	 * Publica um novo anúncio.
@@ -220,6 +222,7 @@ public class ImovelServico {
 		avaliacaoDAO.removerPorImovel(idImovel);
 		favoritoDAO.removerPorImovel(idImovel);
 		fotoImovelDAO.removerPorImovel(idImovel);
+		videoImovelDAO.removerPorImovel(idImovel);
 		buscaSalvaDAO.removerPorImovel(idImovel);
 		confirmacaoStatusDAO.removerPorImovel(idImovel);
 		visitaAgendadaDAO.removerPorImovel(idImovel);

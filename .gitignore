@@ -18,3 +18,6 @@ src/main/webapp/WEB-INF/lib/mysql-connector-j-*/
 # Arquivos gerados pelo sistema operacional
 Thumbs.db
 .DS_Store
+
+# Fotos e videos enviados pelos usuarios no assistente de anuncio (item 1.1)
+src/main/webapp/imagens/uploads/

@@ -10,8 +10,8 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=38">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=38">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=39">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=39">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -305,6 +305,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=38"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=39"></script>
 </body>
 </html>

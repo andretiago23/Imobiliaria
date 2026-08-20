@@ -1,27 +1,40 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
 
 import dao.AnuncioDAO;
 import dao.DAOException;
 import dao.DisponibilidadeVisitaDAO;
+import dao.FotoImovelDAO;
 import dao.PlanoDAO;
 import dao.UsuarioDAO;
+import dao.VideoImovelDAO;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 import model.Anuncio;
 import model.DiaSemana;
 import model.DisponibilidadeVisita;
 import model.Finalidade;
+import model.FotoImovel;
 import model.Imovel;
 import model.ImovelServico;
 import model.RascunhoAnuncio;
@@ -29,6 +42,7 @@ import model.RegraNegocioException;
 import model.TipoAnunciante;
 import model.TipoImovel;
 import model.Usuario;
+import model.VideoImovel;
 import util.ConversorEnum;
 import util.SessaoUsuario;
 import util.TokenCsrf;
@@ -54,15 +68,25 @@ import util.ValidadorCPF;
  */
 @WebServlet(urlPatterns = { "/anunciar/etapa1", "/anunciar/etapa2", "/anunciar/etapa3", "/anunciar/etapa4",
 		"/anunciar/etapa5" })
+@MultipartConfig(
+		maxFileSize = 1024L * 1024 * 100,        // 100MB por arquivo (o vídeo é o maior)
+		maxRequestSize = 1024L * 1024 * 350,      // limite da etapa 1 inteira (fotos + vídeo)
+		fileSizeThreshold = 1024 * 1024)          // acima de 1MB grava direto em disco, não em memória
 public class AnuncioWizardServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final String PASTA_UPLOADS = "/imagens/uploads/anuncios";
+	private static final Set<String> EXTENSOES_FOTO = Set.of("jpg", "jpeg", "png", "webp");
+	private static final Set<String> EXTENSOES_VIDEO = Set.of("mp4", "webm", "mov");
 
 	private final PlanoDAO planoDAO = new PlanoDAO();
 	private final AnuncioDAO anuncioDAO = new AnuncioDAO();
 	private final DisponibilidadeVisitaDAO disponibilidadeVisitaDAO = new DisponibilidadeVisitaDAO();
 	private final ImovelServico imovelServico = new ImovelServico();
 	private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+	private final FotoImovelDAO fotoImovelDAO = new FotoImovelDAO();
+	private final VideoImovelDAO videoImovelDAO = new VideoImovelDAO();
 
 	@Override
 	protected void doGet(HttpServletRequest requisicao, HttpServletResponse resposta)
@@ -70,6 +94,10 @@ public class AnuncioWizardServlet extends HttpServlet {
 
 		int etapa = etapaDaUrl(requisicao);
 		RascunhoAnuncio rascunho = obterRascunho(requisicao);
+
+		if (etapa == 1) {
+			removerMidiaSeSolicitado(requisicao, rascunho);
+		}
 
 		if (etapa == 1 && rascunho.getTipoAnunciante() == null) {
 			TipoAnunciante tipoDaLanding = ConversorEnum.paraEnum(TipoAnunciante.class, requisicao.getParameter("tipo"));
@@ -121,7 +149,10 @@ public class AnuncioWizardServlet extends HttpServlet {
 
 		try {
 			switch (etapa) {
-				case 1 -> processarEtapa1(requisicao, rascunho);
+				case 1 -> {
+					processarUploads(requisicao, rascunho);
+					processarEtapa1(requisicao, rascunho);
+				}
 				case 2 -> processarEtapa2(requisicao, rascunho);
 				case 3 -> processarEtapa3(requisicao, rascunho);
 				case 4 -> processarEtapa4(requisicao, rascunho);
@@ -185,6 +216,120 @@ public class AnuncioWizardServlet extends HttpServlet {
 		rascunho.setBairro(bairro);
 		rascunho.setCidade(requisicao.getParameter("cidade"));
 		rascunho.setEstado(requisicao.getParameter("estado"));
+
+		// Item 1.1: bloqueia o avanço sem o mínimo de mídia anexada.
+		if (rascunho.getFotos().size() < RascunhoAnuncio.MINIMO_FOTOS) {
+			throw new RegraNegocioException(
+					"Anexe pelo menos " + RascunhoAnuncio.MINIMO_FOTOS + " fotos do imóvel para continuar.");
+		}
+		if (rascunho.getVideo() == null || rascunho.getVideo().isBlank()) {
+			throw new RegraNegocioException("Anexe pelo menos 1 vídeo do imóvel para continuar.");
+		}
+	}
+
+	// -------------------------------------------------------------------
+	// Item 1.1 — fotos e vídeo do imóvel (mínimo 3 fotos + 1 vídeo,
+	// obrigatório para avançar da etapa 1). Os arquivos são gravados em
+	// disco a cada POST desta etapa (mesmo que outros campos do formulário
+	// ainda falhem na validação), e a URL relativa fica guardada no
+	// rascunho até a etapa 5, quando os registros de FOTO_IMOVEL/
+	// VIDEO_IMOVEL são criados de fato — assim reenviar o formulário (ex.:
+	// corrigindo o título) não obriga a pessoa a escolher os arquivos de
+	// novo.
+	// -------------------------------------------------------------------
+	private void processarUploads(HttpServletRequest requisicao, RascunhoAnuncio rascunho)
+			throws RegraNegocioException, IOException, ServletException {
+
+		for (Part parte : requisicao.getParts()) {
+			String nomeArquivo = nomeArquivoOriginal(parte);
+			if (nomeArquivo == null || nomeArquivo.isBlank()) {
+				continue; // input vazio (usuário não trocou o arquivo neste envio)
+			}
+
+			if ("fotos".equals(parte.getName())) {
+				String extensao = extensao(nomeArquivo);
+				if (!EXTENSOES_FOTO.contains(extensao)) {
+					throw new RegraNegocioException("Formato de foto não suportado. Envie JPG, PNG ou WEBP.");
+				}
+				rascunho.getFotos().add(salvarArquivo(requisicao, parte, extensao));
+			} else if ("video".equals(parte.getName())) {
+				String extensao = extensao(nomeArquivo);
+				if (!EXTENSOES_VIDEO.contains(extensao)) {
+					throw new RegraNegocioException("Formato de vídeo não suportado. Envie MP4, WEBM ou MOV.");
+				}
+				rascunho.setVideo(salvarArquivo(requisicao, parte, extensao));
+			}
+		}
+	}
+
+	/**
+	 * O nome de arquivo vem embutido no cabeçalho Content-Disposition da
+	 * parte; quando o input file foi deixado vazio nesse envio, o
+	 * navegador ainda manda a parte, só que sem nome de arquivo.
+	 */
+	private String nomeArquivoOriginal(Part parte) {
+		String cabecalho = parte.getHeader("content-disposition");
+		if (cabecalho == null) {
+			return null;
+		}
+		for (String trecho : cabecalho.split(";")) {
+			trecho = trecho.trim();
+			if (trecho.startsWith("filename")) {
+				return trecho.substring(trecho.indexOf('=') + 1).replace("\"", "").trim();
+			}
+		}
+		return null;
+	}
+
+	private String extensao(String nomeArquivo) {
+		int ponto = nomeArquivo.lastIndexOf('.');
+		return ponto < 0 ? "" : nomeArquivo.substring(ponto + 1).toLowerCase(Locale.ROOT);
+	}
+
+	/**
+	 * Grava o arquivo enviado em imagens/uploads/anuncios (fora do
+	 * versionamento — ver .gitignore) com um nome único, e devolve a URL
+	 * relativa já pronta para servir como recurso estático.
+	 */
+	private String salvarArquivo(HttpServletRequest requisicao, Part parte, String extensao) throws IOException {
+		String pastaReal = getServletContext().getRealPath(PASTA_UPLOADS);
+		Path diretorio = Path.of(pastaReal);
+		Files.createDirectories(diretorio);
+
+		String nomeUnico = UUID.randomUUID() + "." + extensao;
+		Path destino = diretorio.resolve(nomeUnico);
+		try (InputStream entrada = parte.getInputStream()) {
+			Files.copy(entrada, destino, StandardCopyOption.REPLACE_EXISTING);
+		}
+
+		return requisicao.getContextPath() + PASTA_UPLOADS + "/" + nomeUnico;
+	}
+
+	/**
+	 * GET da etapa 1 com ?removerFoto=<url> ou ?removerVideo=1 apaga o
+	 * arquivo do disco e tira a referência do rascunho — usado pelos
+	 * botões "Remover" das miniaturas já enviadas.
+	 */
+	private void removerMidiaSeSolicitado(HttpServletRequest requisicao, RascunhoAnuncio rascunho) {
+		String urlFotoRemover = requisicao.getParameter("removerFoto");
+		if (urlFotoRemover != null && rascunho.getFotos().remove(urlFotoRemover)) {
+			apagarArquivo(urlFotoRemover);
+		}
+
+		if ("1".equals(requisicao.getParameter("removerVideo")) && rascunho.getVideo() != null) {
+			apagarArquivo(rascunho.getVideo());
+			rascunho.setVideo(null);
+		}
+	}
+
+	private void apagarArquivo(String urlRelativa) {
+		String contextPath = getServletContext().getContextPath();
+		String caminhoNaPasta = urlRelativa.startsWith(contextPath)
+				? urlRelativa.substring(contextPath.length()) : urlRelativa;
+		String pastaReal = getServletContext().getRealPath(caminhoNaPasta);
+		if (pastaReal != null) {
+			new File(pastaReal).delete();
+		}
 	}
 
 	// -------------------------------------------------------------------
@@ -324,6 +469,17 @@ public class AnuncioWizardServlet extends HttpServlet {
 			janela.setIdImovel(imovel.getId());
 		}
 		disponibilidadeVisitaDAO.salvarTodas(imovel.getId(), rascunho.getDisponibilidade());
+
+		// Item 1.1: só agora os arquivos já gravados em disco durante a
+		// etapa 1 viram registros de FOTO_IMOVEL/VIDEO_IMOVEL, vinculados
+		// ao id do imóvel que acabou de ser criado.
+		int ordem = 0;
+		for (String urlFoto : rascunho.getFotos()) {
+			fotoImovelDAO.inserir(new FotoImovel(imovel.getId(), urlFoto, ordem++));
+		}
+		if (rascunho.getVideo() != null && !rascunho.getVideo().isBlank()) {
+			videoImovelDAO.inserir(new VideoImovel(imovel.getId(), rascunho.getVideo(), 0));
+		}
 
 		TipoAnunciante tipoAnunciante = rascunho.getTipoAnunciante() != null
 				? rascunho.getTipoAnunciante() : TipoAnunciante.PROPRIETARIO;
