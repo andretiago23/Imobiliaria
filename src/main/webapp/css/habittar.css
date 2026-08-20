@@ -257,6 +257,103 @@ input[type="number"]::-webkit-inner-spin-button {
   color: var(--text-secondary);
 }
 
+/* Avatar com setinha de dropdown ao lado (indica que passar o mouse abre
+   o menu "Ver meu perfil"/"Sair") — o clique continua indo direto pro
+   perfil, igual antes. */
+.avatar-com-seta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+}
+.avatar-com-seta .nav-dropdown__chevron {
+  transition: transform 0.15s ease-out;
+}
+.avatar-menu:hover .avatar-com-seta .nav-dropdown__chevron,
+.avatar-menu:focus-within .avatar-com-seta .nav-dropdown__chevron {
+  transform: rotate(180deg);
+}
+
+/* --------------------------------------------------------------------------
+   Dropdowns "Comprar"/"Alugar" da navbar — lista de cidades ao passar o
+   mouse (ou focar via teclado), igual ao menu do avatar.
+   -------------------------------------------------------------------------- */
+.nav-dropdown {
+  position: relative;
+}
+.nav-dropdown__trigger {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.nav-dropdown__chevron {
+  transition: transform 0.15s ease-out;
+}
+.nav-dropdown:hover .nav-dropdown__chevron,
+.nav-dropdown:focus-within .nav-dropdown__chevron {
+  transform: rotate(180deg);
+}
+.nav-dropdown__panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding-top: 14px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out, visibility 0.15s;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card-hover);
+  padding: 8px;
+  margin-top: 14px;
+}
+.nav-dropdown:hover .nav-dropdown__panel,
+.nav-dropdown:focus-within .nav-dropdown__panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.nav-dropdown__titulo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+  margin: 4px 8px 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.nav-dropdown__panel a {
+  padding: 9px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.nav-dropdown__panel a:hover {
+  background: var(--surface-page);
+}
+.nav-dropdown__ver-todos {
+  margin-top: 4px;
+  padding-top: 12px !important;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--accent-primary) !important;
+}
+
 .lead {
   font-size: 18px;
   line-height: 1.6;
@@ -508,7 +605,8 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 @media (max-width: 860px) {
-  .nav__links a {
+  .nav__links a,
+  .nav__links > .nav-dropdown {
     display: none;
   }
   .nav__links .btn {

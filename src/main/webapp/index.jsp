@@ -10,8 +10,8 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=31">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=31">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=33">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=33">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -21,19 +21,52 @@
       <img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">
     </a>
     <nav class="nav__links">
-      <a href="${pageContext.request.contextPath}/inicio?finalidade=venda">Comprar</a>
-      <a href="${pageContext.request.contextPath}/inicio?finalidade=aluguel">Alugar</a>
+      <div class="nav-dropdown">
+        <button type="button" class="nav-dropdown__trigger">
+          Comprar
+          <svg class="nav-dropdown__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown__panel">
+          <p class="nav-dropdown__titulo">Cidade</p>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=venda&cidade=S%C3%A3o+Paulo">São Paulo</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=venda&cidade=Rio+de+Janeiro">Rio de Janeiro</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=venda&cidade=Belo+Horizonte">Belo Horizonte</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=venda&cidade=Vit%C3%B3ria">Vitória</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=venda&cidade=Curitiba">Curitiba</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=venda&cidade=Porto+Alegre">Porto Alegre</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=venda" class="nav-dropdown__ver-todos">Ver todos os imóveis</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button type="button" class="nav-dropdown__trigger">
+          Alugar
+          <svg class="nav-dropdown__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown__panel">
+          <p class="nav-dropdown__titulo">Cidade</p>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=aluguel&cidade=S%C3%A3o+Paulo">São Paulo</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=aluguel&cidade=Rio+de+Janeiro">Rio de Janeiro</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=aluguel&cidade=Belo+Horizonte">Belo Horizonte</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=aluguel&cidade=Vit%C3%B3ria">Vitória</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=aluguel&cidade=Curitiba">Curitiba</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=aluguel&cidade=Porto+Alegre">Porto Alegre</a>
+          <a href="${pageContext.request.contextPath}/inicio?finalidade=aluguel" class="nav-dropdown__ver-todos">Ver todos os imóveis</a>
+        </div>
+      </div>
       <a href="${pageContext.request.contextPath}/inicio">Catálogo</a>
-      <a href="#diferenciais">Como funciona</a>
+      <a href="${pageContext.request.contextPath}/financiamento">Financiamento</a>
       <% if (session.getAttribute("usuarioLogado") != null) { %>
         <div class="avatar-menu">
-          <a class="avatar" href="${pageContext.request.contextPath}/perfil" title="Meu perfil" aria-label="Meu perfil">
-            <% if (((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil() != null
-                  && !((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil().isBlank()) { %>
-              <img src="${pageContext.request.contextPath}${sessionScope.usuarioLogado.fotoPerfil}" alt="">
-            <% } else { %>
-              ${sessionScope.usuarioLogado.inicial}
-            <% } %>
+          <a class="avatar-com-seta" href="${pageContext.request.contextPath}/perfil" title="Meu perfil" aria-label="Meu perfil">
+            <span class="avatar">
+              <% if (((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil() != null
+                    && !((model.Usuario) session.getAttribute("usuarioLogado")).getFotoPerfil().isBlank()) { %>
+                <img src="${pageContext.request.contextPath}${sessionScope.usuarioLogado.fotoPerfil}" alt="">
+              <% } else { %>
+                ${sessionScope.usuarioLogado.inicial}
+              <% } %>
+            </span>
+            <svg class="nav-dropdown__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
           </a>
           <div class="avatar-menu__dropdown">
             <div class="avatar-menu__dropdown-inner">
@@ -370,6 +403,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=31"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=33"></script>
 </body>
 </html>
