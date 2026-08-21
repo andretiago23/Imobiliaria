@@ -10,8 +10,8 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=44">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=44">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=45">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=45">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -27,121 +27,44 @@
   <% } %>
   <!-- ===================== HERO ===================== -->
   <section class="section hero">
+    <div class="map-grid" aria-hidden="true"></div>
     <div class="wrap hero__grid">
       <div class="hero__busca">
         <h1 class="display">O imóvel certo está <span class="hl">mais perto</span> do que você imagina.</h1>
-
-        <div class="hero__filtro-card">
-          <div class="segment hero__filtro-tabs" role="group" aria-label="Tipo de negócio">
-            <button type="button" class="is-active" data-value="venda" aria-pressed="true">Comprar</button>
-            <button type="button" data-value="aluguel" aria-pressed="false">Alugar</button>
-            <button type="button" data-value="vender" aria-pressed="false">Imóvel novo</button>
-          </div>
-          <form class="hero__filtro-form" action="${pageContext.request.contextPath}/inicio" method="get" role="search" id="formBuscaHero" autocomplete="off">
-            <input type="hidden" id="finalidade" name="finalidade" value="venda">
-
-            <label class="hero__filtro-campo" for="campoLocalizacao">
-              Cidade
-              <span class="hero__filtro-input-wrap search__field--local">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-                <input type="text" id="campoLocalizacao" name="cidade" placeholder="Busque por cidade" autocomplete="off">
-                <ul id="sugestoesLocalizacao" class="search__sugestoes" hidden></ul>
-              </span>
-            </label>
-
-            <label class="hero__filtro-campo" for="tipoImovel">
-              Tipo de imóvel
-              <span class="hero__filtro-input-wrap">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>
-                <select name="tipo" id="tipoImovel" class="hero__filtro-select hero__filtro-select--sem-borda">
-                  <option value="">Todos os imóveis</option>
-                  <option value="apartamento">Apartamento</option>
-                  <option value="casa">Casa</option>
-                  <option value="terreno">Terreno</option>
-                  <option value="comercial">Imóvel comercial</option>
-                  <option value="rural">Imóvel rural</option>
-                </select>
-              </span>
-            </label>
-
-            <div class="hero__filtro-linha">
-              <label class="hero__filtro-campo" for="precoMaximoHero">
-                Valor total até
-                <select name="precoMaximo" id="precoMaximoHero" class="hero__filtro-select">
-                  <option value="">Sem limite</option>
-                  <option value="300000">R$ 300 mil</option>
-                  <option value="500000">R$ 500 mil</option>
-                  <option value="800000">R$ 800 mil</option>
-                  <option value="1200000">R$ 1,2 milhão</option>
-                  <option value="2000000">R$ 2 milhões</option>
-                </select>
-              </label>
-              <label class="hero__filtro-campo" for="quartosMinimoHero">
-                Quartos
-                <select name="quartosMinimo" id="quartosMinimoHero" class="hero__filtro-select">
-                  <option value="">Qualquer</option>
-                  <option value="1">1+</option>
-                  <option value="2">2+</option>
-                  <option value="3">3+</option>
-                  <option value="4">4+</option>
-                </select>
-              </label>
-            </div>
-
-            <button class="btn btn--primary hero__filtro-submit" type="submit">Buscar imóveis</button>
-          </form>
-        </div>
       </div>
 
-      <div class="hero__mapa" aria-hidden="true">
-        <div class="hero__mapa-grade"></div>
+      <div class="hero__filtro-card">
+        <div class="segment hero__filtro-tabs" role="group" aria-label="Tipo de negócio">
+          <button type="button" class="is-active" data-value="venda" aria-pressed="true">Comprar</button>
+          <button type="button" data-value="aluguel" aria-pressed="false">Alugar</button>
+          <button type="button" data-value="vender" aria-pressed="false">Imóvel novo</button>
+        </div>
+        <form class="hero__filtro-form" action="${pageContext.request.contextPath}/inicio" method="get" role="search" id="formBuscaHero" autocomplete="off">
+          <input type="hidden" id="finalidade" name="finalidade" value="venda">
 
-        <svg class="hero__mapa-linha" viewBox="0 0 320 420" fill="none" preserveAspectRatio="none">
-          <path d="M20 400 L90 320 L200 350 L230 120 L300 40" stroke="url(#linhaGradiente)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 10"/>
-          <defs>
-            <linearGradient id="linhaGradiente" x1="0" y1="420" x2="320" y2="0">
-              <stop offset="0%" stop-color="#ff6a1a" stop-opacity="0"/>
-              <stop offset="50%" stop-color="#ff6a1a"/>
-              <stop offset="100%" stop-color="#ff608c"/>
-            </linearGradient>
-          </defs>
-        </svg>
+          <label class="hero__filtro-campo" for="campoLocalizacao">
+            Onde deseja morar?
+            <span class="hero__filtro-input-wrap search__field--local">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+              <input type="text" id="campoLocalizacao" name="cidade" placeholder="Busque rua, bairro ou cidade" autocomplete="off">
+              <ul id="sugestoesLocalizacao" class="search__sugestoes" hidden></ul>
+            </span>
+          </label>
 
-        <span class="hero__mapa-pin hero__mapa-pin--1">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>
-        </span>
-        <span class="hero__mapa-pin hero__mapa-pin--2">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/></svg>
-        </span>
-        <span class="hero__mapa-ponto hero__mapa-ponto--1"></span>
-        <span class="hero__mapa-ponto hero__mapa-ponto--2"></span>
-        <span class="hero__mapa-ponto hero__mapa-ponto--3"></span>
+          <label class="hero__filtro-campo" for="tipoImovel">
+            Tipo de imóvel
+            <select name="tipo" id="tipoImovel" class="hero__filtro-select">
+              <option value="">Todos os imóveis</option>
+              <option value="apartamento">Apartamento</option>
+              <option value="casa">Casa</option>
+              <option value="terreno">Terreno</option>
+              <option value="comercial">Imóvel comercial</option>
+              <option value="rural">Imóvel rural</option>
+            </select>
+          </label>
 
-        <a class="hero__mapa-cartao hero__mapa-cartao--1" href="${pageContext.request.contextPath}/inicio">
-          <img src="https://images.pexels.com/photos/18078684/pexels-photo-18078684.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy">
-          <div class="hero__mapa-cartao-corpo">
-            <p class="hero__mapa-cartao-preco">R$ 890.000</p>
-            <p class="hero__mapa-cartao-titulo">Casa em condomínio fechado</p>
-            <div class="hero__mapa-cartao-specs">
-              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18h18"/><path d="M5 10V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/></svg> 4</span>
-              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3"/></svg> 2</span>
-              <span>320 m²</span>
-            </div>
-          </div>
-        </a>
-
-        <a class="hero__mapa-cartao hero__mapa-cartao--2" href="${pageContext.request.contextPath}/inicio">
-          <img src="https://images.pexels.com/photos/19239905/pexels-photo-19239905.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy">
-          <div class="hero__mapa-cartao-corpo">
-            <p class="hero__mapa-cartao-preco">R$ 2.700,00</p>
-            <p class="hero__mapa-cartao-titulo">Apartamento próximo ao metrô</p>
-            <div class="hero__mapa-cartao-specs">
-              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18h18"/><path d="M5 10V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/></svg> 2</span>
-              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3"/></svg> 1</span>
-              <span>65 m²</span>
-            </div>
-          </div>
-        </a>
+          <button class="btn btn--primary hero__filtro-submit" type="submit">Buscar</button>
+        </form>
       </div>
     </div>
   </section>
@@ -383,6 +306,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=44"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=45"></script>
 </body>
 </html>
