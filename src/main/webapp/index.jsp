@@ -10,8 +10,8 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=47">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=47">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=48">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=48">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -38,7 +38,7 @@
           <a href="${pageContext.request.contextPath}/anunciar">Anunciar imóvel</a>
         </div>
 
-        <h1 class="display hero__cartao-titulo">Encontre um lugar<br>para chamar de seu</h1>
+        <h1 class="display hero__cartao-titulo">Encontre um lugar para chamar de seu</h1>
 
         <div class="segment hero__filtro-tabs" role="group" aria-label="Tipo de negócio">
           <button type="button" class="is-active" data-value="aluguel" aria-pressed="true">Alugar</button>
@@ -332,6 +332,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=47"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=48"></script>
 </body>
 </html>

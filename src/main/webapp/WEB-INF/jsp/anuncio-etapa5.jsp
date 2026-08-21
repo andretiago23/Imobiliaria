@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Confirme seu anúncio | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=47">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=47">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=47">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=47">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=48">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=48">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=48">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=48">
 </head>
 <body>
 
