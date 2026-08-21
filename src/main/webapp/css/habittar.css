@@ -190,14 +190,14 @@ input[type="number"]::-webkit-inner-spin-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border-radius: var(--radius-full);
   background: var(--accent-primary);
   color: #fff;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 15px;
   overflow: hidden;
   flex: 0 0 auto;
   border: 2px solid transparent;
@@ -591,15 +591,15 @@ input[type="number"]::-webkit-inner-spin-button {
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 20px;
+  font-size: 24px;
   letter-spacing: -0.02em;
 }
 
 .logo img {
-  height: 30px;
+  height: 38px;
   width: auto;
   display: block;
 }
@@ -608,13 +608,24 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 28px;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text-secondary);
+  gap: 32px;
+  font-size: 16px;
+  font-weight: 600;
+  /* Item "aumente os elementos da navbar": texto mais escuro
+     (--text-primary em vez de --text-secondary) pra destacar mais do
+     que o cinza mais claro de antes. */
+  color: var(--text-primary);
 }
 .nav__links a:hover {
-  color: var(--text-primary);
+  color: var(--accent-primary);
+}
+
+/* Botões "Entrar"/"Anunciar imóvel" um pouco maiores que o --btn--sm
+   padrão usado no resto do site, só dentro da navbar. */
+.nav__links .btn {
+  height: 50px;
+  padding: 0 26px;
+  font-size: 15px;
 }
 
 @media (max-width: 860px) {
