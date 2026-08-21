@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>O que anunciar | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=51">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=51">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=51">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=51">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=52">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=52">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=52">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=52">
 </head>
 <body>
 
@@ -240,8 +240,8 @@
   </form>
 </main>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=51"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=51"></script>
-<script src="${pageContext.request.contextPath}/js/anuncio-wizard.js?v=51"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=52"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=52"></script>
+<script src="${pageContext.request.contextPath}/js/anuncio-wizard.js?v=52"></script>
 </body>
 </html>

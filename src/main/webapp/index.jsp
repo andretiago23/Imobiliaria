@@ -10,8 +10,8 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=51">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=51">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=52">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=52">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -60,9 +60,10 @@
 
           <label class="hero__filtro-campo" for="campoBairro">
             Bairro
-            <span class="hero__filtro-input-wrap">
+            <span class="hero__filtro-input-wrap search__field--local">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9.5 21v-6h5v6"/></svg>
               <input type="text" id="campoBairro" name="bairro" placeholder="Busque por bairro" autocomplete="off">
+              <ul id="sugestoesBairro" class="search__sugestoes" hidden></ul>
             </span>
           </label>
 
@@ -333,6 +334,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=51"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=52"></script>
 </body>
 </html>

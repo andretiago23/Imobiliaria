@@ -223,11 +223,92 @@
       mostrarSugestoesParaTermo(campoLocalizacao.value);
     });
 
+    var campoLocalizacaoWrap = campoLocalizacao.closest(".hero__filtro-input-wrap");
     document.addEventListener("click", function (e) {
-      if (!e.target.closest(".search__field--local")) fecharSugestoes();
+      if (campoLocalizacaoWrap && !campoLocalizacaoWrap.contains(e.target)) fecharSugestoes();
     });
     campoLocalizacao.addEventListener("keydown", function (e) {
       if (e.key === "Escape") fecharSugestoes();
+    });
+  }
+
+  /* Autocomplete de bairro na busca da landing. Diferente da cidade, não
+     existe uma API pública com a lista fechada de bairros do Brasil —
+     usa o Nominatim (OpenStreetMap), com o nome do estado embutido na
+     busca pra priorizar resultados de Rondônia, e filtra na resposta
+     só os que realmente caíram lá (bairro/distrito/subúrbio). */
+  var campoBairro = document.getElementById("campoBairro");
+  var listaSugestoesBairro = document.getElementById("sugestoesBairro");
+  if (campoBairro && listaSugestoesBairro) {
+    var timeoutBuscaBairro = null;
+    var controladorBairroAtual = null;
+
+    var fecharSugestoesBairro = function () {
+      listaSugestoesBairro.hidden = true;
+      listaSugestoesBairro.innerHTML = "";
+    };
+
+    var buscarBairros = function (termo) {
+      if (controladorBairroAtual) controladorBairroAtual.abort();
+      controladorBairroAtual = new AbortController();
+
+      var url = "https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8"
+        + "&countrycodes=br&accept-language=pt-BR&q=" + encodeURIComponent(termo + ", Rondônia");
+
+      fetch(url, { signal: controladorBairroAtual.signal, headers: { "Accept": "application/json" } })
+        .then(function (resposta) { return resposta.ok ? resposta.json() : []; })
+        .then(function (resultados) {
+          listaSugestoesBairro.innerHTML = "";
+          var vistos = {};
+          (resultados || []).forEach(function (item) {
+            var endereco = item.address || {};
+            // Só interessa resultado que caiu mesmo dentro de Rondônia —
+            // o Nominatim às vezes devolve algo de outro estado só por
+            // coincidência de nome.
+            if (endereco.state !== "Rondônia") return;
+
+            var bairro = endereco.suburb || endereco.neighbourhood || endereco.city_district;
+            if (!bairro) return;
+            var cidade = endereco.city || endereco.town || endereco.municipality || "";
+
+            var chave = bairro + "|" + cidade;
+            if (vistos[chave]) return;
+            vistos[chave] = true;
+
+            var li = document.createElement("li");
+            li.innerHTML = "<span>" + bairro + "</span>"
+              + (cidade ? "<span class=\"micro\">" + cidade + " — RO</span>" : "");
+            li.addEventListener("click", function () {
+              campoBairro.value = bairro;
+              fecharSugestoesBairro();
+              campoBairro.focus();
+            });
+            listaSugestoesBairro.appendChild(li);
+          });
+          listaSugestoesBairro.hidden = listaSugestoesBairro.children.length === 0;
+        })
+        .catch(function () {
+          // Falha de rede ou requisição cancelada: a busca continua
+          // funcionando por texto livre, só sem sugestões.
+        });
+    };
+
+    campoBairro.addEventListener("input", function () {
+      var termo = campoBairro.value.trim();
+      window.clearTimeout(timeoutBuscaBairro);
+      if (termo.length < 3) {
+        fecharSugestoesBairro();
+        return;
+      }
+      timeoutBuscaBairro = window.setTimeout(function () { buscarBairros(termo); }, 350);
+    });
+
+    var campoBairroWrap = campoBairro.closest(".hero__filtro-input-wrap");
+    document.addEventListener("click", function (e) {
+      if (campoBairroWrap && !campoBairroWrap.contains(e.target)) fecharSugestoesBairro();
+    });
+    campoBairro.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") fecharSugestoesBairro();
     });
   }
 })();
