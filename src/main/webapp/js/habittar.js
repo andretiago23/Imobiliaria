@@ -143,76 +143,84 @@
     hero.classList.add("pin-drop");
   });
 
-  /* Autocomplete de rua/bairro/cidade na busca da landing, via Nominatim
-     (OpenStreetMap) — API pública, sem chave. Restrito ao Brasil e com
-     debounce pra não disparar uma requisição a cada tecla. */
+  /* Autocomplete de cidade na busca da landing, restrito aos municípios de
+     Rondônia (o estado onde a Habittar atua) — lista vinda da API pública
+     do IBGE (dados oficiais, sem chave). Busca só uma vez e guarda em
+     memória: como são só 52 municípios, filtrar localmente a cada tecla
+     é instantâneo e não depende de rede depois do primeiro carregamento. */
   var campoLocalizacao = document.getElementById("campoLocalizacao");
   var listaSugestoes = document.getElementById("sugestoesLocalizacao");
   if (campoLocalizacao && listaSugestoes) {
-    var timeoutBusca = null;
-    var controladorAtual = null;
+    var municipiosRO = null;
+    var carregandoMunicipios = null;
+
+    var normalizarTexto = function (texto) {
+      return texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "");
+    };
+
+    var carregarMunicipiosRO = function () {
+      if (municipiosRO) return Promise.resolve(municipiosRO);
+      if (carregandoMunicipios) return carregandoMunicipios;
+
+      carregandoMunicipios = fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados/RO/municipios")
+        .then(function (resposta) { return resposta.ok ? resposta.json() : []; })
+        .then(function (lista) {
+          municipiosRO = (lista || [])
+            .map(function (municipio) { return municipio.nome; })
+            .sort(function (a, b) { return a.localeCompare(b, "pt-BR"); });
+          return municipiosRO;
+        })
+        .catch(function () {
+          // Sem internet ou API do IBGE fora do ar: a busca continua
+          // funcionando por texto livre, só sem sugestões.
+          municipiosRO = [];
+          return municipiosRO;
+        });
+      return carregandoMunicipios;
+    };
 
     var fecharSugestoes = function () {
       listaSugestoes.hidden = true;
       listaSugestoes.innerHTML = "";
     };
 
-    var buscarSugestoes = function (termo) {
-      if (controladorAtual) controladorAtual.abort();
-      controladorAtual = new AbortController();
-
-      var url = "https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6"
-        + "&countrycodes=br&accept-language=pt-BR&q=" + encodeURIComponent(termo);
-
-      fetch(url, { signal: controladorAtual.signal, headers: { "Accept": "application/json" } })
-        .then(function (resposta) { return resposta.ok ? resposta.json() : []; })
-        .then(function (resultados) {
-          listaSugestoes.innerHTML = "";
-          if (!resultados || !resultados.length) {
-            fecharSugestoes();
-            return;
-          }
-          // Nominatim costuma devolver o mesmo logradouro várias vezes (um
-          // ponto por trecho da rua) — mantém só a primeira ocorrência de
-          // cada combinação rua+cidade pra não repetir sugestão idêntica.
-          var vistos = {};
-          resultados.forEach(function (item) {
-            var endereco = item.address || {};
-            var principal = endereco.road || endereco.suburb || endereco.city
-              || endereco.town || endereco.village || item.display_name.split(",")[0];
-            var cidade = endereco.city || endereco.town || endereco.village || endereco.municipality || "";
-            var estado = endereco.state || "";
-
-            var chave = principal + "|" + cidade;
-            if (vistos[chave]) return;
-            vistos[chave] = true;
-
-            var li = document.createElement("li");
-            li.innerHTML = "<span>" + principal + "</span>"
-              + (cidade ? "<span class=\"micro\">" + cidade + (estado ? " — " + estado : "") + "</span>" : "");
-            li.addEventListener("click", function () {
-              campoLocalizacao.value = cidade ? (principal + ", " + cidade) : principal;
-              fecharSugestoes();
-              campoLocalizacao.focus();
-            });
-            listaSugestoes.appendChild(li);
-          });
-          listaSugestoes.hidden = false;
-        })
-        .catch(function () {
-          // Falha de rede ou requisição cancelada (nova busca no meio): a
-          // busca continua funcionando por texto livre, sem autocomplete.
-        });
-    };
-
-    campoLocalizacao.addEventListener("input", function () {
-      var termo = campoLocalizacao.value.trim();
-      window.clearTimeout(timeoutBusca);
-      if (termo.length < 3) {
+    var renderizarSugestoes = function (cidades) {
+      listaSugestoes.innerHTML = "";
+      if (!cidades.length) {
         fecharSugestoes();
         return;
       }
-      timeoutBusca = window.setTimeout(function () { buscarSugestoes(termo); }, 350);
+      cidades.slice(0, 8).forEach(function (nome) {
+        var li = document.createElement("li");
+        li.innerHTML = "<span>" + nome + "</span><span class=\"micro\">Rondônia — RO</span>";
+        li.addEventListener("click", function () {
+          campoLocalizacao.value = nome;
+          fecharSugestoes();
+          campoLocalizacao.focus();
+        });
+        listaSugestoes.appendChild(li);
+      });
+      listaSugestoes.hidden = false;
+    };
+
+    var mostrarSugestoesParaTermo = function (termoDigitado) {
+      carregarMunicipiosRO().then(function (cidades) {
+        var termo = normalizarTexto(termoDigitado.trim());
+        var filtradas = !termo
+          ? cidades
+          : cidades.filter(function (cidade) { return normalizarTexto(cidade).indexOf(termo) !== -1; });
+        renderizarSugestoes(filtradas);
+      });
+    };
+
+    campoLocalizacao.addEventListener("focus", function () {
+      mostrarSugestoesParaTermo(campoLocalizacao.value);
+    });
+    campoLocalizacao.addEventListener("input", function () {
+      mostrarSugestoesParaTermo(campoLocalizacao.value);
     });
 
     document.addEventListener("click", function (e) {
