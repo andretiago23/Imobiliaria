@@ -7,9 +7,12 @@
   "Catálogo"/"Financiamento", e à direita o avatar (com "Meus Imóveis"
   condicional no dropdown, item 3.2/5.5) ou o botão "Entrar".
 
-  Parâmetro opcional de página: defina a variável de escopo de página
+  Parâmetro opcional de página: defina o atributo de escopo de REQUISIÇÃO
   "navFixa" como true antes do include para começar já com o fundo
-  sólido (páginas internas, sem hero transparente por trás).
+  sólido (páginas internas, sem hero transparente por trás). Precisa ser
+  escopo de requisição, não de página — um <jsp:include> roda a página
+  incluída com seu próprio PageContext, então um atributo de escopo de
+  página do include-r nunca apareceria aqui.
 --%>
 <%
   Usuario usuarioLogadoNav = (Usuario) session.getAttribute("usuarioLogado");
@@ -21,10 +24,10 @@
       // Falha ao consultar: não impede a navegação, só esconde o item.
     }
   }
-  Object navFixaAttr = pageContext.getAttribute("navFixa");
+  Object navFixaAttr = request.getAttribute("navFixa");
   boolean navFixa = navFixaAttr != null && (Boolean) navFixaAttr;
 %>
-<header class="nav<%= navFixa ? " is-scrolled" : "" %>">
+<header class="nav<%= navFixa ? " is-scrolled" : "" %>"<%= navFixa ? " data-fixa=\"true\"" : "" %>>
   <div class="nav__inner">
     <a class="logo" href="${pageContext.request.contextPath}/index.jsp" aria-label="Habittar — início">
       <img src="${pageContext.request.contextPath}/imagens/logo-habittar.png" alt="Habittar">

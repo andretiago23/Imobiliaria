@@ -10,11 +10,12 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=48">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=48">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=50">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=50">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
+<% request.setAttribute("navFixa", true); %>
 <jsp:include page="/WEB-INF/jsp/fragmentos/navbar.jsp" />
 
 <main id="top">
@@ -31,7 +32,7 @@
       <img src="${pageContext.request.contextPath}/imagens/familiaHeroSection.jpg" alt="" loading="lazy">
     </div>
 
-    <div class="wrap hero__wrap">
+    <div class="hero__wrap">
       <div class="hero__filtro-card">
         <div class="hero__cartao-pill" role="group" aria-label="O que você quer fazer">
           <span class="is-active">Buscar imóveis</span>
@@ -332,6 +333,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=48"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=50"></script>
 </body>
 </html>

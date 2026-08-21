@@ -648,8 +648,8 @@ input[type="number"]::-webkit-inner-spin-button {
    -------------------------------------------------------------------------- */
 .hero {
   position: relative;
-  padding-top: var(--nav-h);
-  min-height: 100vh;
+  padding-top: calc(var(--nav-h) + 40px);
+  padding-bottom: 40px;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -657,17 +657,21 @@ input[type="number"]::-webkit-inner-spin-button {
 
 @media (max-width: 860px) {
   .hero {
-    min-height: auto;
     padding-top: calc(var(--nav-h) + 40px);
     padding-bottom: 60px;
   }
 }
 
-/* Foto de fundo em tela cheia — o cartão de filtro flutua por cima dela,
-   colado à esquerda (ver .hero__filtro-card). */
+/* Foto de fundo — começa ABAIXO da navbar (que agora tem fundo sólido e
+   fica fora da foto, não flutuando por cima dela) e acompanha a altura
+   real do cartão de filtro, não a tela inteira. O cartão flutua por
+   cima dela, colado à esquerda (ver .hero__filtro-card). */
 .hero__foto {
   position: absolute;
-  inset: 0;
+  top: var(--nav-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 0;
 }
 .hero__foto img {
@@ -681,6 +685,14 @@ input[type="number"]::-webkit-inner-spin-button {
   position: relative;
   z-index: 1;
   width: 100%;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .hero__wrap {
+    padding: 0 20px;
+  }
 }
 
 
@@ -935,8 +947,8 @@ input[type="number"]::-webkit-inner-spin-button {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg, 24px);
   box-shadow: var(--shadow-card-hover, var(--shadow-card));
-  padding: 32px;
-  max-width: 420px;
+  padding: 40px;
+  max-width: 500px;
 }
 
 /* Pílula "Buscar imóveis" / "Anunciar imóvel" no topo do cartão */
@@ -972,9 +984,9 @@ input[type="number"]::-webkit-inner-spin-button {
    um título desse tamanho quebra em 4 linhas e estoura a altura do
    cartão bem além do que a referência mostra. */
 h1.hero__cartao-titulo {
-  font-size: clamp(26px, 2.4vw, 34px);
+  font-size: clamp(28px, 2.6vw, 40px);
   max-width: none;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .hero__filtro-tabs {

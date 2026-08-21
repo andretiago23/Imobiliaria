@@ -12,7 +12,12 @@
     ticking = true;
     window.requestAnimationFrame(function () {
       var y = window.pageYOffset || document.documentElement.scrollTop;
-      if (nav) nav.classList.toggle("is-scrolled", y > 40);
+      /* Páginas com navFixa (fundo sólido já renderizado pelo servidor,
+         data-fixa="true") não devem ter a classe removida quando a
+         página carrega no topo — antes esse toggle incondicional
+         desfazia o fundo sólido de todas as páginas internas assim que
+         o JS rodava, mesmo com scroll 0. */
+      if (nav && nav.dataset.fixa !== "true") nav.classList.toggle("is-scrolled", y > 40);
       /* Parallax sutil do grid cartográfico (máx. 8px) */
       var offset = Math.min(8, y * 0.02);
       for (var i = 0; i < grids.length; i++) {

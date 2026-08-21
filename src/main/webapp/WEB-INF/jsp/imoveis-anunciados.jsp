@@ -6,14 +6,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Imóveis anunciados | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=48">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=48">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=48">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=48">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=50">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=50">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=50">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=50">
 </head>
 <body>
 
-<% pageContext.setAttribute("navFixa", true); %>
+<% request.setAttribute("navFixa", true); %>
 <jsp:include page="/WEB-INF/jsp/fragmentos/navbar.jsp" />
 
 <main class="app-main" style="max-width:960px;">
