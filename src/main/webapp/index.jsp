@@ -29,7 +29,7 @@
   <!-- ===================== HERO ===================== -->
   <section class="section hero">
     <div class="hero__foto">
-      <img src="${pageContext.request.contextPath}/imagens/familiaHeroSection.jpg" alt="" loading="lazy">
+      <img src="${pageContext.request.contextPath}/imagens/familiaHeroSection.jpg?v=2" alt="" loading="lazy">
     </div>
 
     <div class="hero__wrap">
