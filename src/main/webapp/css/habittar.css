@@ -631,9 +631,30 @@ input[type="number"]::-webkit-inner-spin-button {
   min-height: 100vh;
   display: flex;
   align-items: center;
+  overflow: hidden;
 }
 .hero .wrap {
   width: 100%;
+}
+
+/* Vídeo de fundo em loop, com um gradiente por cima pra manter o texto
+   legível e costurar uma transição suave até a seção seguinte (sólida,
+   --surface-page) — sem esse degradê o corte do vídeo ficaria abrupto. */
+.hero__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(90deg, rgba(250, 247, 242, 0.92) 0%, rgba(250, 247, 242, 0.55) 45%, rgba(250, 247, 242, 0.3) 100%),
+    linear-gradient(180deg, rgba(250, 247, 242, 0.25) 0%, rgba(250, 247, 242, 0.25) 65%, var(--surface-page) 100%);
 }
 
 @media (max-width: 860px) {

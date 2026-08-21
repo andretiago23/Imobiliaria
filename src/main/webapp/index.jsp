@@ -27,7 +27,10 @@
   <% } %>
   <!-- ===================== HERO ===================== -->
   <section class="section hero">
-    <div class="map-grid" aria-hidden="true"></div>
+    <video class="hero__video" autoplay muted loop playsinline aria-hidden="true">
+      <source src="${pageContext.request.contextPath}/imagens/video%20hero-section.mp4" type="video/mp4">
+    </video>
+    <div class="hero__overlay" aria-hidden="true"></div>
     <div class="wrap hero__grid">
       <div class="hero__busca">
         <h1 class="display">O imóvel certo está <span class="hl">mais perto</span> do que você imagina.</h1>
