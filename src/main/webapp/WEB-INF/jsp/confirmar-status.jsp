@@ -5,9 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Confirmação de status | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=41">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=41">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=41">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=42">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=42">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=42">
 </head>
 <body>
 

@@ -6,9 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catálogo | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=41">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=41">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=41">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=42">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=42">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=42">
 </head>
 <body>
 
@@ -298,6 +298,6 @@
   <span class="micro">© 2026 Habittar. Todos os direitos reservados.</span>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/catalogo.js?v=41"></script>
+<script src="${pageContext.request.contextPath}/js/catalogo.js?v=42"></script>
 </body>
 </html>
