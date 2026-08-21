@@ -5,9 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Financiamento | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=46">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=46">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=46">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=47">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=47">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=47">
 </head>
 <body>
 

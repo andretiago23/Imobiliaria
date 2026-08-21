@@ -6,9 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catálogo | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=46">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=46">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=46">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=47">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=47">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=47">
 </head>
 <body>
 
@@ -161,6 +161,7 @@
       <%
         java.util.Map<String, String> rotulosFiltro = new java.util.LinkedHashMap<>();
         rotulosFiltro.put("cidade", "Cidade: ");
+        rotulosFiltro.put("bairro", "Bairro: ");
         rotulosFiltro.put("estado", "Estado: ");
         rotulosFiltro.put("finalidade", "Negócio: ");
         rotulosFiltro.put("tipo", "Tipo: ");
@@ -298,6 +299,6 @@
   <span class="micro">© 2026 Habittar. Todos os direitos reservados.</span>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/catalogo.js?v=46"></script>
+<script src="${pageContext.request.contextPath}/js/catalogo.js?v=47"></script>
 </body>
 </html>

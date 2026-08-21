@@ -82,6 +82,7 @@ public class InicioServlet extends HttpServlet {
 	private FiltroImovel montarFiltro(HttpServletRequest requisicao) {
 		FiltroImovel filtro = new FiltroImovel();
 		filtro.setCidade(paramTexto(requisicao, "cidade"));
+		filtro.setBairro(paramTexto(requisicao, "bairro"));
 		filtro.setEstado(paramTexto(requisicao, "estado"));
 		filtro.setTipo(paramEnum(TipoImovel.class, requisicao, "tipo"));
 		filtro.setFinalidade(paramEnum(Finalidade.class, requisicao, "finalidade"));
@@ -95,7 +96,7 @@ public class InicioServlet extends HttpServlet {
 	}
 
 	private boolean filtroVazio(FiltroImovel filtro) {
-		return filtro.getCidade() == null && filtro.getEstado() == null && filtro.getTipo() == null
+		return filtro.getCidade() == null && filtro.getBairro() == null && filtro.getEstado() == null && filtro.getTipo() == null
 				&& filtro.getFinalidade() == null && filtro.getPrecoMinimo() == null
 				&& filtro.getPrecoMaximo() == null && filtro.getQuartosMinimo() == null
 				&& filtro.getBanheirosMinimo() == null && filtro.getVagasMinimo() == null

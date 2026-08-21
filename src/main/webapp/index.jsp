@@ -10,8 +10,8 @@
   <meta property="og:description" content="Seu bairro, seu tipo de negocio, um clique. Catalogo completo da Habittar com busca por localizacao real.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=46">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=46">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=47">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=47">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -27,43 +27,69 @@
   <% } %>
   <!-- ===================== HERO ===================== -->
   <section class="section hero">
-    <div class="map-grid" aria-hidden="true"></div>
-    <div class="wrap hero__grid">
-      <div class="hero__busca">
-        <h1 class="display">O imóvel certo está <span class="hl">mais perto</span> do que você imagina.</h1>
-      </div>
+    <div class="hero__foto">
+      <img src="${pageContext.request.contextPath}/imagens/familiaHeroSection.jpg" alt="" loading="lazy">
+    </div>
 
+    <div class="wrap hero__wrap">
       <div class="hero__filtro-card">
-        <div class="segment hero__filtro-tabs" role="group" aria-label="Tipo de negócio">
-          <button type="button" class="is-active" data-value="venda" aria-pressed="true">Comprar</button>
-          <button type="button" data-value="aluguel" aria-pressed="false">Alugar</button>
-          <button type="button" data-value="vender" aria-pressed="false">Imóvel novo</button>
+        <div class="hero__cartao-pill" role="group" aria-label="O que você quer fazer">
+          <span class="is-active">Buscar imóveis</span>
+          <a href="${pageContext.request.contextPath}/anunciar">Anunciar imóvel</a>
         </div>
+
+        <h1 class="display hero__cartao-titulo">Encontre um lugar<br>para chamar de seu</h1>
+
+        <div class="segment hero__filtro-tabs" role="group" aria-label="Tipo de negócio">
+          <button type="button" class="is-active" data-value="aluguel" aria-pressed="true">Alugar</button>
+          <button type="button" data-value="venda" aria-pressed="false">Comprar</button>
+        </div>
+
         <form class="hero__filtro-form" action="${pageContext.request.contextPath}/inicio" method="get" role="search" id="formBuscaHero" autocomplete="off">
-          <input type="hidden" id="finalidade" name="finalidade" value="venda">
+          <input type="hidden" id="finalidade" name="finalidade" value="aluguel">
 
           <label class="hero__filtro-campo" for="campoLocalizacao">
-            Onde deseja morar?
+            Cidade
             <span class="hero__filtro-input-wrap search__field--local">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-              <input type="text" id="campoLocalizacao" name="cidade" placeholder="Busque rua, bairro ou cidade" autocomplete="off">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              <input type="text" id="campoLocalizacao" name="cidade" placeholder="Busque por cidade" autocomplete="off">
               <ul id="sugestoesLocalizacao" class="search__sugestoes" hidden></ul>
             </span>
           </label>
 
-          <label class="hero__filtro-campo" for="tipoImovel">
-            Tipo de imóvel
-            <select name="tipo" id="tipoImovel" class="hero__filtro-select">
-              <option value="">Todos os imóveis</option>
-              <option value="apartamento">Apartamento</option>
-              <option value="casa">Casa</option>
-              <option value="terreno">Terreno</option>
-              <option value="comercial">Imóvel comercial</option>
-              <option value="rural">Imóvel rural</option>
-            </select>
+          <label class="hero__filtro-campo" for="campoBairro">
+            Bairro
+            <span class="hero__filtro-input-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9.5 21v-6h5v6"/></svg>
+              <input type="text" id="campoBairro" name="bairro" placeholder="Busque por bairro" autocomplete="off">
+            </span>
           </label>
 
-          <button class="btn btn--primary hero__filtro-submit" type="submit">Buscar</button>
+          <div class="hero__filtro-linha">
+            <label class="hero__filtro-campo" for="precoMaximoHero">
+              Valor total até
+              <select name="precoMaximo" id="precoMaximoHero" class="hero__filtro-select">
+                <option value="">Escolha o valor</option>
+                <option value="300000">R$ 300 mil</option>
+                <option value="500000">R$ 500 mil</option>
+                <option value="800000">R$ 800 mil</option>
+                <option value="1200000">R$ 1,2 milhão</option>
+                <option value="2000000">R$ 2 milhões</option>
+              </select>
+            </label>
+            <label class="hero__filtro-campo" for="quartosMinimoHero">
+              Quartos
+              <select name="quartosMinimo" id="quartosMinimoHero" class="hero__filtro-select">
+                <option value="">Nº de quartos</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+              </select>
+            </label>
+          </div>
+
+          <button class="btn btn--primary hero__filtro-submit" type="submit">Buscar imóveis</button>
         </form>
       </div>
     </div>
@@ -306,6 +332,6 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=46"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=47"></script>
 </body>
 </html>

@@ -124,10 +124,6 @@ h3.display {
 
 .hl {
   color: var(--accent-primary);
-  background: linear-gradient(135deg, var(--accent-primary) 0%, #ff608c 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 /* Remove as setinhas nativas de incremento/decremento dos campos numéricos
@@ -406,12 +402,12 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .btn--primary {
-  background: linear-gradient(135deg, var(--accent-primary) 0%, #ff608c 100%);
+  background: var(--accent-primary);
   color: var(--text-inverse);
   box-shadow: var(--shadow-card);
 }
 .btn--primary:hover {
-  background: linear-gradient(135deg, var(--accent-primary-hover) 0%, #ff608c 100%);
+  background: var(--accent-primary-hover);
 }
 .btn--primary:hover .btn__pin {
   transform: translateY(2px);
@@ -651,55 +647,42 @@ input[type="number"]::-webkit-inner-spin-button {
    Hero
    -------------------------------------------------------------------------- */
 .hero {
+  position: relative;
   padding-top: var(--nav-h);
   min-height: 100vh;
   display: flex;
   align-items: center;
   overflow: hidden;
 }
-.hero .wrap {
-  width: 100%;
-}
 
 @media (max-width: 860px) {
   .hero {
     min-height: auto;
     padding-top: calc(var(--nav-h) + 40px);
-    padding-bottom: 40px;
+    padding-bottom: 60px;
   }
 }
 
-.hero__grid {
-  display: grid;
-  /* 7fr/5fr em vez de 6fr/6fr: a coluna de texto precisa de mais espaço
-     que a do card de filtro — com .wrap limitado a 1120px, 6fr/6fr
-     deixava essa coluna espremida demais. */
-  grid-template-columns: 7fr 5fr;
-  gap: 56px;
-  align-items: center;
+/* Foto de fundo em tela cheia — o cartão de filtro flutua por cima dela,
+   colado à esquerda (ver .hero__filtro-card). */
+.hero__foto {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero__foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-@media (max-width: 1024px) {
-  .hero__grid {
-    grid-template-columns: 68fr 32fr;
-    gap: 24px;
-  }
-}
-@media (max-width: 860px) {
-  .hero__grid {
-    grid-template-columns: 1fr;
-  }
+.hero__wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
 }
 
-/* Busca — a coluna do hero onde ela mora vira um container query context:
-   a barra reage à largura REAL da coluna (que na maioria das telas é bem
-   menor que a tela inteira, por causa do grid de duas colunas do hero),
-   não à largura da janela. É isso que garante nunca ter linha de texto
-   cortada nem um jeito de "quase cabe, quase não cabe" que uma media
-   query comum (baseada em viewport) não consegue prever. */
-.hero__busca {
-  container-type: inline-size;
-}
 
 .search {
   margin-top: 16px;
@@ -941,12 +924,51 @@ input[type="number"]::-webkit-inner-spin-button {
    com abas Comprar/Alugar/Imóvel novo e os campos empilhados (localização,
    tipo, botão Buscar largura cheia).
    -------------------------------------------------------------------------- */
+/* O cartão de filtro vira um container query context: os campos reagem
+   à largura REAL do cartão (bem mais estreito que a tela inteira, já que
+   ele flutua sobre a foto de fundo), não à largura da janela. */
 .hero__filtro-card {
+  container-type: inline-size;
+  position: relative;
+  z-index: 1;
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg, 24px);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card-hover, var(--shadow-card));
   padding: 40px;
+  max-width: 460px;
+}
+
+/* Pílula "Buscar imóveis" / "Anunciar imóvel" no topo do cartão */
+.hero__cartao-pill {
+  display: inline-flex;
+  background: var(--surface-page);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  margin-bottom: 28px;
+  gap: 4px;
+}
+.hero__cartao-pill span,
+.hero__cartao-pill a {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.hero__cartao-pill span.is-active {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-card);
+}
+.hero__cartao-pill a:hover {
+  color: var(--text-primary);
+}
+
+.hero__cartao-titulo {
+  margin-bottom: 28px;
 }
 
 .hero__filtro-tabs {
@@ -1009,6 +1031,18 @@ input[type="number"]::-webkit-inner-spin-button {
   color: var(--text-secondary);
 }
 
+/* Linha "Valor total até" + "Quartos" lado a lado */
+.hero__filtro-linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@container (max-width: 320px) {
+  .hero__filtro-linha {
+    grid-template-columns: 1fr;
+  }
+}
+
 .hero__filtro-select {
   appearance: none;
   -webkit-appearance: none;
@@ -1034,7 +1068,8 @@ input[type="number"]::-webkit-inner-spin-button {
 
 @media (max-width: 860px) {
   .hero__filtro-card {
-    margin-top: 32px;
+    max-width: none;
+    padding: 28px;
   }
 }
 

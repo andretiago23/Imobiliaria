@@ -182,6 +182,13 @@ public class ImovelDAO {
 			sql.append(" AND i.cidade LIKE ?");
 			parametros.add("%" + filtro.getCidade().trim() + "%");
 		}
+		if (textoPreenchido(filtro.getBairro())) {
+			// Não existe coluna de bairro própria — o bairro fica embutido no
+			// texto de endereco (ver AnuncioWizardServlet.processarEtapa5), daí
+			// o LIKE contra essa coluna em vez de uma comparação exata.
+			sql.append(" AND i.endereco LIKE ?");
+			parametros.add("%" + filtro.getBairro().trim() + "%");
+		}
 		if (textoPreenchido(filtro.getEstado())) {
 			sql.append(" AND i.estado = ?");
 			parametros.add(filtro.getEstado().trim());
