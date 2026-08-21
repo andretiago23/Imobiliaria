@@ -124,6 +124,10 @@ h3.display {
 
 .hl {
   color: var(--accent-primary);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #ff608c 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Remove as setinhas nativas de incremento/decremento dos campos numéricos
@@ -402,12 +406,12 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .btn--primary {
-  background: var(--accent-primary);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #ff608c 100%);
   color: var(--text-inverse);
   box-shadow: var(--shadow-card);
 }
 .btn--primary:hover {
-  background: var(--accent-primary-hover);
+  background: linear-gradient(135deg, var(--accent-primary-hover) 0%, #ff608c 100%);
 }
 .btn--primary:hover .btn__pin {
   transform: translateY(2px);
