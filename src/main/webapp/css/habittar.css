@@ -934,6 +934,101 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 /* --------------------------------------------------------------------------
+   Card de filtro no lugar da foto da hero — mesma área que a foto ocupava,
+   com abas Comprar/Alugar/Imóvel novo e os campos empilhados (localização,
+   tipo, botão Buscar largura cheia).
+   -------------------------------------------------------------------------- */
+.hero__filtro-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg, 24px);
+  box-shadow: var(--shadow-card);
+  padding: 28px;
+}
+
+.hero__filtro-tabs {
+  margin-bottom: 24px;
+}
+
+.hero__filtro-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.hero__filtro-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.hero__filtro-input-wrap {
+  /* Sobrescreve o flex-basis/min-width de .search__field--local (pensados
+     pra a barra de busca horizontal da página inicial): aqui o campo está
+     dentro de um flex em coluna, então esse flex-basis de 300px vira
+     ALTURA em vez de largura — sem isso o campo ficava com 300px de alto. */
+  flex: 0 1 auto;
+  min-width: 0;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 14px;
+}
+.hero__filtro-input-wrap svg {
+  flex: 0 0 auto;
+}
+.hero__filtro-input-wrap input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-primary);
+  width: 100%;
+  padding: 13px 0;
+}
+.hero__filtro-input-wrap input::placeholder {
+  color: var(--text-secondary);
+}
+
+.hero__filtro-select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235B5967' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+    no-repeat right 14px center;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-primary);
+  padding: 13px 40px 13px 14px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.hero__filtro-submit {
+  width: 100%;
+  height: 50px;
+  font-size: 15px;
+}
+
+@media (max-width: 860px) {
+  .hero__filtro-card {
+    margin-top: 32px;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Categorias
    -------------------------------------------------------------------------- */
 .cats {

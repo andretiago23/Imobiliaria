@@ -34,18 +34,30 @@
     <div class="wrap hero__grid">
       <div class="hero__busca">
         <h1 class="display">O imóvel certo está <span class="hl">mais perto</span> do que você imagina.</h1>
+      </div>
 
-        <div class="segment" role="group" aria-label="Tipo de negócio">
+      <div class="hero__filtro-card">
+        <div class="segment hero__filtro-tabs" role="group" aria-label="Tipo de negócio">
           <button type="button" class="is-active" data-value="venda" aria-pressed="true">Comprar</button>
           <button type="button" data-value="aluguel" aria-pressed="false">Alugar</button>
           <button type="button" data-value="vender" aria-pressed="false">Imóvel novo</button>
         </div>
-        <form class="search" action="${pageContext.request.contextPath}/inicio" method="get" role="search" id="formBuscaHero" autocomplete="off">
+        <form class="hero__filtro-form" action="${pageContext.request.contextPath}/inicio" method="get" role="search" id="formBuscaHero" autocomplete="off">
           <input type="hidden" id="finalidade" name="finalidade" value="venda">
-          <label class="search__field search__field--tipo">
-            <span class="sr-only" hidden>Tipo de imóvel</span>
-            <select name="tipo" id="tipoImovel">
-              <option value="">Tipo de imóvel</option>
+
+          <label class="hero__filtro-campo" for="campoLocalizacao">
+            Onde deseja morar?
+            <span class="hero__filtro-input-wrap search__field--local">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+              <input type="text" id="campoLocalizacao" name="cidade" placeholder="Busque rua, bairro ou cidade" autocomplete="off">
+              <ul id="sugestoesLocalizacao" class="search__sugestoes" hidden></ul>
+            </span>
+          </label>
+
+          <label class="hero__filtro-campo" for="tipoImovel">
+            Tipo de imóvel
+            <select name="tipo" id="tipoImovel" class="hero__filtro-select">
+              <option value="">Todos os imóveis</option>
               <option value="apartamento">Apartamento</option>
               <option value="casa">Casa</option>
               <option value="terreno">Terreno</option>
@@ -53,20 +65,9 @@
               <option value="rural">Imóvel rural</option>
             </select>
           </label>
-          <label class="search__field search__field--local">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-            <span class="sr-only" hidden>Localização</span>
-            <input type="text" id="campoLocalizacao" name="cidade" placeholder="Busque por rua, bairro ou cidade" autocomplete="off">
-            <ul id="sugestoesLocalizacao" class="search__sugestoes" hidden></ul>
-          </label>
-          <button class="btn btn--primary search__submit" type="submit" aria-label="Buscar imóveis">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-          </button>
-        </form>
-      </div>
 
-      <div class="scene" aria-hidden="true">
-        <img src="${pageContext.request.contextPath}/imagens/familiaHeroSection.jpg" alt="" loading="lazy">
+          <button class="btn btn--primary hero__filtro-submit" type="submit">Buscar</button>
+        </form>
       </div>
     </div>
   </section>
