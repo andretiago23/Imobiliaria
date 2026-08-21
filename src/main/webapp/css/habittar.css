@@ -627,7 +627,21 @@ input[type="number"]::-webkit-inner-spin-button {
    Hero
    -------------------------------------------------------------------------- */
 .hero {
-  padding-top: calc(var(--nav-h) + 72px);
+  padding-top: var(--nav-h);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+.hero .wrap {
+  width: 100%;
+}
+
+@media (max-width: 860px) {
+  .hero {
+    min-height: auto;
+    padding-top: calc(var(--nav-h) + 40px);
+    padding-bottom: 40px;
+  }
 }
 
 .hero__grid {
