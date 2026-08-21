@@ -570,13 +570,22 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .nav__inner {
-  max-width: var(--maxw);
+  /* Diferente do .wrap do resto do site (limitado a --maxw): aqui a barra
+     vai de ponta a ponta da tela, com a logo grudada na esquerda e o menu
+     na direita, não centralizada numa coluna de leitura. */
   width: 100%;
-  margin: 0 auto;
-  padding: 0 24px;
+  margin: 0;
+  padding: 0 40px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 32px;
+}
+
+@media (max-width: 640px) {
+  .nav__inner {
+    padding: 0 20px;
+  }
 }
 
 .logo {

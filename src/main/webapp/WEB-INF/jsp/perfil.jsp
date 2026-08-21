@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Meu perfil | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=39">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=39">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=39">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/perfil.css?v=39">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=40">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=40">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=40">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/perfil.css?v=40">
 </head>
 <body>
 
@@ -124,8 +124,8 @@
 
 </main>
 
-<script src="${pageContext.request.contextPath}/js/validacao.js?v=39"></script>
-<script src="${pageContext.request.contextPath}/js/formulario.js?v=39"></script>
+<script src="${pageContext.request.contextPath}/js/validacao.js?v=40"></script>
+<script src="${pageContext.request.contextPath}/js/formulario.js?v=40"></script>
 <script>
   // Item 5.3: campo de telefone começa travado; o ícone de lápis destrava
   // e mostra o botão "Salvar dados".

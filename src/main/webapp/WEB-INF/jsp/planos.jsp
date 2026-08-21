@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Planos para anunciar | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=39">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=39">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=39">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=39">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=40">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=40">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=40">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=40">
 </head>
 <body>
 
