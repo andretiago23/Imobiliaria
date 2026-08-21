@@ -946,24 +946,29 @@ input[type="number"]::-webkit-inner-spin-button {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg, 24px);
   box-shadow: var(--shadow-card);
-  padding: 28px;
+  padding: 40px;
 }
 
 .hero__filtro-tabs {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
+  gap: 32px;
+}
+.hero__filtro-tabs button {
+  font-size: 17px;
+  padding-bottom: 14px;
 }
 
 .hero__filtro-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 24px;
 }
 
 .hero__filtro-campo {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  font-size: 14px;
+  gap: 10px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -979,24 +984,26 @@ input[type="number"]::-webkit-inner-spin-button {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 0 14px;
+  padding: 0 16px;
 }
 .hero__filtro-input-wrap svg {
   flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
 }
 .hero__filtro-input-wrap input {
   border: 0;
   outline: 0;
   background: transparent;
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
   color: var(--text-primary);
   width: 100%;
-  padding: 13px 0;
+  padding: 16px 0;
 }
 .hero__filtro-input-wrap input::placeholder {
   color: var(--text-secondary);
@@ -1008,21 +1015,21 @@ input[type="number"]::-webkit-inner-spin-button {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235B5967' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
-    no-repeat right 14px center;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%235B5967' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+    no-repeat right 16px center;
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
   color: var(--text-primary);
-  padding: 13px 40px 13px 14px;
+  padding: 16px 44px 16px 16px;
   cursor: pointer;
   width: 100%;
 }
 
 .hero__filtro-submit {
   width: 100%;
-  height: 50px;
-  font-size: 15px;
+  height: 58px;
+  font-size: 16px;
 }
 
 @media (max-width: 860px) {
