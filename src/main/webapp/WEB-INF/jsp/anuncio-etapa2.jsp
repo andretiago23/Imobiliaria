@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Escolha seu plano | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=56">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=56">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=56">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=56">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=65">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=64">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=65">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=65">
 </head>
 <body>
 
@@ -29,13 +29,38 @@
     RascunhoAnuncio rascunho = (RascunhoAnuncio) request.getAttribute("rascunho");
     List<Plano> planos = (List<Plano>) request.getAttribute("planos");
     NumberFormat moeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+
+    Plano planoGratis = null;
+    List<Plano> planosPagos = new java.util.ArrayList<>();
+    if (planos != null) {
+      for (Plano plano : planos) {
+        if (plano.getPreco().signum() == 0 && planoGratis == null) {
+          planoGratis = plano;
+        } else {
+          planosPagos.add(plano);
+        }
+      }
+    }
   %>
 
   <form method="post" action="${pageContext.request.contextPath}/anunciar/etapa2">
     <input type="hidden" name="csrf" value="${csrf}">
 
+    <% if (planoGratis != null) { %>
+      <input type="radio" name="idPlano" value="<%= planoGratis.getId() %>" id="plano<%= planoGratis.getId() %>" class="plano-linha-input"
+        <%= rascunho.getIdPlano() != null && rascunho.getIdPlano() == planoGratis.getId() ? "checked" : "" %> required>
+      <label for="plano<%= planoGratis.getId() %>" class="plano-linha">
+        <span class="plano-linha__nome"><%= util.Html.escapar(planoGratis.getNome()) %></span>
+        <span class="plano-linha__descricao micro"><%= util.Html.escapar(planoGratis.getDescricao()) %></span>
+        <span class="plano-linha__preco">R$ 0,00</span>
+      </label>
+      <p class="micro" style="margin:8px 0 24px;color:var(--text-secondary);">
+        Com o plano Grátis, você pode anunciar apenas 1 imóvel.
+      </p>
+    <% } %>
+
     <div class="planos-grade">
-      <% if (planos != null) { for (Plano plano : planos) {
+      <% for (Plano plano : planosPagos) {
            java.math.BigDecimal meses = new java.math.BigDecimal(plano.getDuracaoDias())
                .divide(new java.math.BigDecimal(30), 4, java.math.RoundingMode.HALF_UP);
            java.math.BigDecimal valorMensal = plano.getPreco().divide(meses, 2, java.math.RoundingMode.HALF_UP);
@@ -59,7 +84,7 @@
             </li>
           </ul>
         </label>
-      <% } } %>
+      <% } %>
     </div>
 
     <div class="wizard-acoes">

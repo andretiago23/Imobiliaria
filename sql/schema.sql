@@ -77,6 +77,24 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------------------------------------------------------
+-- redefinicao_senha — token de uso único do "esqueci minha senha" (ver
+-- controller.EsqueciSenhaServlet / RedefinirSenhaServlet). Vale por 2 horas
+-- a partir de data_envio; usado vira 1 assim que a senha é trocada (ou
+-- quando um token mais novo do mesmo usuário é gerado, invalidando este).
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `redefinicao_senha` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_usuario` int NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `data_envio` datetime DEFAULT CURRENT_TIMESTAMP,
+  `usado` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`),
+  KEY `id_usuario` (`id_usuario`),
+  CONSTRAINT `redefinicao_senha_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------------------------------------------------------
 -- imovel — id_usuario é o proprietário/anunciante, seja ele um cliente
 -- comum ou uma imobiliária. status controla a visibilidade no catálogo
 -- público: 'ativo' e 'reservado' aparecem na busca; 'vendido', 'alugado' e

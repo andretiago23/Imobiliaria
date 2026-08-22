@@ -152,16 +152,24 @@
     window.HabittarCidadesRO.ligar(campoLocalizacao, listaSugestoes, campoLocalizacao.closest(".hero__filtro-input-wrap"));
   }
 
-  /* Autocomplete de bairro na busca da landing. Diferente da cidade, não
-     existe uma API pública com a lista fechada de bairros do Brasil —
-     usa o Nominatim (OpenStreetMap), com o nome do estado embutido na
-     busca pra priorizar resultados de Rondônia, e filtra na resposta
-     só os que realmente caíram lá (bairro/distrito/subúrbio). */
+  /* Autocomplete de bairro na busca da landing, restrito por cidade quando
+     o campo Cidade já está preenchido. Diferente da cidade, não existe uma
+     API pública com a lista fechada de bairros do Brasil — usa o Nominatim
+     (OpenStreetMap), embutindo a cidade escolhida (ou "Rondônia" como
+     fallback) na busca, e filtra na resposta só os resultados cuja cidade
+     bate com a escolhida (ou, sem cidade escolhida, só os de Rondônia). */
   var campoBairro = document.getElementById("campoBairro");
   var listaSugestoesBairro = document.getElementById("sugestoesBairro");
   if (campoBairro && listaSugestoesBairro) {
     var timeoutBuscaBairro = null;
     var controladorBairroAtual = null;
+
+    var normalizarTextoBairro = function (texto) {
+      return texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "");
+    };
 
     var fecharSugestoesBairro = function () {
       listaSugestoesBairro.hidden = true;
@@ -172,8 +180,10 @@
       if (controladorBairroAtual) controladorBairroAtual.abort();
       controladorBairroAtual = new AbortController();
 
+      var cidadeEscolhida = campoLocalizacao ? campoLocalizacao.value.trim() : "";
+      var qualificador = cidadeEscolhida ? cidadeEscolhida + ", Rondônia" : "Rondônia";
       var url = "https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8"
-        + "&countrycodes=br&accept-language=pt-BR&q=" + encodeURIComponent(termo + ", Rondônia");
+        + "&countrycodes=br&accept-language=pt-BR&q=" + encodeURIComponent(termo + ", " + qualificador);
 
       fetch(url, { signal: controladorBairroAtual.signal, headers: { "Accept": "application/json" } })
         .then(function (resposta) { return resposta.ok ? resposta.json() : []; })
@@ -190,6 +200,14 @@
             var bairro = endereco.suburb || endereco.neighbourhood || endereco.city_district;
             if (!bairro) return;
             var cidade = endereco.city || endereco.town || endereco.municipality || "";
+
+            // Com uma cidade escolhida no campo Cidade, só sugere bairros
+            // que caem mesmo nela — sem isso o Nominatim às vezes traz
+            // bairros de outro município de Rondônia com nome parecido.
+            if (cidadeEscolhida
+                && normalizarTextoBairro(cidade).indexOf(normalizarTextoBairro(cidadeEscolhida)) === -1) {
+              return;
+            }
 
             var chave = bairro + "|" + cidade;
             if (vistos[chave]) return;
@@ -229,6 +247,22 @@
     });
     campoBairro.addEventListener("keydown", function (e) {
       if (e.key === "Escape") fecharSugestoesBairro();
+    });
+  }
+
+  /* "Valor total até" — campo visível formatado com separador de milhar +
+     "R$" fixo (mesmo padrão de js/catalogo.js), com o valor "cru" indo pro
+     input escondido que é o que realmente é enviado no formulário. Limite
+     de 999.999.999 (9 dígitos). */
+  var LIMITE_VALOR_MAXIMO = 999999999;
+  var precoExibido = document.getElementById("precoMaximoHeroExibido");
+  var precoOculto = document.getElementById("precoMaximoHero");
+  if (precoExibido && precoOculto) {
+    precoExibido.addEventListener("input", function () {
+      var digitos = precoExibido.value.replace(/\D/g, "");
+      var numero = digitos ? Math.min(Number(digitos), LIMITE_VALOR_MAXIMO) : null;
+      precoOculto.value = numero || "";
+      precoExibido.value = numero ? new Intl.NumberFormat("pt-BR").format(numero) : "";
     });
   }
 })();

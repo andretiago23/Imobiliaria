@@ -6,9 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= request.getAttribute("imovel") != null ? util.Html.escapar(((Imovel) request.getAttribute("imovel")).getTitulo()) + " | Habittar" : "Imóvel | Habittar" %></title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=59">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=59">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=59">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=67">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=67">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=67">
 </head>
 <body>
 
@@ -25,9 +25,22 @@
   <p class="alerta alerta-erro" role="alert">${erro}</p>
 
   <% if ("1".equals(request.getParameter("publicado"))) { %>
+    <div class="sucesso-overlay" id="sucessoOverlay">
+      <div class="sucesso-overlay__caixa">
+        <svg class="sucesso-overlay__check" viewBox="0 0 52 52" aria-hidden="true">
+          <circle class="sucesso-overlay__circulo" cx="26" cy="26" r="24" fill="none"/>
+          <path class="sucesso-overlay__marca" fill="none" d="M14 27l7 7 16-16"/>
+        </svg>
+        <p class="display" style="font-size:22px;margin-top:16px;">Anúncio publicado!</p>
+        <p class="micro" style="margin-top:6px;">Já está visível no catálogo.</p>
+      </div>
+    </div>
     <p class="alerta" style="background:#e6f5ec;border-color:#bfe3cd;color:#1c6b3f;">
       Seu imóvel foi anunciado com sucesso! Ele já está visível no catálogo.
     </p>
+    <a class="btn btn--secondary btn--sm" style="margin-bottom:20px;" href="${pageContext.request.contextPath}/imoveis-anunciados">
+      Ver meus anúncios
+    </a>
   <% } %>
   <% if ("1".equals(request.getParameter("visitaAgendada"))) { %>
     <p class="alerta" style="background:#e6f5ec;border-color:#bfe3cd;color:#1c6b3f;">
@@ -280,6 +293,23 @@
       });
     });
   });
+
+  // Animação de sucesso ao publicar o anúncio: some sozinha depois de um
+  // tempo, ou no primeiro clique/tecla, o que vier primeiro.
+  var sucessoOverlay = document.getElementById("sucessoOverlay");
+  if (sucessoOverlay) {
+    var fecharSucesso = function () {
+      sucessoOverlay.classList.add("sucesso-overlay--saindo");
+      sucessoOverlay.addEventListener("animationend", function () {
+        sucessoOverlay.remove();
+      }, { once: true });
+    };
+    var fechamentoAutomatico = window.setTimeout(fecharSucesso, 2600);
+    sucessoOverlay.addEventListener("click", function () {
+      window.clearTimeout(fechamentoAutomatico);
+      fecharSucesso();
+    });
+  }
 </script>
 
 

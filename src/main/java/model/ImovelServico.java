@@ -86,8 +86,10 @@ public class ImovelServico {
 
 	/**
 	 * Ativa um imóvel criado como PENDENTE_PAGAMENTO assim que o pagamento do
-	 * anúncio é confirmado (ver controller.PagamentoServlet) — só a partir
-	 * daqui ele passa a aparecer no catálogo e dispara alertas de busca salva.
+	 * anúncio é confirmado (ver controller.AnuncioWizardServlet#processarEtapa5
+	 * — a etapa 5 já confirma o pagamento fictício na hora, sem uma tela à
+	 * parte) — só a partir daqui ele passa a aparecer no catálogo e dispara
+	 * alertas de busca salva.
 	 */
 	public void ativarAposPagamento(int idImovel, String linkImovel) throws DAOException {
 		imovelDAO.atualizarStatus(idImovel, StatusImovel.ATIVO);

@@ -37,7 +37,8 @@ public class FiltroAutenticacao implements Filter {
 	 * ao tentar abrir o detalhamento completo de um imóvel (/imovel).
 	 */
 	private static final Set<String> CAMINHOS_LIVRES = Set.of("/", "/login", "/cadastro", "/logout", "/index.jsp",
-			"/inicio", "/auth/google", "/auth/google/callback", "/financiamento", "/confirmar-status");
+			"/inicio", "/auth/google", "/auth/google/callback", "/financiamento", "/confirmar-status",
+			"/esqueci-senha", "/redefinir-senha");
 
 	/** Pastas de conteúdo estático, liberadas para que o visual carregue na tela de login. */
 	private static final Set<String> PASTAS_LIVRES = Set.of("/css/", "/js/", "/imagens/", "/legal/");

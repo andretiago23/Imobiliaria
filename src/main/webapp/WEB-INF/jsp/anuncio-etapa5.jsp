@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Confirme seu anúncio | Habittar</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=52">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=52">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=52">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=52">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=66">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=66">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=66">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/wizard.css?v=66">
 </head>
 <body>
 
@@ -79,14 +79,17 @@
     <div class="wizard-acoes">
       <a class="btn btn--secondary" href="${pageContext.request.contextPath}/anunciar/etapa4">Voltar</a>
       <button class="btn btn--primary btn--interactive" type="submit">
-        <span class="btn__label">Ir para pagamento</span>
+        <span class="btn__label">Confirmar pagamento</span>
         <span class="btn__reveal" aria-hidden="true">
-          Ir para pagamento
+          Confirmar pagamento
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </span>
         <span class="btn__dot" aria-hidden="true"></span>
       </button>
     </div>
+    <p class="micro" style="margin-top:12px;color:var(--text-secondary);text-align:right;">
+      Simulação: nenhum valor real é cobrado. Em produção, este botão levaria a um gateway de pagamento de verdade.
+    </p>
   </form>
 </main>
 

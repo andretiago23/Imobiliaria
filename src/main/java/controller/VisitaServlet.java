@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import dao.DAOException;
+import dao.FotoImovelDAO;
 import dao.ImovelDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,6 +35,7 @@ public class VisitaServlet extends HttpServlet {
 	private static final String PAGINA_VISITA = "/WEB-INF/jsp/agendar-visita.jsp";
 
 	private final ImovelDAO imovelDAO = new ImovelDAO();
+	private final FotoImovelDAO fotoImovelDAO = new FotoImovelDAO();
 	private final VisitaServico visitaServico = new VisitaServico();
 
 	@Override
@@ -52,6 +54,7 @@ public class VisitaServlet extends HttpServlet {
 				resposta.sendRedirect(requisicao.getContextPath() + "/inicio");
 				return;
 			}
+			fotoImovelDAO.carregarFotos(imovel.get());
 			requisicao.setAttribute("imovel", imovel.get());
 			requisicao.setAttribute("slots", visitaServico.gerarSlotsDisponiveis(idImovel));
 		} catch (DAOException e) {

@@ -144,8 +144,31 @@ public class AnuncioWizardServlet extends HttpServlet {
 		RascunhoAnuncio rascunho = obterRascunho(requisicao);
 
 		if (!TokenCsrf.valido(requisicao)) {
+			if ("1".equals(requisicao.getParameter("apenasMidia"))) {
+				responderMidiaAjax(resposta, rascunho, "Sua sessão expirou. Atualize a página e tente de novo.");
+				return;
+			}
 			requisicao.setAttribute("erro", "Sua sessão expirou. Preencha o formulário novamente.");
 			reexibir(requisicao, resposta, etapa, rascunho);
+			return;
+		}
+
+		// Upload/remoção de foto ou vídeo pelo botão "+ Adicionar" — só grava
+		// o arquivo e devolve JSON com o estado atual da mídia, sem validar
+		// nem exigir o resto do formulário (título, endereço etc.) e sem
+		// navegar pra outra página, então a rolagem da tela não é perdida.
+		if (etapa == 1 && "1".equals(requisicao.getParameter("apenasMidia"))) {
+			String erroMidia = null;
+			try {
+				removerMidiaSeSolicitado(requisicao, rascunho);
+				processarUploads(requisicao, rascunho);
+			} catch (RegraNegocioException e) {
+				erroMidia = e.getMessage();
+			} catch (ServletException | IOException e) {
+				getServletContext().log("Falha ao enviar mídia da etapa 1 do assistente de anúncio.", e);
+				erroMidia = "Não foi possível processar o envio agora.";
+			}
+			responderMidiaAjax(resposta, rascunho, erroMidia);
 			return;
 		}
 
@@ -203,6 +226,10 @@ public class AnuncioWizardServlet extends HttpServlet {
 		String endereco = textoObrigatorio(requisicao, "endereco", "Informe a rua do imóvel.");
 		String numero = textoObrigatorio(requisicao, "numero", "Informe o número do imóvel.");
 		String bairro = textoObrigatorio(requisicao, "bairro", "Informe o bairro do imóvel.");
+		String descricao = requisicao.getParameter("descricao");
+		if (descricao == null || descricao.trim().length() < 150) {
+			throw new RegraNegocioException("A descrição precisa ter pelo menos 150 caracteres.");
+		}
 
 		rascunho.setFinalidade(finalidade);
 		rascunho.setTitulo(titulo);
@@ -211,7 +238,7 @@ public class AnuncioWizardServlet extends HttpServlet {
 		rascunho.setAreaM2(parseDouble(requisicao.getParameter("areaM2")));
 		rascunho.setQuartos(parseInteiro(requisicao.getParameter("quartos")));
 		rascunho.setBanheiros(parseInteiro(requisicao.getParameter("banheiros")));
-		rascunho.setDescricao(requisicao.getParameter("descricao"));
+		rascunho.setDescricao(descricao);
 		rascunho.setCep(cep);
 		rascunho.setEndereco(endereco);
 		rascunho.setNumero(numero);
@@ -219,13 +246,11 @@ public class AnuncioWizardServlet extends HttpServlet {
 		rascunho.setCidade(requisicao.getParameter("cidade"));
 		rascunho.setEstado(requisicao.getParameter("estado"));
 
-		// Item 1.1: bloqueia o avanço sem o mínimo de mídia anexada.
+		// Item 1.1: bloqueia o avanço sem o mínimo de fotos. O vídeo é
+		// opcional — quem anexar, ótimo, mas não trava o assistente.
 		if (rascunho.getFotos().size() < RascunhoAnuncio.MINIMO_FOTOS) {
 			throw new RegraNegocioException(
 					"Anexe pelo menos " + RascunhoAnuncio.MINIMO_FOTOS + " fotos do imóvel para continuar.");
-		}
-		if (rascunho.getVideo() == null || rascunho.getVideo().isBlank()) {
-			throw new RegraNegocioException("Anexe pelo menos 1 vídeo do imóvel para continuar.");
 		}
 	}
 
@@ -334,6 +359,34 @@ public class AnuncioWizardServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Resposta em JSON do upload/remoção de mídia via AJAX (ver o bloco
+	 * "apenasMidia" em doPost e js/anuncio-wizard.js): o estado atual das
+	 * fotos e do vídeo no rascunho, mais um erro opcional (formato de
+	 * arquivo inválido, por exemplo). Escrito à mão, sem biblioteca — mesmo
+	 * padrão de util.Json usado no comparador de imóveis do catálogo.
+	 */
+	private void responderMidiaAjax(HttpServletResponse resposta, RascunhoAnuncio rascunho, String erro)
+			throws IOException {
+
+		StringBuilder json = new StringBuilder("{\"fotos\":[");
+		List<String> fotos = rascunho.getFotos();
+		for (int i = 0; i < fotos.size(); i++) {
+			if (i > 0) {
+				json.append(',');
+			}
+			json.append('"').append(util.Json.escapar(fotos.get(i))).append('"');
+		}
+		json.append("],\"video\":");
+		json.append(rascunho.getVideo() == null ? "null" : '"' + util.Json.escapar(rascunho.getVideo()) + '"');
+		json.append(",\"erro\":");
+		json.append(erro == null ? "null" : '"' + util.Json.escapar(erro) + '"');
+		json.append('}');
+
+		resposta.setContentType("application/json;charset=UTF-8");
+		resposta.getWriter().write(json.toString());
+	}
+
 	// -------------------------------------------------------------------
 	// Etapa 2 — plano
 	// -------------------------------------------------------------------
@@ -423,8 +476,36 @@ public class AnuncioWizardServlet extends HttpServlet {
 	// pagamento + a disponibilidade de visitas + a contratação do plano, e
 	// manda para o pagamento.
 	// -------------------------------------------------------------------
+	private static final String SESSAO_ULTIMO_IMOVEL_PUBLICADO = "ultimoImovelPublicadoId";
+
 	private void processarEtapa5(HttpServletRequest requisicao, HttpServletResponse resposta, RascunhoAnuncio rascunho)
 			throws DAOException, IOException {
+
+		// A publicação inteira (criar imóvel, plano, fotos, confirmar
+		// pagamento e ativar) roda em várias escritas sequenciais no banco —
+		// alguns segundos ao todo. Sincronizando na sessão, um clique duplo
+		// ou um duplo envio do formulário (a causa mais comum de "voltou pra
+		// etapa 5"/"etapa 1" sem motivo aparente) faz a segunda requisição
+		// esperar a primeira terminar, em vez de tentar publicar o mesmo
+		// rascunho duas vezes em paralelo — a segunda tentativa encontraria
+		// o rascunho já esvaziado pela primeira e falharia na validação.
+		HttpSession sessao = requisicao.getSession();
+		synchronized (sessao) {
+			// Se a etapa 5 já foi concluída com sucesso por uma requisição
+			// concorrente (ou um clique duplo) enquanto esta esperava a vez,
+			// só manda pro anúncio que acabou de ser criado, em vez de tentar
+			// publicar de novo um rascunho que já foi esvaziado.
+			Integer imovelJaPublicado = (Integer) sessao.getAttribute(SESSAO_ULTIMO_IMOVEL_PUBLICADO);
+			if (imovelJaPublicado != null && sessao.getAttribute(RascunhoAnuncio.SESSAO_CHAVE) == null) {
+				resposta.sendRedirect(requisicao.getContextPath() + "/imovel?id=" + imovelJaPublicado + "&publicado=1");
+				return;
+			}
+			processarEtapa5Sincronizado(requisicao, resposta, rascunho, sessao);
+		}
+	}
+
+	private void processarEtapa5Sincronizado(HttpServletRequest requisicao, HttpServletResponse resposta,
+			RascunhoAnuncio rascunho, HttpSession sessao) throws DAOException, IOException {
 
 		Usuario usuario = SessaoUsuario.obter(requisicao);
 
@@ -462,7 +543,7 @@ public class AnuncioWizardServlet extends HttpServlet {
 		} catch (RegraNegocioException e) {
 			// Os dados já passaram pela validação de cada etapa — só chega
 			// aqui em caso de sessão adulterada; volta para o início.
-			requisicao.getSession().removeAttribute(RascunhoAnuncio.SESSAO_CHAVE);
+			sessao.removeAttribute(RascunhoAnuncio.SESSAO_CHAVE);
 			resposta.sendRedirect(requisicao.getContextPath() + "/anunciar/etapa1");
 			return;
 		}
@@ -488,8 +569,28 @@ public class AnuncioWizardServlet extends HttpServlet {
 		Anuncio anuncio = new Anuncio(imovel.getId(), rascunho.getIdPlano(), usuario.getId(), tipoAnunciante);
 		anuncioDAO.inserir(anuncio);
 
-		requisicao.getSession().removeAttribute(RascunhoAnuncio.SESSAO_CHAVE);
-		resposta.sendRedirect(requisicao.getContextPath() + "/anunciar/pagamento?id=" + anuncio.getId());
+		// Sem gateway de pagamento de verdade neste projeto: "Ir para
+		// pagamento" já confirma na hora (equivalente ao antigo botão
+		// "Confirmar pagamento" da tela à parte, removida). Uma integração
+		// real trocaria isto por um redirecionamento ao gateway, com a
+		// confirmação vindo de um webhook, não deste mesmo request.
+		if (anuncioDAO.marcarComoPago(anuncio.getId(), usuario.getId())) {
+			String linkImovel = linkAbsoluto(requisicao, "/imovel?id=" + imovel.getId());
+			imovelServico.ativarAposPagamento(imovel.getId(), linkImovel);
+		}
+
+		// Guardado antes de tirar o rascunho da sessão: se um segundo envio
+		// (clique duplo, aba duplicada) chegar depois deste terminar, ele
+		// encontra o rascunho já vazio e usa isto pra mandar a pessoa direto
+		// pro anúncio, em vez de tentar publicar tudo de novo e falhar.
+		sessao.setAttribute(SESSAO_ULTIMO_IMOVEL_PUBLICADO, imovel.getId());
+		sessao.removeAttribute(RascunhoAnuncio.SESSAO_CHAVE);
+		resposta.sendRedirect(requisicao.getContextPath() + "/imovel?id=" + imovel.getId() + "&publicado=1");
+	}
+
+	private String linkAbsoluto(HttpServletRequest requisicao, String caminho) {
+		return requisicao.getRequestURL().toString().replace(requisicao.getRequestURI(), "")
+				+ requisicao.getContextPath() + caminho;
 	}
 
 	// -------------------------------------------------------------------

@@ -1,0 +1,222 @@
+/* ==========================================================================
+   Agendar visita — layout de duas colunas (card do formulário + resumo do
+   imóvel), inspirado no fluxo de agendamento de visita de grandes portais.
+   ========================================================================== */
+
+.visita-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 680px) 320px;
+  gap: 28px;
+  align-items: start;
+  margin-top: 20px;
+}
+
+@media (max-width: 800px) {
+  .visita-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Card do formulário
+   -------------------------------------------------------------------------- */
+.visita-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 28px;
+}
+
+.visita-card__titulo {
+  font-size: 24px;
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.visita-rotulo {
+  margin: 24px 0 12px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.visita-card h1 + .visita-rotulo {
+  margin-top: 20px;
+}
+
+/* Dias — pílulas roláveis na horizontal, com setas de navegação nas pontas */
+.visita-dias-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.visita-dias-seta {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out;
+}
+.visita-dias-seta:hover {
+  background: var(--surface-page);
+  border-color: var(--text-secondary);
+}
+.visita-dias {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.visita-dias::-webkit-scrollbar {
+  display: none;
+}
+.visita-dia-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.visita-dia {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 56px;
+  padding: 10px 0;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-subtle);
+  cursor: pointer;
+  transition: border-color 0.15s ease-out, background-color 0.15s ease-out;
+}
+.visita-dia__semana {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.visita-dia__numero {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+}
+.visita-dia-input:checked + .visita-dia {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary-soft);
+}
+.visita-dia-input:checked + .visita-dia .visita-dia__numero {
+  color: var(--accent-primary-hover);
+}
+.visita-dia-input:focus-visible + .visita-dia {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Horários — grade de pílulas do dia selecionado. Só o bloco do dia ativo
+   fica visível (troca via JS em js/agendar-visita.js); o seletor [hidden]
+   precisa vir depois pra vencer o display:grid — mesma especificidade,
+   e quem vem depois no arquivo ganha. */
+.visita-horarios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 10px;
+}
+.visita-horarios[hidden] {
+  display: none;
+}
+.visita-horario {
+  position: relative;
+  cursor: pointer;
+}
+.visita-horario input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.visita-horario span {
+  display: block;
+  text-align: center;
+  padding: 9px 0;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: all 0.15s ease-out;
+}
+.visita-horario input:checked + span {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #fff;
+}
+.visita-horario input:focus-visible + span {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.visita-card__rodape {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   Card de resumo do imóvel
+   -------------------------------------------------------------------------- */
+.visita-resumo {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  position: sticky;
+  top: calc(var(--nav-h) + 20px);
+}
+.visita-resumo__foto {
+  aspect-ratio: 4 / 3;
+}
+.visita-resumo__foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.visita-resumo > p,
+.visita-resumo__preco,
+.visita-resumo__specs,
+.visita-resumo__endereco {
+  margin: 0;
+  padding: 0 18px;
+}
+.visita-resumo > .micro:first-of-type {
+  margin-top: 16px;
+}
+.visita-resumo__preco {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  margin-top: 4px;
+}
+.visita-resumo__specs {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.visita-resumo__endereco {
+  margin: 8px 0 18px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 800px) {
+  .visita-resumo {
+    position: static;
+  }
+}
