@@ -1,0 +1,113 @@
+/* ==========================================================================
+   Calculadora de poder de compra (/financiamento)
+   Usa os tokens e componentes de habittar.css/catalogo.css como base.
+   ========================================================================== */
+
+.calc-form {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.calc-form__campo label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.calc-form__moeda {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 14px;
+}
+.calc-form__moeda:focus-within {
+  border-color: var(--accent-primary);
+}
+.calc-form__prefixo {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+.calc-form__moeda input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  padding: 12px 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.calc-form__campo .micro {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
+}
+
+#btnCalcularPoderCompra {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.calc-resultado {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 28px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.calc-resultado__valor {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 36px;
+  color: var(--accent-primary-hover);
+  margin: 4px 0 0;
+}
+
+.calc-resultado__linhas {
+  margin-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+  text-align: left;
+}
+.calc-resultado__linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 14.5px;
+}
+.calc-resultado__linha span {
+  color: var(--text-secondary);
+}
+
+.calc-explicacao {
+  text-align: left;
+  margin-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 16px;
+}
+.calc-explicacao summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--text-primary);
+}
+.calc-explicacao p {
+  margin: 12px 0 0;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}

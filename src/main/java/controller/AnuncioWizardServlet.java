@@ -31,12 +31,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import model.Anuncio;
+import model.CategoriaPlano;
 import model.DiaSemana;
 import model.DisponibilidadeVisita;
 import model.Finalidade;
 import model.FotoImovel;
 import model.Imovel;
 import model.ImovelServico;
+import model.Plano;
 import model.RascunhoAnuncio;
 import model.RegraNegocioException;
 import model.TipoAnunciante;
@@ -119,7 +121,7 @@ public class AnuncioWizardServlet extends HttpServlet {
 
 		try {
 			if (etapa == 2) {
-				requisicao.setAttribute("planos", planoDAO.listar());
+				requisicao.setAttribute("planos", planosIndividuaisDoTipo(rascunho.getTipoAnunciante()));
 			}
 			if (etapa == 5) {
 				requisicao.setAttribute("plano", planoDAO.buscarPorId(rascunho.getIdPlano()).orElse(null));
@@ -534,7 +536,7 @@ public class AnuncioWizardServlet extends HttpServlet {
 
 		try {
 			if (etapa == 2) {
-				requisicao.setAttribute("planos", planoDAO.listar());
+				requisicao.setAttribute("planos", planosIndividuaisDoTipo(rascunho.getTipoAnunciante()));
 			}
 		} catch (DAOException e) {
 			getServletContext().log("Falha ao recarregar planos.", e);
@@ -542,6 +544,24 @@ public class AnuncioWizardServlet extends HttpServlet {
 		requisicao.setAttribute("rascunho", rascunho);
 		requisicao.setAttribute("csrf", TokenCsrf.obter(requisicao));
 		requisicao.getRequestDispatcher("/WEB-INF/jsp/anuncio-etapa" + etapa + ".jsp").forward(requisicao, resposta);
+	}
+
+	/**
+	 * Planos que podem ser escolhidos dentro do assistente: só os
+	 * individuais (destaque de um único anúncio) do tipo de anunciante em
+	 * questão. Packs (lotes de créditos para vários anúncios) só aparecem na
+	 * tela de planos avulsa (ver controller.PlanosServlet), fora do
+	 * assistente de anúncio único.
+	 */
+	private List<Plano> planosIndividuaisDoTipo(TipoAnunciante tipoAnunciante) throws DAOException {
+		List<Plano> todos = planoDAO.listarPorTipo(tipoAnunciante);
+		List<Plano> individuais = new ArrayList<>();
+		for (Plano plano : todos) {
+			if (plano.getCategoria() == CategoriaPlano.INDIVIDUAL) {
+				individuais.add(plano);
+			}
+		}
+		return individuais;
 	}
 
 	private String textoObrigatorio(HttpServletRequest requisicao, String nome, String mensagemErro)

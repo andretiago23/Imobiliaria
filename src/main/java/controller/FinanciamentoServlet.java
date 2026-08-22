@@ -9,10 +9,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Página de financiamento. O simulador (valor financiado, parcela estimada
- * por SAC, aviso de simulação ilustrativa) ainda não foi construído — esta
- * rota existe para a página não quebrar com 404 enquanto isso, e deixa claro
- * ao visitante que o recurso está a caminho, em vez de simular algo falso.
+ * Página de financiamento: calculadora de poder de compra (renda + entrada
+ * disponível → valor de imóvel estimado). Toda a conta é feita no cliente
+ * (ver js/financiamento.js) — esta rota só entrega a página, sem estado
+ * nem persistência nenhuma.
  */
 @WebServlet("/financiamento")
 public class FinanciamentoServlet extends HttpServlet {

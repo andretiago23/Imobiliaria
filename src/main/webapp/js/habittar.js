@@ -144,92 +144,12 @@
   });
 
   /* Autocomplete de cidade na busca da landing, restrito aos municípios de
-     Rondônia (o estado onde a Habittar atua) — lista vinda da API pública
-     do IBGE (dados oficiais, sem chave). Busca só uma vez e guarda em
-     memória: como são só 52 municípios, filtrar localmente a cada tecla
-     é instantâneo e não depende de rede depois do primeiro carregamento. */
+     Rondônia — lógica compartilhada em js/cidades-ro.js (também usada pela
+     busca do catálogo, ver js/catalogo.js). */
   var campoLocalizacao = document.getElementById("campoLocalizacao");
   var listaSugestoes = document.getElementById("sugestoesLocalizacao");
-  if (campoLocalizacao && listaSugestoes) {
-    var municipiosRO = null;
-    var carregandoMunicipios = null;
-
-    var normalizarTexto = function (texto) {
-      return texto
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[̀-ͯ]/g, "");
-    };
-
-    var carregarMunicipiosRO = function () {
-      if (municipiosRO) return Promise.resolve(municipiosRO);
-      if (carregandoMunicipios) return carregandoMunicipios;
-
-      carregandoMunicipios = fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados/RO/municipios")
-        .then(function (resposta) { return resposta.ok ? resposta.json() : []; })
-        .then(function (lista) {
-          municipiosRO = (lista || [])
-            .map(function (municipio) { return municipio.nome; })
-            .sort(function (a, b) { return a.localeCompare(b, "pt-BR"); });
-          return municipiosRO;
-        })
-        .catch(function () {
-          // Sem internet ou API do IBGE fora do ar: a busca continua
-          // funcionando por texto livre, só sem sugestões.
-          municipiosRO = [];
-          return municipiosRO;
-        });
-      return carregandoMunicipios;
-    };
-
-    var fecharSugestoes = function () {
-      listaSugestoes.hidden = true;
-      listaSugestoes.innerHTML = "";
-    };
-
-    var renderizarSugestoes = function (cidades) {
-      listaSugestoes.innerHTML = "";
-      if (!cidades.length) {
-        fecharSugestoes();
-        return;
-      }
-      cidades.slice(0, 8).forEach(function (nome) {
-        var li = document.createElement("li");
-        li.innerHTML = "<span>" + nome + "</span><span class=\"micro\">Rondônia — RO</span>";
-        li.addEventListener("click", function () {
-          campoLocalizacao.value = nome;
-          fecharSugestoes();
-          campoLocalizacao.focus();
-        });
-        listaSugestoes.appendChild(li);
-      });
-      listaSugestoes.hidden = false;
-    };
-
-    var mostrarSugestoesParaTermo = function (termoDigitado) {
-      carregarMunicipiosRO().then(function (cidades) {
-        var termo = normalizarTexto(termoDigitado.trim());
-        var filtradas = !termo
-          ? cidades
-          : cidades.filter(function (cidade) { return normalizarTexto(cidade).indexOf(termo) !== -1; });
-        renderizarSugestoes(filtradas);
-      });
-    };
-
-    campoLocalizacao.addEventListener("focus", function () {
-      mostrarSugestoesParaTermo(campoLocalizacao.value);
-    });
-    campoLocalizacao.addEventListener("input", function () {
-      mostrarSugestoesParaTermo(campoLocalizacao.value);
-    });
-
-    var campoLocalizacaoWrap = campoLocalizacao.closest(".hero__filtro-input-wrap");
-    document.addEventListener("click", function (e) {
-      if (campoLocalizacaoWrap && !campoLocalizacaoWrap.contains(e.target)) fecharSugestoes();
-    });
-    campoLocalizacao.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") fecharSugestoes();
-    });
+  if (campoLocalizacao && listaSugestoes && window.HabittarCidadesRO) {
+    window.HabittarCidadesRO.ligar(campoLocalizacao, listaSugestoes, campoLocalizacao.closest(".hero__filtro-input-wrap"));
   }
 
   /* Autocomplete de bairro na busca da landing. Diferente da cidade, não

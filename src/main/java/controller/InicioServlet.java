@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import dao.DAOException;
 import dao.FavoritoDAO;
+import dao.FotoImovelDAO;
 import dao.ImovelDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -41,6 +42,7 @@ public class InicioServlet extends HttpServlet {
 
 	private final ImovelDAO imovelDAO = new ImovelDAO();
 	private final FavoritoDAO favoritoDAO = new FavoritoDAO();
+	private final FotoImovelDAO fotoImovelDAO = new FotoImovelDAO();
 
 	@Override
 	protected void doGet(HttpServletRequest requisicao, HttpServletResponse resposta)
@@ -64,6 +66,7 @@ public class InicioServlet extends HttpServlet {
 			List<Imovel> imoveis = filtroVazio(filtro)
 					? imovelDAO.listarAtivos(LIMITE_FEED_SEM_FILTRO)
 					: imovelDAO.buscarComFiltros(filtro);
+			fotoImovelDAO.carregarFotos(imoveis);
 			requisicao.setAttribute("imoveis", imoveis);
 
 			Usuario usuarioLogado = SessaoUsuario.obter(requisicao);

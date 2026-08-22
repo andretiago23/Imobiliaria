@@ -65,12 +65,14 @@ body {
    Catálogo com sidebar de filtros
    -------------------------------------------------------------------------- */
 .app-main--catalogo {
-  max-width: 1240px;
+  max-width: 1760px;
+  padding-left: clamp(16px, 3vw, 48px);
+  padding-right: clamp(16px, 3vw, 48px);
 }
 
 .catalogo-layout {
   display: grid;
-  grid-template-columns: 264px 1fr;
+  grid-template-columns: 320px 1fr;
   gap: 32px;
   align-items: start;
 }
@@ -84,7 +86,7 @@ body {
 .filtro-sidebar {
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: 10px;
   box-shadow: var(--shadow-card);
   padding: 20px;
   position: sticky;
@@ -94,6 +96,24 @@ body {
   gap: 24px;
   max-height: calc(100vh - var(--nav-h) - 40px);
   overflow-y: auto;
+
+  /* Rolagem discreta: fina e só na cor da trilha/polegar, sem seta nem
+     fundo de trilha destacado. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-subtle) transparent;
+}
+.filtro-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.filtro-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.filtro-sidebar::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: var(--radius-full);
+}
+.filtro-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
 
 @media (max-width: 900px) {
@@ -262,6 +282,7 @@ body {
 }
 .filtro-preco__campo input {
   border: 0;
+  outline: none;
   padding: 10px 0;
   flex: 1;
   min-width: 0;
@@ -281,6 +302,7 @@ body {
 }
 .filtro-area input {
   border: 0;
+  outline: none;
   padding: 10px 0;
   flex: 1;
   min-width: 0;
@@ -294,35 +316,50 @@ body {
   flex: 0 0 auto;
 }
 
-/* Item 2.3 — campo de localização (cidade/UF), consolidado dentro da
-   barra de filtros em vez de uma barra de busca separada */
-.filtro-localizacao {
+/* Barra de localização em destaque, em cima da grade (fora da sidebar) */
+.catalogo-busca {
   display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  padding: 12px 14px;
+  margin-bottom: 0;
 }
-.filtro-localizacao input {
-  border: 0;
-  padding: 10px 12px;
-  font-family: var(--font-sans);
-  font-size: 14px;
-  color: var(--text-primary);
-}
-.filtro-localizacao input[name="cidade"] {
+.catalogo-busca__campo {
+  position: relative;
   flex: 1;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary);
 }
-.filtro-localizacao__uf {
-  width: 52px;
-  flex: 0 0 auto;
-  border-left: 1px solid var(--border-subtle) !important;
-  text-transform: uppercase;
-  text-align: center;
-}
-.filtro-localizacao input:focus {
+.catalogo-busca__campo input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
   outline: none;
-  background: var(--surface-page);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--text-primary);
+  padding: 6px 0;
+}
+.catalogo-busca__botao {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 10px;
+}
+
+/* Contagem de resultados, discreta, logo abaixo da barra de busca */
+.catalogo-busca__contagem {
+  margin: 8px 0 20px;
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .filtro-sidebar__acoes {
@@ -500,59 +537,25 @@ body {
   font-weight: 600;
 }
 
-/* Filtros aplicados, como chips removíveis individualmente */
-.filtros-ativos {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-subtle);
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-primary);
-  background: var(--accent-primary-soft);
-  border: 1px solid rgba(255, 106, 26, 0.25);
-  border-radius: var(--radius-full);
-  padding: 6px 12px;
-  transition: background-color 0.15s ease-out;
-}
-.chip:hover {
-  background: rgba(255, 106, 26, 0.16);
-}
-.chip span {
-  color: var(--accent-primary-hover);
-  font-weight: 700;
-}
-
-.chip--limpar {
-  background: transparent;
-  border-style: dashed;
-  color: var(--text-secondary);
-}
-
 /* --------------------------------------------------------------------------
    Grade do catálogo
    -------------------------------------------------------------------------- */
-.catalogo__cabecalho {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
 .catalogo__grade {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
+}
+
+@media (max-width: 1100px) {
+  .catalogo__grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .catalogo__grade {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* habittar.css desenha .card__photo para placeholder (listras + rótulo
@@ -691,6 +694,37 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Miniaturas da galeria — abaixo da foto principal */
+.imovel-detalhe__miniaturas {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  overflow-x: auto;
+}
+.imovel-detalhe__miniatura {
+  flex: 0 0 auto;
+  width: 76px;
+  height: 56px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  background: none;
+}
+.imovel-detalhe__miniatura img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.imovel-detalhe__miniatura:hover {
+  border-color: var(--border-subtle);
+}
+.imovel-detalhe__miniatura.is-ativa {
+  border-color: var(--accent-primary);
 }
 
 .imovel-detalhe__badges {
@@ -938,4 +972,181 @@ body {
 .btn--perigo:hover {
   background: #b91c1c;
   border-color: #b91c1c;
+}
+
+/* --------------------------------------------------------------------------
+   Comparador de imóveis
+   -------------------------------------------------------------------------- */
+.comparador-banner[hidden] {
+  display: none;
+}
+.comparador-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--accent-primary-soft);
+  border: 1px solid rgba(255, 106, 26, 0.25);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+.comparador-banner p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+.comparador-banner__acoes {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Botão "Selecionar imóvel" — só aparece sobre a foto quando o modo
+   comparador está ativo (classe na grade, ligada por catalogo.js). */
+.card__comparar-btn {
+  display: none;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  border: 0;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-primary);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+.catalogo__grade.modo-comparador .card__comparar-btn {
+  display: inline-flex;
+}
+.card__comparar-btn.is-selecionado {
+  background: var(--accent-primary);
+  color: #fff;
+}
+.card__comparar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Dialog do comparador — mesma base do .modal-confirmacao, só mais largo */
+.modal-comparador {
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0;
+  max-width: 900px;
+  width: calc(100% - 40px);
+  max-height: calc(100vh - 80px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .25);
+}
+.modal-comparador::backdrop {
+  background: rgba(15, 15, 20, .5);
+}
+.modal-comparador__corpo {
+  position: relative;
+  padding: 28px;
+  overflow-y: auto;
+}
+.modal-comparador__fechar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--surface-page);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.comparador-campos {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+.modal-comparador__acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+/* Tabela comparativa — grid com 1 coluna de rótulo + N colunas de imóvel */
+.comparador-grid {
+  display: grid;
+  grid-template-columns: 120px repeat(var(--colunas), 1fr);
+  gap: 16px;
+  margin-top: 20px;
+  overflow-x: auto;
+}
+.comparador-linha {
+  display: contents;
+}
+.comparador-linha__rotulo {
+  grid-column: 1;
+  font-weight: 600;
+  font-size: 13.5px;
+  align-self: center;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+}
+.comparador-linha--foto .comparador-coluna {
+  border-top: none;
+  padding-top: 0;
+}
+.comparador-coluna {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+  padding-bottom: 8px;
+  min-width: 0;
+}
+.comparador-coluna img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+.comparador-coluna__titulo {
+  margin: 8px 0 0;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.comparador-valor {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+}
+.comparador-diff {
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.comparador-diff--maior {
+  color: #1c8a4b;
+}
+.comparador-diff--menor {
+  color: #dc2626;
+}
+.comparador-texto {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: pre-line;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+@media (max-width: 640px) {
+  .comparador-grid {
+    grid-template-columns: 90px repeat(var(--colunas), minmax(140px, 1fr));
+  }
 }

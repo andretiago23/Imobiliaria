@@ -317,6 +317,61 @@
   margin-top: 2px;
 }
 
+/* Selo "Plano com renovação automática" e botão de compra usados na tela
+   de planos avulsa (/planos) — a etapa 2 do assistente não precisa deles,
+   já que ali o card inteiro é o input de seleção. */
+.plano-card__renovacao {
+  display: inline-block;
+  margin: var(--space-2) 0 0;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--surface-page);
+  border: 1px solid var(--border-subtle);
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+.plano-card__cta {
+  width: 100%;
+  margin-top: var(--space-4);
+}
+
+/* --------------------------------------------------------------------------
+   Tela de planos avulsa (/planos) — abas Packs/Individual pra
+   corretor/imobiliária, sem JS (radio + CSS).
+   -------------------------------------------------------------------------- */
+.planos-tabs__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.planos-tabs__nav {
+  display: inline-flex;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.planos-tabs__nav label {
+  padding: var(--space-2) var(--space-1);
+  margin-bottom: -1px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.planos-tabs__painel {
+  display: none;
+}
+#abaPack:checked ~ .planos-tabs__nav label[for="abaPack"],
+#abaIndividual:checked ~ .planos-tabs__nav label[for="abaIndividual"] {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent-primary);
+}
+#abaPack:checked ~ .planos-tabs__painel[data-painel="pack"],
+#abaIndividual:checked ~ .planos-tabs__painel[data-painel="individual"] {
+  display: block;
+}
+
 /* --------------------------------------------------------------------------
    Etapa 4 — dias da semana (disponibilidade para visita)
    -------------------------------------------------------------------------- */

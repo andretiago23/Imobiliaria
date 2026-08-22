@@ -16,6 +16,10 @@ public class Plano {
 	private String descricao;
 	private boolean destaque;
 	private int ordem;
+	private TipoAnunciante tipoAnunciante;
+	private CategoriaPlano categoria;
+	private int quantidadeAnuncios;
+	private boolean renovacaoAutomatica;
 
 	public int getId() {
 		return id;
@@ -83,5 +87,49 @@ public class Plano {
 
 	public void setOrdem(int ordem) {
 		this.ordem = ordem;
+	}
+
+	/**
+	 * @return para quem esse plano é vendido — proprietário ou
+	 *         corretor/imobiliária (ver model.TipoAnunciante)
+	 */
+	public TipoAnunciante getTipoAnunciante() {
+		return tipoAnunciante;
+	}
+
+	public void setTipoAnunciante(TipoAnunciante tipoAnunciante) {
+		this.tipoAnunciante = tipoAnunciante;
+	}
+
+	/**
+	 * @return INDIVIDUAL (destaque de um anúncio) ou PACK (lote de créditos,
+	 *         só para corretor/imobiliária)
+	 */
+	public CategoriaPlano getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(CategoriaPlano categoria) {
+		this.categoria = categoria;
+	}
+
+	/**
+	 * @return quantos anúncios esse plano cobre — 1 nos planos individuais,
+	 *         maior que 1 nos packs
+	 */
+	public int getQuantidadeAnuncios() {
+		return quantidadeAnuncios;
+	}
+
+	public void setQuantidadeAnuncios(int quantidadeAnuncios) {
+		this.quantidadeAnuncios = quantidadeAnuncios;
+	}
+
+	public boolean isRenovacaoAutomatica() {
+		return renovacaoAutomatica;
+	}
+
+	public void setRenovacaoAutomatica(boolean renovacaoAutomatica) {
+		this.renovacaoAutomatica = renovacaoAutomatica;
 	}
 }

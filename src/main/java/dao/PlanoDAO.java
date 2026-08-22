@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import model.CategoriaPlano;
 import model.Plano;
+import model.TipoAnunciante;
+import util.ConversorEnum;
 
 /**
  * Acesso à tabela plano. Os planos são cadastrados diretamente no banco (não
@@ -18,9 +21,13 @@ import model.Plano;
 public class PlanoDAO {
 
 	private static final String COLUNAS =
-			"id, nome, preco, duracao_dias, limite_fotos, descricao, destaque, ordem";
+			"id, nome, preco, duracao_dias, limite_fotos, descricao, destaque, ordem, "
+			+ "tipo_anunciante, categoria, quantidade_anuncios, renovacao_automatica";
 
 	private static final String SQL_LISTAR = "SELECT " + COLUNAS + " FROM plano ORDER BY ordem";
+
+	private static final String SQL_LISTAR_POR_TIPO =
+			"SELECT " + COLUNAS + " FROM plano WHERE tipo_anunciante = ? ORDER BY categoria, ordem";
 
 	private static final String SQL_BUSCAR_POR_ID = "SELECT " + COLUNAS + " FROM plano WHERE id = ?";
 
@@ -36,6 +43,28 @@ public class PlanoDAO {
 			return planos;
 		} catch (SQLException e) {
 			throw new DAOException("Erro ao listar os planos.", e);
+		}
+	}
+
+	/**
+	 * @return os planos vendidos para o tipo de anunciante informado
+	 *         (proprietário ou corretor/imobiliária), agrupados por
+	 *         categoria (individual antes de pack) e depois por ordem.
+	 */
+	public List<Plano> listarPorTipo(TipoAnunciante tipoAnunciante) throws DAOException {
+		try (Connection conexao = ConnectionFactory.obterConexao();
+				PreparedStatement comando = conexao.prepareStatement(SQL_LISTAR_POR_TIPO)) {
+
+			comando.setString(1, ConversorEnum.paraBanco(tipoAnunciante));
+			try (ResultSet resultado = comando.executeQuery()) {
+				List<Plano> planos = new ArrayList<>();
+				while (resultado.next()) {
+					planos.add(montarPlano(resultado));
+				}
+				return planos;
+			}
+		} catch (SQLException e) {
+			throw new DAOException("Erro ao listar os planos de " + tipoAnunciante + ".", e);
 		}
 	}
 
@@ -62,6 +91,10 @@ public class PlanoDAO {
 		plano.setDescricao(resultado.getString("descricao"));
 		plano.setDestaque(resultado.getBoolean("destaque"));
 		plano.setOrdem(resultado.getInt("ordem"));
+		plano.setTipoAnunciante(ConversorEnum.paraEnum(TipoAnunciante.class, resultado.getString("tipo_anunciante")));
+		plano.setCategoria(ConversorEnum.paraEnum(CategoriaPlano.class, resultado.getString("categoria")));
+		plano.setQuantidadeAnuncios(resultado.getInt("quantidade_anuncios"));
+		plano.setRenovacaoAutomatica(resultado.getBoolean("renovacao_automatica"));
 		return plano;
 	}
 }

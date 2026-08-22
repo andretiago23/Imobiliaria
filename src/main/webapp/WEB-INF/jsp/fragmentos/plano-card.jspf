@@ -1,0 +1,25 @@
+<%--
+  Conteúdo de um card na tela de planos avulsa (/planos). Incluído de forma
+  estática (não é uma página própria) dentro de um "for (Plano plano : ...)",
+  então usa direto as variáveis "plano" e "moeda" do escopo que o inclui —
+  ver WEB-INF/jsp/planos.jsp.
+--%>
+<div class="plano-card" style="cursor:default;">
+  <% if (plano.isDestaque()) { %><span class="plano-card__selo">Mais popular</span><% } %>
+  <p class="plano-card__nome"><%= util.Html.escapar(plano.getNome()) %></p>
+  <p class="plano-card__preco"><%= moeda.format(plano.getPreco()) %> <span>/ <%= util.FormatoPlano.periodo(plano.getDuracaoDias()) %></span></p>
+  <% if (plano.isRenovacaoAutomatica()) { %>
+    <span class="plano-card__renovacao">Plano com renovação automática</span>
+  <% } %>
+  <% if (plano.getDescricao() != null && !plano.getDescricao().isBlank()) { %>
+    <p class="plano-card__descricao"><%= util.Html.escapar(plano.getDescricao()) %></p>
+  <% } %>
+  <a class="btn btn--primary btn--interactive plano-card__cta" href="${pageContext.request.contextPath}/anunciar/etapa1?tipo=<%= util.ConversorEnum.paraBanco(plano.getTipoAnunciante()) %>">
+    <span class="btn__label">Contratar</span>
+    <span class="btn__reveal" aria-hidden="true">
+      Contratar
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </span>
+    <span class="btn__dot" aria-hidden="true"></span>
+  </a>
+</div>

@@ -1,14 +1,14 @@
 ﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.Locale, java.text.NumberFormat, model.Imovel, model.Finalidade, model.StatusImovel" %>
+<%@ page import="java.util.Locale, java.text.NumberFormat, model.Imovel, model.Finalidade, model.StatusImovel, model.FotoImovel" %>
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= request.getAttribute("imovel") != null ? util.Html.escapar(((Imovel) request.getAttribute("imovel")).getTitulo()) + " | Habittar" : "Imóvel | Habittar" %></title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=52">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=52">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=52">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=59">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=59">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css?v=59">
 </head>
 <body>
 
@@ -53,11 +53,17 @@
     <span class="breadcrumb__atual"><%= util.Html.escapar(imovel.getTitulo()) %></span>
   </nav>
 
+  <%
+    java.util.List<FotoImovel> fotosImovel = imovel.getFotos();
+    boolean temFotoReal = fotosImovel != null && !fotosImovel.isEmpty();
+    String urlFotoPrincipal = temFotoReal ? fotosImovel.get(0).getUrlFoto()
+        : util.ImagemImovel.urlIlustrativa(imovel.getTipo(), imovel.getId());
+  %>
   <div class="imovel-detalhe">
     <div>
       <div class="imovel-detalhe__foto">
-        <img src="<%= util.ImagemImovel.urlIlustrativa(imovel.getTipo(), imovel.getId()) %>"
-          alt="Foto ilustrativa de <%= util.Html.escapar(imovel.getTitulo()) %>">
+        <img id="fotoPrincipalImovel" src="<%= urlFotoPrincipal %>"
+          alt="Foto de <%= util.Html.escapar(imovel.getTitulo()) %>">
         <% if (imovel.getIdUsuario() != ((model.Usuario) session.getAttribute("usuarioLogado")).getId()) { %>
           <form method="post" action="${pageContext.request.contextPath}/favorito" class="imovel-detalhe__salvar">
             <input type="hidden" name="csrf" value="${csrf}">
@@ -71,6 +77,15 @@
           </form>
         <% } %>
       </div>
+      <% if (temFotoReal && fotosImovel.size() > 1) { %>
+        <div class="imovel-detalhe__miniaturas">
+          <% for (FotoImovel foto : fotosImovel) { %>
+            <button type="button" class="imovel-detalhe__miniatura" data-src="<%= foto.getUrlFoto() %>">
+              <img src="<%= foto.getUrlFoto() %>" alt="">
+            </button>
+          <% } %>
+        </div>
+      <% } %>
 
       <div class="imovel-detalhe__badges">
         <span class="badge"><%= aluguel ? "Aluguel" : "Venda" %></span>
@@ -110,7 +125,7 @@
       </div>
 
       <h3 class="display" style="font-size:20px;">Descrição</h3>
-      <p class="lead" style="max-width:none;">
+      <p class="lead" style="max-width:none;white-space:pre-line;">
         <%= imovel.getDescricao() != null && !imovel.getDescricao().isBlank()
               ? util.Html.escapar(imovel.getDescricao())
               : "Sem descrição cadastrada para este imóvel." %>
@@ -250,6 +265,19 @@
       navigator.sendBeacon
         ? navigator.sendBeacon("${pageContext.request.contextPath}/imovel/whatsapp", dados)
         : fetch("${pageContext.request.contextPath}/imovel/whatsapp", { method: "POST", body: dados, keepalive: true });
+    });
+  });
+
+  // Miniaturas da galeria: clicar troca a foto principal, sem recarregar
+  // a página.
+  var fotoPrincipal = document.getElementById("fotoPrincipalImovel");
+  document.querySelectorAll(".imovel-detalhe__miniatura").forEach(function (miniatura) {
+    miniatura.addEventListener("click", function () {
+      if (!fotoPrincipal) return;
+      fotoPrincipal.src = miniatura.dataset.src;
+      document.querySelectorAll(".imovel-detalhe__miniatura").forEach(function (outra) {
+        outra.classList.toggle("is-ativa", outra === miniatura);
+      });
     });
   });
 </script>

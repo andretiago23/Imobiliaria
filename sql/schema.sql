@@ -126,13 +126,37 @@ CREATE TABLE IF NOT EXISTS `plano` (
   `descricao` varchar(255) DEFAULT NULL,
   `destaque` tinyint(1) NOT NULL DEFAULT '0',
   `ordem` int NOT NULL DEFAULT '0',
+  `tipo_anunciante` enum('proprietario','corretor') NOT NULL DEFAULT 'proprietario',
+  `categoria` enum('individual','pack') NOT NULL DEFAULT 'individual',
+  `quantidade_anuncios` int NOT NULL DEFAULT '1',
+  `renovacao_automatica` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `plano` (`nome`, `preco`, `duracao_dias`, `limite_fotos`, `descricao`, `destaque`, `ordem`) VALUES
-('Básico', 49.90, 30, 5, 'Anúncio padrão no catálogo por 30 dias.', 0, 1),
-('Destaque', 99.90, 60, 12, 'Selo de destaque, posição prioritária na busca e 60 dias no ar.', 1, 2),
-('Premium', 179.90, 90, 25, 'Topo do catálogo, mais fotos e 90 dias de exposição contínua.', 0, 3);
+-- Proprietário: destaque avulso pro próprio imóvel, do grátis (baixa
+-- visibilidade) ao plano anual, sempre categoria=individual.
+INSERT INTO `plano`
+  (`nome`, `preco`, `duracao_dias`, `limite_fotos`, `descricao`, `destaque`, `ordem`, `tipo_anunciante`, `categoria`, `quantidade_anuncios`, `renovacao_automatica`)
+VALUES
+('Grátis', 0.00, 30, 5, 'Anúncio simples no catálogo, com baixa visibilidade na busca.', 0, 1, 'proprietario', 'individual', 1, 0),
+('Super Destaque Trimestral', 429.00, 90, 20, 'Máxima exposição. Proporciona maior quantidade de interessados. Melhor custo-benefício.', 0, 2, 'proprietario', 'individual', 1, 0),
+('Super Destaque Semestral', 639.00, 180, 20, 'Anúncio Super Destaque de ótima exposição! 50% de desconto sobre o valor mensal.', 1, 3, 'proprietario', 'individual', 1, 0),
+('Super Destaque Anual', 1059.00, 365, 20, 'Máxima exposição. Melhor custo-benefício. Seu imóvel fica anunciado conosco durante 1 ano até que você consiga vendê-lo.', 0, 4, 'proprietario', 'individual', 1, 0),
+
+-- Corretor/imobiliária — individual: os mesmos prazos de destaque, mais a
+-- opção mensal com renovação automática (não faz sentido pro proprietário,
+-- que vende e sai da plataforma).
+('Super Destaque Trimestral', 429.00, 90, 20, 'Máxima exposição. Proporciona maior quantidade de interessados. Melhor custo-benefício.', 0, 5, 'corretor', 'individual', 1, 0),
+('Super Destaque Semestral', 639.00, 180, 20, 'Anúncio Super Destaque de ótima exposição! 50% de desconto sobre o valor mensal.', 1, 6, 'corretor', 'individual', 1, 0),
+('Super Destaque Anual', 1059.00, 365, 20, 'Máxima exposição. Melhor custo-benefício. Seu imóvel fica anunciado conosco durante 1 ano até que você consiga vendê-lo.', 0, 7, 'corretor', 'individual', 1, 0),
+('Super Destaque', 219.00, 30, 20, 'Máxima exposição. Proporciona maior quantidade de interessados.', 0, 8, 'corretor', 'individual', 1, 1),
+
+-- Corretor/imobiliária — packs: lote de créditos de anúncio, cobrado
+-- mensalmente com renovação automática.
+('Pack 10', 219.00, 30, 15, 'Pack 10 contendo: 2 destaques e 8 simples.', 0, 9, 'corretor', 'pack', 10, 1),
+('Pack 20', 329.00, 30, 15, 'Pack de 20 anúncios de renovação mensal. Contendo: 1 super destaque, 4 destaques e 15 simples. Pague diretamente pelo seu cartão de crédito.', 0, 10, 'corretor', 'pack', 20, 1),
+('Pack 35', 439.00, 30, 15, 'Pack 35 contendo 2 super destaques, 6 destaques e 27 simples. Você testa a qualidade do serviço sem peso no bolso!', 0, 11, 'corretor', 'pack', 35, 1),
+('Pack 50', 489.00, 30, 15, 'Pack 50 contendo 4 super destaques, 10 destaques e 36 simples. Você testa a qualidade do serviço sem peso no bolso!', 1, 12, 'corretor', 'pack', 50, 1);
 
 -- ----------------------------------------------------------------------------
 -- anuncio — a contratação de um plano para publicar um imóvel, criada ao

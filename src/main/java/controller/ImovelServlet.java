@@ -6,6 +6,7 @@ import java.util.Optional;
 import dao.DAOException;
 import dao.DisponibilidadeVisitaDAO;
 import dao.FavoritoDAO;
+import dao.FotoImovelDAO;
 import dao.ImovelDAO;
 import dao.VisualizacaoImovelDAO;
 import jakarta.servlet.ServletException;
@@ -32,6 +33,7 @@ public class ImovelServlet extends HttpServlet {
 
 	private final ImovelDAO imovelDAO = new ImovelDAO();
 	private final FavoritoDAO favoritoDAO = new FavoritoDAO();
+	private final FotoImovelDAO fotoImovelDAO = new FotoImovelDAO();
 	private final DisponibilidadeVisitaDAO disponibilidadeVisitaDAO = new DisponibilidadeVisitaDAO();
 	private final VisualizacaoImovelDAO visualizacaoImovelDAO = new VisualizacaoImovelDAO();
 
@@ -51,6 +53,7 @@ public class ImovelServlet extends HttpServlet {
 				resposta.sendRedirect(requisicao.getContextPath() + "/inicio");
 				return;
 			}
+			fotoImovelDAO.carregarFotos(imovel.get());
 			requisicao.setAttribute("imovel", imovel.get());
 			requisicao.setAttribute("similares", imovelDAO.listarSimilares(imovel.get().getCidade(), id, 3));
 			requisicao.setAttribute("disponibilidade", disponibilidadeVisitaDAO.listarPorImovel(id));

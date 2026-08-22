@@ -334,6 +334,7 @@
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=52"></script>
+<script src="${pageContext.request.contextPath}/js/cidades-ro.js?v=58"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=58"></script>
 </body>
 </html>
