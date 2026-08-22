@@ -33,6 +33,9 @@
         </svg>
         <p class="display" style="font-size:22px;margin-top:16px;">Anúncio publicado!</p>
         <p class="micro" style="margin-top:6px;">Já está visível no catálogo.</p>
+        <a class="btn btn--primary btn--sm" style="margin-top:18px;" href="${pageContext.request.contextPath}/imoveis-anunciados">
+          Ver meus anúncios
+        </a>
       </div>
     </div>
     <p class="alerta" style="background:#e6f5ec;border-color:#bfe3cd;color:#1c6b3f;">
