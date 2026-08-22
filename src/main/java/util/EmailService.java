@@ -199,4 +199,27 @@ public class EmailService {
 
 		enviar(proprietario.getEmail(), "Seu anúncio \"" + imovel.getTitulo() + "\" ainda está disponível?", corpo);
 	}
+
+	/**
+	 * Link de redefinição de senha do "esqueci minha senha" (ver
+	 * controller.EsqueciSenhaServlet). O token é de uso único e vale por 2
+	 * horas — ver dao.RedefinicaoSenhaDAO.
+	 */
+	public void notificarRedefinicaoSenha(Usuario usuario, String linkRedefinicao) {
+		String corpo = """
+				Olá, %s!
+
+				Recebemos um pedido para redefinir a senha da sua conta na Habittar.
+				Clique no link abaixo para escolher uma senha nova — ele vale por 2 horas:
+
+				%s
+
+				Se você não pediu essa redefinição, pode ignorar este e-mail: sua senha
+				continua a mesma.
+
+				— Habittar
+				""".formatted(usuario.getNome(), linkRedefinicao);
+
+		enviar(usuario.getEmail(), "Redefinir sua senha da Habittar", corpo);
+	}
 }

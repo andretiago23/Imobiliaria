@@ -29,7 +29,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Criar conta | Habittar</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=52">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=52">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=64">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=52">
 </head>
 <body>
@@ -136,7 +136,9 @@
 						<input type="checkbox" id="aceiteTermos" name="aceiteTermos" data-validar="aceiteTermos"
 							${aceiteTermos ? 'checked' : ''} required>
 						<span>Li e concordo com a
-							<a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Política de Privacidade e os Termos de Uso</a>
+							<a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Política de Privacidade</a>
+							e os
+							<a href="${pageContext.request.contextPath}/legal/habittar-termos-de-uso.pdf" target="_blank" rel="noopener">Termos de Uso</a>
 							(LGPD).
 						</span>
 					</label>

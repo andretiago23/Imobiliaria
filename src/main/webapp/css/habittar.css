@@ -1146,6 +1146,38 @@ h1.hero__cartao-titulo {
   width: 100%;
 }
 
+/* Campo "Valor total até" — input numérico com "R$" fixo, mesmo tratamento
+   do campo de preço do catálogo (ver configurarCampoPreco em js/habittar.js
+   e js/catalogo.js), no lugar do antigo <select> com faixas fixas. */
+.hero__filtro-preco {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.hero__filtro-preco:focus-within {
+  border-color: var(--accent-primary);
+}
+.hero__filtro-preco__prefixo {
+  color: var(--text-secondary);
+  font-size: 15px;
+  flex: 0 0 auto;
+}
+.hero__filtro-preco input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  padding: 13px 0;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
 .hero__filtro-submit {
   width: 100%;
   height: 50px;
@@ -1662,4 +1694,34 @@ h1.hero__cartao-titulo {
     opacity: 1;
     transform: none;
   }
+}
+
+/* --------------------------------------------------------------------------
+   Mensagens de alerta (erro/sucesso) — usado em ~15 páginas via
+   <p class="alerta alerta-erro">${erro}</p> (ou só "alerta" pra sucesso),
+   mas nunca teve estilo nenhum: a mensagem existia, só não parecia um
+   alerta — texto solto, fácil de passar batido. Vazio (sem erro nenhuma
+   requisição) fica escondido, então a tag pode ficar sempre no HTML sem
+   aparecer uma caixa vazia.
+   -------------------------------------------------------------------------- */
+.alerta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  line-height: 1.4;
+  background: #e6f5ec;
+  border: 1px solid #bfe3cd;
+  color: #1c6b3f;
+}
+.alerta:empty {
+  display: none;
+}
+.alerta-erro {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #b91c1c;
 }

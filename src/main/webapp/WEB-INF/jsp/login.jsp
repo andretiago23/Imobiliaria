@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Entrar | Habittar</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=52">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=52">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=64">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css?v=52">
 </head>
 <body>
@@ -30,6 +30,9 @@
 
 			<h1 class="display auth-anim auth-anim--2">Entrar</h1>
 
+			<% if ("1".equals(request.getParameter("senhaRedefinida"))) { %>
+				<p class="alerta auth-anim auth-anim--3">Senha redefinida com sucesso! Já pode entrar com ela.</p>
+			<% } %>
 			<p class="alerta alerta-erro auth-anim auth-anim--3" role="alert">${erro}${param.erroGoogle}</p>
 
 			<form method="post" action="${pageContext.request.contextPath}/login" id="formLogin" novalidate>
@@ -64,7 +67,7 @@
 						<input type="checkbox" id="lembrar">
 						Lembrar de mim
 					</label>
-					<a href="#">Esqueceu a senha?</a>
+					<a href="${pageContext.request.contextPath}/esqueci-senha">Esqueceu a senha?</a>
 				</div>
 
 				<button type="submit" class="btn btn--primary btn--interactive auth-anim auth-anim--5" style="width:100%;" id="botaoEntrar">

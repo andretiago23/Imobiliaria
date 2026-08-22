@@ -68,8 +68,11 @@ public class ImovelDAO {
 	private static final String SQL_LISTAR_ATIVOS = SQL_SELECT_BASE
 			+ " WHERE i.status IN ('ativo', 'reservado') ORDER BY i.data_publicacao DESC LIMIT ?";
 
+	// Só "ativo" aqui (diferente do feed principal, que também mostra
+	// "reservado"): um imóvel já reservado não está mais realmente
+	// disponível pra sugerir como alternativa a quem está vendo outro.
 	private static final String SQL_LISTAR_SIMILARES = SQL_SELECT_BASE
-			+ " WHERE i.status IN ('ativo', 'reservado') AND i.cidade = ? AND i.id <> ?"
+			+ " WHERE i.status = 'ativo' AND i.cidade = ? AND i.id <> ?"
 			+ " ORDER BY i.data_publicacao DESC LIMIT ?";
 
 	private static final String SQL_ATUALIZAR_STATUS = "UPDATE imovel SET status = ? WHERE id = ?";

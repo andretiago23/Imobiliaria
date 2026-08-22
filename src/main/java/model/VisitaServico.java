@@ -21,7 +21,7 @@ import util.EmailService;
 public class VisitaServico {
 
 	/** Duração fixa de cada horário oferecido, dentro da janela configurada. */
-	private static final int DURACAO_VISITA_MINUTOS = 60;
+	private static final int DURACAO_VISITA_MINUTOS = 30;
 
 	/** Até quantos dias à frente o calendário de opções mostra. */
 	private static final int DIAS_A_FRENTE = 21;

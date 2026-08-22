@@ -6,8 +6,71 @@
 
 .wizard-main {
   max-width: 720px;
+  min-height: calc(100vh - var(--nav-h));
+  box-sizing: border-box;
   margin: 0 auto;
   padding: var(--space-6) var(--space-4) var(--space-8);
+}
+
+/* --------------------------------------------------------------------------
+   Etapa 1 — Área/Quartos/Banheiros compactos, lado a lado numa linha só,
+   em vez de esticar cada um até metade da largura do formulário (o que
+   ficava sem sentido pra campos de 1-2 dígitos).
+   -------------------------------------------------------------------------- */
+.wizard-specs-grade {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 380px;
+}
+@media (max-width: 480px) {
+  .wizard-specs-grade {
+    max-width: none;
+  }
+}
+
+/* Stepper de quartos/banheiros: campo numérico com botões -/+ nas pontas,
+   no lugar das setinhas nativas do input number (escondidas abaixo). */
+.wizard-stepper {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-page);
+  overflow: hidden;
+}
+.wizard-stepper:focus-within {
+  outline: 2px solid var(--accent-primary-soft);
+  border-color: var(--accent-primary);
+}
+.wizard-stepper__botao {
+  flex: 0 0 auto;
+  width: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.wizard-stepper__botao:hover {
+  color: var(--accent-primary);
+  background: var(--accent-primary-soft);
+}
+.wizard-stepper input {
+  flex: 1;
+  min-width: 0;
+  width: auto !important;
+  border: 0 !important;
+  background: transparent !important;
+  text-align: center;
+  padding: 12px 0 !important;
+  -moz-appearance: textfield;
+}
+.wizard-stepper input::-webkit-outer-spin-button,
+.wizard-stepper input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -202,13 +265,54 @@
 }
 
 /* --------------------------------------------------------------------------
-   Etapa 1 — características do imóvel
+   Etapa 1 — contador de caracteres da descrição
    -------------------------------------------------------------------------- */
+.wizard-contador {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+.wizard-contador--ok {
+  color: #1c8a4b;
+}
+
+/* --------------------------------------------------------------------------
+   Etapa 1 — características do imóvel, dentro de um dropdown (<details>)
+   pra não ocupar a tela toda com a lista de checkboxes.
+   -------------------------------------------------------------------------- */
+.wizard-caracteristicas-dropdown {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-5);
+}
+.wizard-caracteristicas-dropdown summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.wizard-caracteristicas-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+.wizard-caracteristicas-dropdown summary svg {
+  color: var(--text-secondary);
+  transition: transform 0.15s ease-out;
+  flex-shrink: 0;
+}
+.wizard-caracteristicas-dropdown[open] summary svg {
+  transform: rotate(180deg);
+}
 .wizard-caracteristicas {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 4px var(--space-3);
-  margin-bottom: var(--space-5);
+  padding: 4px 14px 14px;
+  border-top: 1px solid var(--border-subtle);
 }
 @media (max-width: 480px) {
   .wizard-caracteristicas {
@@ -223,6 +327,48 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--space-4);
+}
+
+/* Plano Grátis — linha discreta acima da grade dos planos pagos, sem o
+   destaque de card (preço, selo etc.) que os planos pagos têm. */
+.plano-linha-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.plano-linha {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px var(--space-4);
+  cursor: pointer;
+  transition: border-color 0.2s ease-out, background-color 0.2s ease-out;
+}
+.plano-linha:hover {
+  background: var(--surface-page);
+}
+.plano-linha-input:checked + .plano-linha {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary-soft);
+}
+.plano-linha-input:focus-visible + .plano-linha {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+.plano-linha__nome {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+.plano-linha__descricao {
+  flex: 1;
+  color: var(--text-secondary);
+}
+.plano-linha__preco {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 .plano-input {
   position: absolute;
@@ -409,55 +555,6 @@
   color: #fff;
 }
 .wizard-dia input:focus-visible + span {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
-}
-
-/* --------------------------------------------------------------------------
-   Agendar visita — dias e horários disponíveis
-   -------------------------------------------------------------------------- */
-.wizard-visita-dias {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  margin: var(--space-4) 0 var(--space-5);
-}
-.wizard-visita-dia h3 {
-  font-family: var(--font-display);
-  font-size: 15px;
-  text-transform: capitalize;
-  margin: 0 0 var(--space-2);
-}
-.wizard-visita-horarios {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-.wizard-visita-horario {
-  position: relative;
-  cursor: pointer;
-}
-.wizard-visita-horario input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-.wizard-visita-horario span {
-  display: block;
-  padding: 8px 14px;
-  border-radius: var(--radius-full);
-  border: 1.5px solid var(--border-subtle);
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-secondary);
-  transition: all 0.15s ease-out;
-}
-.wizard-visita-horario input:checked + span {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  color: #fff;
-}
-.wizard-visita-horario input:focus-visible + span {
   outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }

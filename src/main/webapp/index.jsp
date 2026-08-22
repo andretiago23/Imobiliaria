@@ -1,4 +1,5 @@
 ﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.List, java.util.Locale, java.text.NumberFormat, model.Imovel, model.Finalidade, model.StatusImovel" %>
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -11,7 +12,7 @@
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tokens.css?v=52">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=52">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/habittar.css?v=64">
 </head>
 <body>
 <!-- ===================== HEADER ===================== -->
@@ -68,16 +69,13 @@
           </label>
 
           <div class="hero__filtro-linha">
-            <label class="hero__filtro-campo" for="precoMaximoHero">
+            <label class="hero__filtro-campo" for="precoMaximoHeroExibido">
               Valor total até
-              <select name="precoMaximo" id="precoMaximoHero" class="hero__filtro-select">
-                <option value="">Escolha o valor</option>
-                <option value="300000">R$ 300 mil</option>
-                <option value="500000">R$ 500 mil</option>
-                <option value="800000">R$ 800 mil</option>
-                <option value="1200000">R$ 1,2 milhão</option>
-                <option value="2000000">R$ 2 milhões</option>
-              </select>
+              <span class="hero__filtro-preco">
+                <span class="hero__filtro-preco__prefixo">R$</span>
+                <input type="text" inputmode="numeric" id="precoMaximoHeroExibido" placeholder="0" autocomplete="off">
+                <input type="hidden" name="precoMaximo" id="precoMaximoHero">
+              </span>
             </label>
             <label class="hero__filtro-campo" for="quartosMinimoHero">
               Quartos
@@ -130,6 +128,29 @@
   <svg class="seam seam--to-raised" viewBox="0 0 1440 96" preserveAspectRatio="none" aria-hidden="true"><path d="M0 96C360 8 1080 8 1440 96V96H0Z"/></svg>
 
   <!-- ===================== IMÓVEIS EM DESTAQUE ===================== -->
+  <%
+    // Só entram aqui os imóveis realmente "Disponível" (status ATIVO) —
+    // um reservado, vendido ou alugado não deveria aparecer como destaque
+    // da página inicial. listarAtivos traz ativo+reservado juntos (mesma
+    // consulta usada no catálogo /inicio), então filtramos aqui.
+    List<Imovel> imoveisDestaque = List.of();
+    try {
+        List<Imovel> candidatos = new dao.ImovelDAO().listarAtivos(20);
+        java.util.List<Imovel> disponiveis = new java.util.ArrayList<>();
+        for (Imovel candidato : candidatos) {
+            if (candidato.getStatus() == StatusImovel.ATIVO) {
+                disponiveis.add(candidato);
+            }
+            if (disponiveis.size() == 5) break;
+        }
+        new dao.FotoImovelDAO().carregarFotos(disponiveis);
+        imoveisDestaque = disponiveis;
+    } catch (dao.DAOException e) {
+        getServletContext().log("Falha ao carregar imóveis em destaque na página inicial.", e);
+    }
+    NumberFormat moedaDestaque = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+  %>
+  <% if (!imoveisDestaque.isEmpty()) { %>
   <section class="section section--raised" id="imoveis" style="padding-top:24px">
     <div class="wrap">
       <div class="section__head reveal">
@@ -141,64 +162,32 @@
       </div>
 
       <div class="props">
-        <a class="card card--feature" href="${pageContext.request.contextPath}/imovel?id=1">
+        <% for (int i = 0; i < imoveisDestaque.size(); i++) {
+          Imovel imovelDestaque = imoveisDestaque.get(i);
+          boolean aluguelDestaque = imovelDestaque.getFinalidade() == Finalidade.ALUGUEL;
+          model.FotoImovel fotoCapaDestaque = imovelDestaque.getFotoPrincipal();
+          String urlFotoDestaque = fotoCapaDestaque != null ? fotoCapaDestaque.getUrlFoto()
+              : util.ImagemImovel.urlIlustrativa(imovelDestaque.getTipo(), imovelDestaque.getId());
+        %>
+        <a class="card <%= i == 0 ? "card--feature" : "" %>" href="${pageContext.request.contextPath}/imovel?id=<%= imovelDestaque.getId() %>">
           <div class="card__photo tem-foto">
-            <img src="https://images.pexels.com/photos/21284473/pexels-photo-21284473.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
-            <span class="badge">Venda</span><span class="micro">Cód. HB-1042</span>
+            <img src="<%= urlFotoDestaque %>" alt="Foto de <%= util.Html.escapar(imovelDestaque.getTitulo()) %>" loading="lazy">
+            <span class="badge"><%= aluguelDestaque ? "Aluguel" : "Venda" %></span>
           </div>
           <div class="card__body">
-            <div class="card__price">R$ 845.000</div>
-            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Pinheiros, São Paulo — SP</div>
-            <div class="card__specs"><span>92 m²</span><span>3 quartos</span><span>2 banh.</span><span>2 vagas</span></div>
+            <div class="card__price">
+              <%= moedaDestaque.format(imovelDestaque.getPreco()) %>
+              <% if (aluguelDestaque) { %><span class="micro">/mês</span><% } %>
+            </div>
+            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> <%= util.Html.escapar(imovelDestaque.getEnderecoCompleto()) %></div>
+            <div class="card__specs"><span><%= imovelDestaque.getAreaM2() %> m²</span><span><%= imovelDestaque.getQuartos() %> quartos</span><span><%= imovelDestaque.getBanheiros() %> banh.</span><span><%= imovelDestaque.getVagasGaragem() %> vagas</span></div>
           </div>
         </a>
-        <a class="card" href="${pageContext.request.contextPath}/imovel?id=2">
-          <div class="card__photo tem-foto">
-            <img src="https://images.pexels.com/photos/19239905/pexels-photo-19239905.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
-            <span class="badge">Aluguel</span>
-          </div>
-          <div class="card__body">
-            <div class="card__price">R$ 3.200<span class="micro">/mês</span></div>
-            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Vila Madalena — SP</div>
-            <div class="card__specs"><span>58 m²</span><span>2 qtos</span><span>1 vaga</span></div>
-          </div>
-        </a>
-        <a class="card" href="${pageContext.request.contextPath}/imovel?id=3">
-          <div class="card__photo tem-foto">
-            <img src="https://images.pexels.com/photos/2128329/pexels-photo-2128329.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
-            <span class="badge">Reservado</span>
-          </div>
-          <div class="card__body">
-            <div class="card__price">R$ 620.000</div>
-            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Perdizes — SP</div>
-            <div class="card__specs"><span>74 m²</span><span>2 qtos</span><span>1 vaga</span></div>
-          </div>
-        </a>
-        <a class="card" href="${pageContext.request.contextPath}/imovel?id=4">
-          <div class="card__photo tem-foto">
-            <img src="https://images.pexels.com/photos/18078684/pexels-photo-18078684.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
-            <span class="badge">Venda</span>
-          </div>
-          <div class="card__body">
-            <div class="card__price">R$ 1.190.000</div>
-            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Alto de Pinheiros — SP</div>
-            <div class="card__specs"><span>148 m²</span><span>4 qtos</span><span>3 vagas</span></div>
-          </div>
-        </a>
-        <a class="card" href="${pageContext.request.contextPath}/imovel?id=5">
-          <div class="card__photo tem-foto">
-            <img src="https://images.pexels.com/photos/2030037/pexels-photo-2030037.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" loading="lazy">
-            <span class="badge">Aluguel</span>
-          </div>
-          <div class="card__body">
-            <div class="card__price">R$ 2.150<span class="micro">/mês</span></div>
-            <div class="card__loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/></svg> Butantã — SP</div>
-            <div class="card__specs"><span>44 m²</span><span>1 qto</span><span>1 vaga</span></div>
-          </div>
-        </a>
+        <% } %>
       </div>
     </div>
   </section>
+  <% } %>
 
   <svg class="seam seam--to-page" viewBox="0 0 1440 96" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0C360 88 1080 88 1440 0V96H0Z"/></svg>
 
@@ -329,12 +318,12 @@
     </div>
     <div>
       <h4>Institucional</h4>
-      <ul><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Termos de uso</a></li><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Política de privacidade</a></li><li><a href="https://wa.me/5569992450697" target="_blank" rel="noopener">Contato</a></li></ul>
+      <ul><li><a href="${pageContext.request.contextPath}/legal/habittar-termos-de-uso.pdf" target="_blank" rel="noopener">Termos de uso</a></li><li><a href="${pageContext.request.contextPath}/legal/habittar-psi-privacidade.pdf" target="_blank" rel="noopener">Política de privacidade</a></li><li><a href="https://wa.me/5569992450697" target="_blank" rel="noopener">Contato</a></li></ul>
     </div>
   </div>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/cidades-ro.js?v=58"></script>
-<script src="${pageContext.request.contextPath}/js/habittar.js?v=58"></script>
+<script src="${pageContext.request.contextPath}/js/cidades-ro.js?v=62"></script>
+<script src="${pageContext.request.contextPath}/js/habittar.js?v=62"></script>
 </body>
 </html>
